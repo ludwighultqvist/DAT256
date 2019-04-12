@@ -24,7 +24,6 @@ public class MeetUp implements Serializable {
         this.description = description;
     }
 
-
     public String getName() {
         return name;
     }

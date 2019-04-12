@@ -14,46 +14,39 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Objects;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
 
     private MeetUp fakeMeetUp;
+    private LatLng fakeMeetUpCoordinates;
 
-    private LatLng hassansFest;
+    private static final int SHOW_EVENT_ON_MAP_CODE = 1;
+    private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         fakeMeetUp = new MeetUp();
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        hassansFest = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(hassansFest).title(fakeMeetUp.getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(hassansFest));
+        fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
+        this.googleMap.addMarker(new MarkerOptions().position(fakeMeetUpCoordinates).title(fakeMeetUp.getName()));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(fakeMeetUpCoordinates));
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 onMeetUpMarkerClick();
@@ -66,15 +59,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void onMeetUpMarkerClick() {
         Intent meetUpIntent = new Intent(this, MeetUpActivity.class);
         meetUpIntent.putExtra("MeetUp", fakeMeetUp);
-        startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP);
+        startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP_CODE);
     }
 
-    static final int SHOW_EVENT_ON_MAP = 0;
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SHOW_EVENT_ON_MAP) {
+        if (requestCode == SHOW_EVENT_ON_MAP_CODE) {
             if (resultCode == RESULT_OK) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hassansFest, 10));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fakeMeetUpCoordinates, DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
         }
     }
