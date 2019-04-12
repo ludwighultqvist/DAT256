@@ -31,10 +31,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".viewmodel.MapActivity"
-            android:label="@string/title_activity_map" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".viewmodel.MapActivity"
+            android:label="@string/title_activity_map">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
