@@ -1,6 +1,8 @@
 package com.bulbasaur.dat256.model;
 
-public class MeetUp {
+import java.io.Serializable;
+
+public class MeetUp implements Serializable {
 
     private long id;
 
@@ -11,14 +13,14 @@ public class MeetUp {
     private String description;
 
     public MeetUp() {
-        this(0, "Fest hos Hassan", 0, 0, "Yippie!");
+        this(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!");
     }
 
-    public MeetUp(long id, String name, double longitude, double latitude, String description) {
+    public MeetUp(long id, String name, double latitude, double longitude, String description) {
         this.id = id;
         this.name = name;
-        this.lon = longitude;
         this.lat = latitude;
+        this.lon = longitude;
         this.description = description;
     }
 
