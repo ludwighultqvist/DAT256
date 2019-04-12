@@ -1,5 +1,7 @@
 package com.bulbasaur.dat256.viewmodel;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +30,8 @@ public class MeetUpActivity extends AppCompatActivity {
         showOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish(); //TODO make this button go back to the map (zoomed in on the event)
+                setResult(Activity.RESULT_OK, new Intent());
+                finish();
             }
         });
     }
