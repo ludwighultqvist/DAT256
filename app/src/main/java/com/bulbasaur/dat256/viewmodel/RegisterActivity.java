@@ -2,6 +2,14 @@ package com.bulbasaur.dat256.viewmodel;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Validator;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -29,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!Validator.detectSpecialChar(firstNameEditText.getText().toString())) {
-                    firstNameEditText.//set other style
+                    //firstNameEditText.//set other style
                 }
             }
 
