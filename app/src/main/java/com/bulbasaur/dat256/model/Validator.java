@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 public class Validator {
 
     public static boolean detectSpecialChar(String string) {
+
         return string.matches("[a-zA-ZA-ZÅÄÖa-zåäö]+");
     }
 
