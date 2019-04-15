@@ -13,7 +13,10 @@ import android.widget.TextView;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 
-public class CountrySpinnerAdapter extends ArrayAdapter<String> {
+/**
+ * A custom spinner for choosing a country and its respective phone number code.
+ */
+public class CountrySpinnerAdapter extends ArrayAdapter<Country> {
 
     private Context context;
 
