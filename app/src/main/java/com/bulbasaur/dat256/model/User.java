@@ -1,11 +1,12 @@
 package com.bulbasaur.dat256.model;
 
-public class Register {
+public class User {
     private String firtName;
     private String lastName;
     private String phoneNumber;
+    Country country;
 
-    public Register(String firstName, String lastName, String phoneNumber){
+    public User(String firstName, String lastName, String phoneNumber){
         this.firtName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;

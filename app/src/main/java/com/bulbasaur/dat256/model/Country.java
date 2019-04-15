@@ -2,7 +2,7 @@ package com.bulbasaur.dat256.model;
 
 public enum Country {
 
-    SWEDEN("Sweden", "SE", "+46");
+    SWEDEN("Sweden", "SE", "0046");
 
     public String name;
     public String shortName;
