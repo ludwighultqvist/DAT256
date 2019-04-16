@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         createAccountButton.setOnClickListener(v -> {
             String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
-            
+
             //TODO add code for sending a verification code here
         });
     }
