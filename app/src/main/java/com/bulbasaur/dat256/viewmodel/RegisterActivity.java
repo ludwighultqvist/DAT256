@@ -1,5 +1,6 @@
 package com.bulbasaur.dat256.viewmodel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.widget.Spinner;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
+import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
 
 import java.util.Objects;
 
@@ -41,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         //Updates the selected country code to the correct value
         phoneNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                selectedCountryCode = Country.values()[pos].countryCode;
+                selectedCountryCode = Country.values()[pos].countryCodeVisual;
             }
 
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -107,7 +109,10 @@ public class RegisterActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(v -> {
             String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
 
-            //TODO add code for sending a verification code here
+            PhoneAuthenticator authenticator = new PhoneAuthenticator(this);
+            authenticator.sendVerificationCode(phoneNumber);
+
+            startActivity(new Intent(this, VerificationView.class));
         });
     }
 
