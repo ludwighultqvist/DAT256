@@ -3,6 +3,16 @@
     <string name="title_activity_map">Map</string>
     <string name="join_meetup_button">join</string>
     <string name="show_in_map_button">show in map</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="first_name">First Name</string>
+    <string name="create_account">Create Account</string>
+    <string name="create_an_account">Create an Account</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="example_phone_number">123456789</string>
+    <string name="example_last_name">Svensson</string>
+    <string name="example_first_name">Erik</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
