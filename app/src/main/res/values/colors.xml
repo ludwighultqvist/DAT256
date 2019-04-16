@@ -3,7 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="textError">#FF4545</color>
+    <color name="bgError">#FF8585</color>
+    <color name="textError">#CC3030</color>
+    <color name="bgNoError">#DDDDDD</color>
+    <color name="textNoError">#444444</color>
     <color name="charcoalGrey">#444444</color>
     <color name="silver">#C0C0C0</color>
     <color name="red">#FF0000</color>

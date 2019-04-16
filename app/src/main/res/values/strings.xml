@@ -99,7 +99,7 @@
     <string name="create_an_account">Create an Account</string>
     <string name="last_name">Last Name</string>
     <string name="phone_number">Phone Number</string>
-    <string name="type_your_first_name_here">Type your first name here...</string>
-    <string name="type_your_last_name_here">Type your last name here...</string>
-    <string name="type_phone_number_here">Type phone number here...</string>
+    <string name="example_phone_number">123456789</string>
+    <string name="example_last_name">Svensson</string>
+    <string name="example_first_name">Erik</string>
 </resources>
