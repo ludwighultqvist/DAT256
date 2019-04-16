@@ -3,6 +3,10 @@
     <string name="title_activity_map">Map</string>
     <string name="join_meetup_button">join</string>
     <string name="show_in_map_button">show in map</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
