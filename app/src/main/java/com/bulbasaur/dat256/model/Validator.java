@@ -26,7 +26,7 @@ public class Validator {
     }
 
     public static boolean checkPhoneChar(String phoneNumber) {
-        if(phoneNumber.matches("[0-9]+") && phoneNumber.length() == 9){
+        if(phoneNumber.matches("[0-9]+") && (phoneNumber.length() == 9 || phoneNumber.length() == 10)){
             return true;
         }
         else{

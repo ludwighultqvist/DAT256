@@ -25,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String selectedCountryCode;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+
         //Sets up the validation code for the first name text field
         firstNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -58,9 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 firstNameValid = Validator.detectSpecialChar(Objects.requireNonNull(firstNameEditText.getText()).toString());
                 firstNameEditText.setHasError(!firstNameValid);
-
-                //TODO show error message here
-
+                if(!firstNameValid){
+                    firstNameEditText.setError(getApplicationContext().getString(R.string.first_name_error));
+                }
                 updateCreateAccountButton();
             }
 
@@ -77,8 +79,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 lastNameValid = Validator.detectSpecialChar(Objects.requireNonNull(lastNameEditText.getText()).toString());
                 lastNameEditText.setHasError(!lastNameValid);
-
-                //TODO show error message here
+                if(!lastNameValid){
+                    lastNameEditText.setError(getApplicationContext().getString(R.string.last_name_error));
+                }
 
                 updateCreateAccountButton();
             }
@@ -96,8 +99,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 phoneNumberValid = Validator.checkPhoneChar(Objects.requireNonNull(phoneNumberEditText.getText()).toString());
                 phoneNumberEditText.setHasError(!phoneNumberValid);
-
-                //TODO show error message here
+                if(!phoneNumberValid){
+                    phoneNumberEditText.setError(getApplicationContext().getString(R.string.phone_number_error));
+                }
 
                 updateCreateAccountButton();
             }

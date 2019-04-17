@@ -10,9 +10,12 @@
     <string name="create_an_account">Create an Account</string>
     <string name="last_name">Last Name</string>
     <string name="phone_number">Phone Number</string>
-    <string name="example_phone_number">123456789</string>
+    <string name="example_phone_number">0729998877</string>
     <string name="example_last_name">Svensson</string>
     <string name="example_first_name">Erik</string>
+    <string name="first_name_error">Your first name can only contain letters</string>
+    <string name="last_name_error">Your last name can only contain letters</string>
+    <string name="phone_number_error">Your phone number can only contain numbers and should be 9 or 10 numbers long</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
