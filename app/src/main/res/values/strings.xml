@@ -16,6 +16,7 @@
     <string name="first_name_error">Your first name can only contain letters</string>
     <string name="last_name_error">Your last name can only contain letters</string>
     <string name="phone_number_error">Your phone number can only contain numbers and should be 9 or 10 numbers long</string>
+    <string name="password_hint">Password</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -33,4 +34,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_connect_snap">Sign in</string>
 </resources>
