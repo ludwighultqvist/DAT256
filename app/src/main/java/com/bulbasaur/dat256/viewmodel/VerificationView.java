@@ -30,21 +30,21 @@ public class VerificationView extends AppCompatActivity {
         sixth = (EditText)findViewById(R.id.SixthNumber);
         authenticator= new PhoneAuthenticator(this);
         init();
-
-        // "Skicka till nästa fönster"
         }
 
-    private boolean checkCode(){
-
-        if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
-            code = first.toString() + second.toString() + third.toString() + fourth.toString() + fifth.toString() + sixth.toString();
-            authenticator.verify(code);
-               if(authenticator.status()== Authenticator.VerificationStatus.COMPLETED) {
-                    return true;
-               }
-               return true;
+    private void checkCode() {
+        code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
+        authenticator.verify(code);
+        if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
+            // skicka vidare till ny aktivitet
         }
-        return false;
+        else{
+            makeRed();
+        }
+    }
+
+    private void makeRed(){
+
     }
 
 
@@ -54,6 +54,9 @@ public class VerificationView extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
                 if (s.length() ==1 ) {
+                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                        checkCode();
+                    }
                     second.requestFocus();
                 }
 
@@ -73,6 +76,9 @@ public class VerificationView extends AppCompatActivity {
         second.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 if (s.length() == 1) {
+                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                        checkCode();
+                    }
                     third.requestFocus();
                 }
 
@@ -91,6 +97,9 @@ public class VerificationView extends AppCompatActivity {
         third.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 if (s.length() == 1) {
+                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                        checkCode();
+                    }
                     fourth.requestFocus();
                 }
             }
@@ -107,6 +116,9 @@ public class VerificationView extends AppCompatActivity {
          fourth.addTextChangedListener(new TextWatcher() {
              public void afterTextChanged(Editable s) {
                  if (s.length() == 1) {
+                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                         checkCode();
+                     }
                      fifth.requestFocus();
                  }
              }
@@ -126,9 +138,31 @@ public class VerificationView extends AppCompatActivity {
         fifth.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 if (s.length() == 1) {
+                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                        checkCode();
+                    }
                     sixth.requestFocus();
                 }
             }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+            }
+
+
+        });
+
+        sixth.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                    checkCode();
+                }
+
+                }
 
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
