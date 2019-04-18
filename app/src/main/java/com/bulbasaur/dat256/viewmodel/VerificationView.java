@@ -1,5 +1,6 @@
 package com.bulbasaur.dat256.viewmodel;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +37,8 @@ public class VerificationView extends AppCompatActivity {
         code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
         authenticator.verify(code);
         if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
-            // skicka vidare till ny aktivitet
+            setResult(Activity.RESULT_OK, new Intent());
+            finish();
         }
         else{
             makeRed();
