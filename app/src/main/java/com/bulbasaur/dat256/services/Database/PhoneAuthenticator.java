@@ -8,7 +8,6 @@ import com.google.firebase.auth.*;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthenticator implements Authenticator {
-
     private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
