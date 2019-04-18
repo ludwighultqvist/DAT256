@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  * sent by sms to a phone number and verified as such
  */
 public class PhoneAuthenticator implements Authenticator {
-
     private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
