@@ -1,6 +1,7 @@
 package com.bulbasaur.dat256.services.Database;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
@@ -18,6 +19,8 @@ import java.util.concurrent.TimeUnit;
  * sent by sms to a phone number and verified as such
  */
 public class PhoneAuthenticator implements Authenticator {
+    private static Authenticator activeAuthenticator;
+
     private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
@@ -26,12 +29,20 @@ public class PhoneAuthenticator implements Authenticator {
     private Activity activity;
     private VerificationStatus status;
 
+    public static Authenticator startAuthenticator(Activity activity) {
+        activeAuthenticator = new PhoneAuthenticator(activity);
+        return activeAuthenticator;
+    }
+
+    public static Authenticator activeAuthenticator() {
+        return activeAuthenticator;
+    }
     /**
      * creates a new PhoneAuthenticator object, which sets up the phone authentication to the
      * Firebase database.
      * @param activity an activity required by the Firebase phone authentication, cannot be null
      */
-    public PhoneAuthenticator(Activity activity) {
+     PhoneAuthenticator(Activity activity) {
         this.activity = activity;
         auth = FirebaseAuth.getInstance();
 
@@ -39,24 +50,33 @@ public class PhoneAuthenticator implements Authenticator {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 // automatically log in
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+                Log.d("AUTH", "Automatic verification in progress");
+                String code = phoneAuthCredential.getSmsCode();
+
+                if (code != null) {
+                    verify(code);
+                }
+                //signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
+                Log.d("AUTH", "Verification failed");
                 status = VerificationStatus.FAILED;
             }
 
             @Override
             public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
-
+                Log.d("AUTH", "Manual verification required");
                 // manually log in
                 verificationId = s;
                 token = forceResendingToken;
                 status = VerificationStatus.SENT;
             }
         };
+
+        activeAuthenticator = this;
     }
 
     /**
@@ -65,6 +85,7 @@ public class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void sendVerificationCode(String recipient) {
+        Log.d("AUTH", "Sending verification code to: " + recipient);
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 recipient,
                 60,
@@ -72,6 +93,7 @@ public class PhoneAuthenticator implements Authenticator {
                 TaskExecutors.MAIN_THREAD,
                 callbacks
         );
+        Log.d("AUTH", "Verification code sent to: " + recipient);
         status = VerificationStatus.WAITING;
     }
 
@@ -81,6 +103,7 @@ public class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void verify(String verificationCode) {
+        Log.d("AUTH", "Verifying code: " + verificationCode);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
         signInWithPhoneAuthCredential(credential);
     }
@@ -102,10 +125,12 @@ public class PhoneAuthenticator implements Authenticator {
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
             if (task.isSuccessful()) {
+                Log.d("AUTH", "Verification completed.");
                 FirebaseUser user = task.getResult().getUser();
                 status = VerificationStatus.COMPLETED;
             }
             else {
+                Log.d("AUTH", "Verification failed.");
                 status = VerificationStatus.FAILED;
             }
         });
