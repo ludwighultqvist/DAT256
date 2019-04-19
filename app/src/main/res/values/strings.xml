@@ -41,4 +41,5 @@
     <string name="meetapp">MeetApp</string>
     <string name="connect_bitmoji">Connect Bitmoji</string>
     <string name="title_activity_connect_snap">Sign in</string>
+    <string name="already_a_user_log_in_here">Already a user? Log in here!</string>
 </resources>

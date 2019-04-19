@@ -41,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         EditTextWithError lastNameEditText = findViewById(R.id.lastNameEditText);
         EditTextWithError phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         createAccountButton = findViewById(R.id.createAccountButton);
+        Button goToLoginViewButton = findViewById(R.id.goToLoginViewButton);
 
         //Updates the selected country code to the correct value
         phoneNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -111,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
+        //Set what happens when "Create Account" is pressed: send verification code & go to verification view
         createAccountButton.setOnClickListener(v -> {
             String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
 
@@ -118,6 +120,12 @@ public class RegisterActivity extends AppCompatActivity {
             PhoneAuthenticator.startAuthenticator(this).sendVerificationCode(phoneNumber);;
 
             startActivity(new Intent(this, VerificationView.class));
+        });
+
+        //If the user already has an account, they can go to the log-in view
+        goToLoginViewButton.setOnClickListener(v -> {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
         });
     }
 
