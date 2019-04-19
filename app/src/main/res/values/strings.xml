@@ -46,4 +46,5 @@
     <string name="very_fun_party_bring_your_friends">Very fun party - bring your friends</string>
     <string name="choose_location">Choose Location...</string>
     <string name="title_activity_location_picker">Pick a location for your MeetUp...</string>
+    <string name="create_account_log_in">Create account/log in</string>
 </resources>
