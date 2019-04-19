@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
+import com.bulbasaur.dat256.services.Database.Authenticator;
 import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
 
 import java.util.Objects;
@@ -115,8 +116,8 @@ public class RegisterActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(v -> {
             String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
 
-            PhoneAuthenticator authenticator = new PhoneAuthenticator(this);
-            authenticator.sendVerificationCode(phoneNumber);
+
+            PhoneAuthenticator.startAuthenticator(this).sendVerificationCode(phoneNumber);;
 
             startActivity(new Intent(this, VerificationView.class));
         });

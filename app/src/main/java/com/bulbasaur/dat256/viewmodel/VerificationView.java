@@ -29,7 +29,8 @@ public class VerificationView extends AppCompatActivity {
         fourth = (EditText)findViewById(R.id.FourthNumber);
         fifth = (EditText)findViewById(R.id.FifthNumber);
         sixth = (EditText)findViewById(R.id.SixthNumber);
-        authenticator= new PhoneAuthenticator(this);
+
+        authenticator = PhoneAuthenticator.activeAuthenticator();
         init();
         }
 
