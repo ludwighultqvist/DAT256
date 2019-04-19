@@ -42,4 +42,8 @@
     <string name="connect_bitmoji">Connect Bitmoji</string>
     <string name="title_activity_connect_snap">Sign in</string>
     <string name="already_a_user_log_in_here">Already a user? Log in here!</string>
+    <string name="party_at_hassan_s_place">Party at Hassan\'s place</string>
+    <string name="very_fun_party_bring_your_friends">Very fun party - bring your friends</string>
+    <string name="choose_location">Choose Location...</string>
+    <string name="title_activity_location_picker">Pick a location for your MeetUp...</string>
 </resources>

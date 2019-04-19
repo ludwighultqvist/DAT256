@@ -1,14 +1,14 @@
 package com.bulbasaur.dat256.viewmodel;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.SearchView;
-
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.MeetUp;
@@ -17,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
@@ -54,7 +53,12 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         Objects.requireNonNull(mapFragment).getMapAsync(this);
 
-        fakeMeetUp = new MeetUp();
+        FloatingActionButton addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(view -> {
+            startActivity(new Intent(this, CreateMeetUpActivity.class));
+        });
+
+        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!");
     }
 
     @Override
@@ -74,13 +78,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.googleMap.addMarker(new MarkerOptions().position(fakeMeetUpCoordinates).title(fakeMeetUp.getName()));
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(fakeMeetUpCoordinates));
 
-        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                onMeetUpMarkerClick();
+        this.googleMap.setOnMarkerClickListener(marker -> {
+            onMeetUpMarkerClick();
 
-                return true;
-            }
+            return true;
         });
     }
 

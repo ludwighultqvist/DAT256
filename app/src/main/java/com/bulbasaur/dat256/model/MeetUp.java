@@ -6,21 +6,30 @@ public class MeetUp implements Serializable {
 
     private long id;
 
-    private String name;
+    private String name, description;
 
-    private double lon, lat;
-
-    private String description;
+    private Coordinates coords;
 
     public MeetUp() {
-        this(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!");
+        this.coords = new Coordinates();
+    }
+
+    public MeetUp(long id, String name, Coordinates coordinates, String description) {
+        this.id = id;
+        this.name = name;
+        this.coords = coordinates;
+        this.description = description;
     }
 
     public MeetUp(long id, String name, double latitude, double longitude, String description) {
         this.id = id;
         this.name = name;
-        this.lat = latitude;
-        this.lon = longitude;
+        this.coords = new Coordinates();
+        this.coords.lat = latitude;
+        this.coords.lon = longitude;
+
+        System.out.println(this.coords.lat);
+        System.out.println(this.coords.lon);
         this.description = description;
     }
 
@@ -29,14 +38,18 @@ public class MeetUp implements Serializable {
     }
 
     public double getLongitude() {
-        return lon;
+        return coords.lon;
     }
 
     public double getLatitude() {
-        return lat;
+        return coords.lat;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public Coordinates getCoordinates() {
+        return coords;
     }
 }
