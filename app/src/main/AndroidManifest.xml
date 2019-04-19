@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".viewmodel.LoginActivity" />
 
         <meta-data android:name="com.snapchat.kit.sdk.clientId" android:value="9f2af23f-9628-4d21-bb38-94d38798ca9f" />
         <meta-data android:name="com.snapchat.kit.sdk.redirectUrl" android:value="https://google.com" />
@@ -28,18 +29,15 @@
         <activity android:name=".viewmodel.ConnectSnapchatActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="the scheme of your redirect url"
                     android:host="https://google.com"
-                    />
+                    android:scheme="the scheme of your redirect url" />
             </intent-filter>
-
-
         </activity>
-
         <activity
             android:name=".viewmodel.MenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -51,7 +49,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".viewmodel.MeetUpActivity" />
         <!--
@@ -70,15 +67,15 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
+            android:name=".viewmodel.VerificationView"
+            android:label="VerificationView"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".viewmodel.RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
-        <activity
-            android:name=".viewmodel.MapActivity">
-        </activity>
-
+        <activity android:name=".viewmodel.MapActivity" />
     </application>
 
 </manifest>
