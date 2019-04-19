@@ -44,8 +44,15 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".viewmodel.MapActivity" />
+                tools:context=".viewmodel.MenuActivity" />
         </FrameLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 
