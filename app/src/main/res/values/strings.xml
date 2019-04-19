@@ -47,4 +47,7 @@
     <string name="choose_location">Choose Location...</string>
     <string name="title_activity_location_picker">Pick a location for your MeetUp...</string>
     <string name="create_account_log_in">Create account/log in</string>
+    <string name="pick_this_location">Pick this location</string>
+    <string name="coordinates">Coordinates: %1$s %2$s</string>
+    <string name="center_of_map">center of map</string>
 </resources>
