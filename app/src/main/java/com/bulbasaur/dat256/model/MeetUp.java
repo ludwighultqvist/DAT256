@@ -52,4 +52,8 @@ public class MeetUp implements Serializable {
     public Coordinates getCoordinates() {
         return coords;
     }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coords = coordinates;
+    }
 }

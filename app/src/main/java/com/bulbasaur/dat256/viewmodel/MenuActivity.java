@@ -75,7 +75,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
         Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         FloatingActionButton addButton = findViewById(R.id.addButton);
