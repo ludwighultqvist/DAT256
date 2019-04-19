@@ -21,10 +21,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="50dp"
-        android:text="@string/create_account"
+        android:layout_marginBottom="140dp"
         android:enabled="false"
+        android:text="@string/create_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,5 +124,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/phoneNumberSpinner"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
+
+    <Button
+        android:id="@+id/goToLoginViewButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/already_a_user_log_in_here"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createAccountButton" />
 
 </android.support.constraint.ConstraintLayout>

@@ -27,12 +27,9 @@ public class MeetUpActivity extends AppCompatActivity {
         descriptionView.setText(meetUp.getDescription());
 
         Button showOnMap = findViewById(R.id.show_in_map_button);
-        showOnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(Activity.RESULT_OK, new Intent());
-                finish();
-            }
+        showOnMap.setOnClickListener(v -> {
+            setResult(Activity.RESULT_OK);
+            finish();
         });
     }
 }
