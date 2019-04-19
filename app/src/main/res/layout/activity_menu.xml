@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/mainColor"
+            app:backgroundTint="@color/mainColor"
             android:src="@drawable/ic_add_black_24dp" />
 
     </android.support.design.widget.CoordinatorLayout>
