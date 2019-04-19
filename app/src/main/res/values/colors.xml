@@ -10,4 +10,7 @@
     <color name="charcoalGrey">#444444</color>
     <color name="silver">#C0C0C0</color>
     <color name="red">#FF0000</color>
+    <color name="mainColor">#FF553388</color>
+    <color name="mainTranslucentColor">#5315</color>
+    <color name="darkTranslucentColor">#6315</color>
 </resources>
