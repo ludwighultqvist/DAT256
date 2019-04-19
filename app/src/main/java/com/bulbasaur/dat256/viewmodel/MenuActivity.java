@@ -2,12 +2,15 @@ package com.bulbasaur.dat256.viewmodel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.SearchView;
 
 import com.bulbasaur.dat256.R;
@@ -50,13 +53,33 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navView = findViewById(R.id.nav_view);
+        navView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.nav_profile:
+                    break;
+                case R.id.nav_qr:
+                    break;
+                case R.id.nav_settings:
+                    break;
+                case R.id.nav_connect_bitmoji:
+                    break;
+                case R.id.nav_login_logout:
+                    startActivity(new Intent(this, RegisterActivity.class));
+                    break;
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+            return true;
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         FloatingActionButton addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(view -> {
-            startActivity(new Intent(this, CreateMeetUpActivity.class));
-        });
+        addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
 
         fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!");
     }
