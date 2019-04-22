@@ -6,6 +6,8 @@ public interface DBCollection {
 
     DBDocument create();
 
+    DBDocument create(String id);
+
     DBDocument get(String id);
 
     List<? extends DBDocument> all();

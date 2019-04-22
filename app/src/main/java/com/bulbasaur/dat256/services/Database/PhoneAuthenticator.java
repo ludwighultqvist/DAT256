@@ -98,7 +98,7 @@ public class PhoneAuthenticator implements Authenticator {
     }
 
     /**
-     * verified the given code
+     * verifies the given code
      * @param verificationCode the string containing the code to be validated
      */
     @Override
@@ -126,7 +126,6 @@ public class PhoneAuthenticator implements Authenticator {
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
             if (task.isSuccessful()) {
                 Log.d("AUTH", "Verification completed.");
-                FirebaseUser user = task.getResult().getUser();
                 status = VerificationStatus.COMPLETED;
             }
             else {

@@ -13,4 +13,6 @@ public interface DBDocument {
     DBCollection subCollection(String name);
 
     void delete();
+
+    boolean isEmpty();
 }

@@ -13,7 +13,7 @@ class Collection implements DBCollection {
     private CollectionReference collection;
 
     Collection(String root) {
-        collection = FirebaseFirestore.getInstance().collection(root);
+        this(FirebaseFirestore.getInstance().collection(root));
     }
 
     Collection(CollectionReference collection) {
@@ -26,13 +26,26 @@ class Collection implements DBCollection {
     }
 
     @Override
+    public DBDocument create(String id) {
+        return new Document(collection.document(id));
+    }
+
+    @Override
     public DBDocument get(String id) {
-        Document result = null;
+        Document result = new Document();
 
         collection.document(id).get()
-                .addOnCompleteListener(task -> {})
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            result.init(snapshot.getReference());
+                        }
+                    }
+                })
                 .addOnFailureListener(e -> {});
-        return result;
+
+        return result.isEmpty() ? null : result;
     }
 
     @Override
