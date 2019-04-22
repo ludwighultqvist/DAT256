@@ -42,7 +42,7 @@ public class PhoneAuthenticator implements Authenticator {
      * Firebase database.
      * @param activity an activity required by the Firebase phone authentication, cannot be null
      */
-     PhoneAuthenticator(Activity activity) {
+     public PhoneAuthenticator(Activity activity) {
         this.activity = activity;
         auth = FirebaseAuth.getInstance();
 
