@@ -25,7 +25,6 @@ public class PhoneAuthenticator implements Authenticator {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
     private PhoneAuthProvider.ForceResendingToken token;
-
     private Activity activity;
     private VerificationStatus status;
 
