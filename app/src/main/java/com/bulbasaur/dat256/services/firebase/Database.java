@@ -94,15 +94,20 @@ public class Database {
         if (user == null) return null;
 
         DBDocument document = users().get(user.getUid());
-        return document == null ? users().create(user.getUid()) : document;
+        if (document == null) {
+            document = users().create(user.getUid());
+            document.save();
+        }
+
+        return document;
     }
 
     public static void testIt() {
         Database database = Database.getInstance();
 
         // create a user with given ID
-        DBDocument user = database.users().create("uid");
-        user.set("name", "Test-User");
+        DBDocument user = database.user();
+        user.set("name", "Test Testson");
         user.save();
 
         // create a group with random ID
@@ -114,7 +119,5 @@ public class Database {
         DBDocument meetup = database.meetups().create();
         meetup.set("name", "Test-Meetup");
         meetup.save();
-
-
     }
 }

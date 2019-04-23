@@ -4,6 +4,10 @@ import android.util.Log;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,6 +96,7 @@ class Document implements DBDocument {
      */
     @Override
     public void save() {
+        set("last-save", DateFormat.getDateInstance().format(new Date()));
         document.set(data, SetOptions.merge())
                 .addOnCompleteListener(task -> {
                     Log.d("DOCUMENT", "saving");
