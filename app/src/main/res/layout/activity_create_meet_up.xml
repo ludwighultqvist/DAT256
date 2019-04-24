@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewmodel.CreateMeetUpActivity">
+    tools:context=".viewmodel.CreateMeetUpActivity"
+    android:id="@+id/createMeetUpConstraintLayout">
 
     <EditText
         android:id="@+id/nameEditText"
@@ -131,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/start_date"
+        android:text="@string/end_date"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/maxAttendeesTextView"
         app:layout_constraintTop_toTopOf="@+id/endDateEditText" />
