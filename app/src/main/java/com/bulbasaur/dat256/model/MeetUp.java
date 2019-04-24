@@ -27,6 +27,8 @@ public class MeetUp implements Serializable {
 
     private long id;
 
+    //owner - either person or group?
+
     private String name, description;
 
     private Coordinates coords;
@@ -86,7 +88,64 @@ public class MeetUp implements Serializable {
         return coords;
     }
 
+    public Categories getCategory(){
+        return category;
+    }
+
+    public Calendar getStart() {
+        return start;
+    }
+
+    public Calendar getEnd() {
+        return end;
+    }
+
+    public int getMaxAttendees(){
+        return maxAttendees;
+    }
+
     public void setCoordinates(Coordinates coordinates) {
         this.coords = coordinates;
+    }
+
+    public Categories getCategoryFromString(String s){
+        switch (s){
+            case "Sports":
+                return Categories.SPORTS;
+            case "Food":
+                return  Categories.FOOD;
+            case "Games":
+                return  Categories.GAMES;
+            case "Party":
+                return Categories.PARTY;
+            case "Education":
+                return  Categories.EDUCATION;
+
+        }
+        return null;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setMaxAttendees(int maxAttendees) {
+        this.maxAttendees = maxAttendees;
+    }
+
+    public void setStart(Calendar start) {
+        this.start = start;
+    }
+
+    public void setEnd(Calendar end) {
+        this.end = end;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
     }
 }
