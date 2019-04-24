@@ -1,4 +1,4 @@
-package com.bulbasaur.dat256.viewmodel;
+package com.bulbasaur.dat256.viewmodel.uielements;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -20,7 +20,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<Country> {
 
     private Context context;
 
-    CountrySpinnerAdapter(@NonNull Context context) {
+    public CountrySpinnerAdapter(@NonNull Context context) {
         super(context, R.layout.phone_number_spinner_item);
         this.context = context;
     }

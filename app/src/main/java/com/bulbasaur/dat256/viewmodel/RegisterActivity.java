@@ -13,8 +13,9 @@ import android.widget.Spinner;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
-import com.bulbasaur.dat256.services.Database.Authenticator;
 import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
+import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
+import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String selectedCountryCode;
 
+    static final int VERIFIED_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
 
         //Sets up the validation code for the first name text field
         firstNameEditText.addTextChangedListener(new TextWatcher() {
@@ -116,15 +117,15 @@ public class RegisterActivity extends AppCompatActivity {
         createAccountButton.setOnClickListener(v -> {
             String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
 
-
             PhoneAuthenticator.startAuthenticator(this).sendVerificationCode(phoneNumber);;
 
-            startActivity(new Intent(this, VerificationView.class));
+            startActivityForResult(new Intent(this, VerificationView.class), VERIFIED_CODE);
         });
 
         //If the user already has an account, they can go to the log-in view
         goToLoginViewButton.setOnClickListener(v -> {
             finish();
+
             startActivity(new Intent(this, LoginActivity.class));
         });
     }
@@ -134,6 +135,16 @@ public class RegisterActivity extends AppCompatActivity {
             createAccountButton.setEnabled(true);
         } else {
             createAccountButton.setEnabled(false);
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == VERIFIED_CODE) {
+            if (resultCode == RESULT_OK) {
+                finish();
+
+                //TODO verification was successful - log the user in
+            }
         }
     }
 }
