@@ -1,8 +1,5 @@
 package com.bulbasaur.dat256.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Validator {
 
     public static boolean detectSpecialChar(String string) {

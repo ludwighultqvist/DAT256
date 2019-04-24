@@ -65,4 +65,5 @@
         <item>Education</item>
     </string-array>
     <string name="create_meetup_done">Create meet up</string>
+    <string name="end_date">End date</string>
 </resources>
