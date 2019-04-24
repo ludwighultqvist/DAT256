@@ -56,5 +56,13 @@
     <string name="max_attendees">Max attendees:</string>
     <string name="max_attendees_hint">Unlimited number of attendees</string>
     <string name="start_date">Start date:</string>
-
+    <string name="category">Category:</string>
+    <string-array name="category_array">
+        <item>Sports</item>
+        <item>Food</item>
+        <item>Games</item>
+        <item>Party</item>
+        <item>Education</item>
+    </string-array>
+    <string name="create_meetup_done">Create meet up</string>
 </resources>

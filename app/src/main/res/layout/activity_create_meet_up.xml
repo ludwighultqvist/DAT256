@@ -117,12 +117,82 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="none"
+        android:layout_marginEnd="8dp"
         android:clickable="true"
+        android:ems="10"
         android:focusable="false"
+        android:inputType="none"
+        app:layout_constraintEnd_toEndOf="@+id/maxAttendeesEditText"
         app:layout_constraintStart_toEndOf="@+id/startDateEditText"
         app:layout_constraintTop_toBottomOf="@+id/maxAttendeesEditText" />
+
+    <TextView
+        android:id="@+id/endDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/start_date"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/maxAttendeesTextView"
+        app:layout_constraintTop_toTopOf="@+id/endDateEditText" />
+
+    <EditText
+        android:id="@+id/endDateEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="none"
+        android:longClickable="false"
+        app:layout_constraintStart_toEndOf="@+id/endDateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/startDateEditText" />
+
+    <EditText
+        android:id="@+id/endTimeEditText"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="none"
+        app:layout_constraintEnd_toEndOf="@+id/maxAttendeesEditText"
+        app:layout_constraintStart_toEndOf="@+id/endDateEditText"
+        app:layout_constraintTop_toBottomOf="@+id/startTimeEditText" />
+
+    <TextView
+        android:id="@+id/categoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/category"
+        app:layout_constraintStart_toStartOf="@+id/endDateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/endDateEditText" />
+
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/maxAttendeesEditText"
+        app:layout_constraintStart_toStartOf="@+id/endDateEditText"
+        app:layout_constraintTop_toBottomOf="@+id/endDateEditText" />
+
+    <Button
+        android:id="@+id/createMeetUpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/create_meetup_done"
+        app:layout_constraintEnd_toEndOf="@+id/maxAttendeesEditText"
+        app:layout_constraintStart_toStartOf="@+id/categoryTextView"
+        app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
 
 
 </android.support.constraint.ConstraintLayout>

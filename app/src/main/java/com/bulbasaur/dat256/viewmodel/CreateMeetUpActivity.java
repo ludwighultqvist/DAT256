@@ -6,11 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
@@ -25,11 +29,13 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 
-public class CreateMeetUpActivity extends AppCompatActivity {
+public class CreateMeetUpActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private MeetUp meetUp;
-
     private TextView chosenLocationTextView;
+    private EditText startDate;
+    private EditText startTime;
+    private String meetUpCategory;
 
     private static final int PICKED_COORDINATES_CODE = 2;
 
@@ -38,7 +44,15 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_meet_up);
 
+        EditText meetUpTitle = findViewById(R.id.nameEditText);
+
+        EditText meetUpDescription = findViewById(R.id.descriptionEditText);
+
         meetUp = new MeetUp();
+
+        /**
+         * location
+         */
 
         Button chooseLocationButton = findViewById(R.id.chooseLocationButton);
         chooseLocationButton.setOnClickListener(v -> {
@@ -48,12 +62,22 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         chosenLocationTextView = findViewById(R.id.chosenLocationTextView);
         chosenLocationTextView.setText(getString(R.string.coordinates, "", ""));
 
+        /**
+         * max attendees
+         */
+
+        EditText maxAttendees = findViewById(R.id.maxAttendeesEditText);
+
+
+
         final Calendar myCalendar = Calendar.getInstance();
 
-        EditText startDate = (EditText) findViewById(R.id.startDateEditText);
-        EditText startTime = (EditText)findViewById(R.id.startTimeEditText);
+        startDate = findViewById(R.id.startDateEditText);
+        startTime = findViewById(R.id.startTimeEditText);
 
-        //calendar
+        /**
+         * DatePickerDialog
+         */
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -67,25 +91,23 @@ public class CreateMeetUpActivity extends AppCompatActivity {
 
 
             private void updateLabel() {
-                String myFormat = "MM/dd/yy"; //In which you need put here
+                String myFormat = "dd/MM/yy"; //In which you need put here
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.GERMANY);
 
                 startDate.setText(sdf.format(myCalendar.getTime()));
             }
 
         };
-
-        startDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(CreateMeetUpActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
+        startDate.setOnClickListener(v -> {
+            // TODO Auto-generated method stub
+            DatePickerDialog dpd = new DatePickerDialog(CreateMeetUpActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH));
+            dpd.show();
         });
-        //end calendar
-        //time
+
+        /**
+         * TimePickerDialog
+         */
         TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -95,34 +117,64 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             }
 
             private void updateLabel(){
-                SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getTimeInstance();
+                String myFormat = "HH:mm";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.GERMANY);
                 startTime.setText(sdf.format(myCalendar.getTime()));
             }
         };
 
-        startTime.setOnClickListener(new View.OnClickListener(){
+        startTime.setOnClickListener(v -> new TimePickerDialog(CreateMeetUpActivity.this, time, myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE),
+                true ).show());
 
-            @Override
-            public void onClick(View v){
-                new TimePickerDialog(CreateMeetUpActivity.this, time, myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE),
-                        true ).show();
-            }
+
+        /**
+         * Spinner
+         */
+        Spinner spinner = findViewById(R.id.categorySpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.category_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        /**
+         * button
+         */
+
+        final Button button = findViewById(R.id.createMeetUpButton);
+        button.setOnClickListener(v -> {
+            String title = meetUpTitle.getText().toString();
+            String description = meetUpDescription.getText().toString();
+            String attendees = maxAttendees.getText().toString();
+
+            meetUp.setName(title);
+            meetUp.setDescription(description);
+            meetUp.setMaxAttendees(Integer.parseInt(attendees));
+            meetUp.setStart(myCalendar);
+            meetUp.setEnd(myCalendar);
+            meetUp.setCategory(meetUp.getCategoryFromString(meetUpCategory));
+
+            save(meetUp);
         });
-
-        //end time
 
     }
 
-    protected void save(){
+    protected void save(MeetUp meetUp){
+
+        //koden nedan är till för att spara själva meetupen på databasen
         Database db = Database.getInstance();
         DBDocument meetup = db.meetups().create();
-        //gör så för alla attribut för en meetup
+
+        //hur man får tag i ett id.
         db.meetups().get(meetup.id());
-        meetup.set("name",null);
-        meetup.set("description",null);
-        meetup.set("name",null);
-        meetup.set("name",null);
-        meetup.set("name",null);
+
+        //gör så för alla attribut för en meetup
+        meetup.set("name", meetUp.getName());
+        meetup.set("description", meetUp.getDescription());
+        meetup.set("coordinates", meetUp.getCoordinates());
+        meetup.set("maxAttendees", meetUp.getMaxAttendees());
+        meetup.set("startDate", meetUp.getStart());
+        meetup.set("endDate", meetUp.getEnd());
+        meetup.set("category", meetUp.getCategory());
 
         meetup.save();
 
@@ -142,5 +194,16 @@ public class CreateMeetUpActivity extends AppCompatActivity {
                                 Coordinates.convertToNSEW(false, meetUp.getCoordinates().lon, (char) 2)));
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // An item was selected. You can retrieve the selected item using
+        meetUpCategory = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 }
