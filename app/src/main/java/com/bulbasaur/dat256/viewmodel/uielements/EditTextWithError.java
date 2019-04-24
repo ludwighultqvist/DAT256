@@ -1,4 +1,4 @@
-package com.bulbasaur.dat256.viewmodel;
+package com.bulbasaur.dat256.viewmodel.uielements;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;

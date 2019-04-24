@@ -74,7 +74,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
 
-    <com.bulbasaur.dat256.viewmodel.EditTextWithError
+    <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
         android:id="@+id/firstNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstNameTextView" />
 
-    <com.bulbasaur.dat256.viewmodel.EditTextWithError
+    <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
         android:id="@+id/lastNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lastNameTextView" />
 
-    <com.bulbasaur.dat256.viewmodel.EditTextWithError
+    <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
         android:id="@+id/phoneNumberEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
