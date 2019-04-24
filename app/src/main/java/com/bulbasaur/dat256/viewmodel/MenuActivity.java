@@ -47,6 +47,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         searchView = findViewById(R.id.search_bar);
         searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint("Search for users or meet ups");
 
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -64,6 +65,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_settings:
                     break;
                 case R.id.nav_connect_bitmoji:
+                    startActivity(new Intent(this, ConnectSnapchatActivity.class));
                     break;
                 case R.id.nav_login_logout:
                     startActivity(new Intent(this, RegisterActivity.class));
@@ -81,7 +83,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
 
-        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!");
+        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", null, 0, null, null);
     }
 
     @Override

@@ -59,7 +59,70 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
         android:text="@string/coordinates"
+        android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/chooseLocationButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionEditText" />
+
+    <TextView
+        android:id="@+id/maxAttendeesTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/max_attendees"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/chosenLocationTextView"
+        app:layout_constraintTop_toBottomOf="@+id/chooseLocationButton" />
+
+    <EditText
+        android:id="@+id/maxAttendeesEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/max_attendees_hint"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/maxAttendeesTextView"
+        app:layout_constraintTop_toBottomOf="@+id/chooseLocationButton" />
+
+    <TextView
+        android:id="@+id/startDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/start_date"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/maxAttendeesTextView"
+        app:layout_constraintTop_toBottomOf="@+id/maxAttendeesEditText" />
+
+    <EditText
+        android:id="@+id/startDateEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="none"
+        android:longClickable="false"
+        app:layout_constraintStart_toEndOf="@+id/startDateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/maxAttendeesEditText" />
+
+    <EditText
+        android:id="@+id/startTimeEditText"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:inputType="none"
+        android:clickable="true"
+        android:focusable="false"
+        app:layout_constraintStart_toEndOf="@+id/startDateEditText"
+        app:layout_constraintTop_toBottomOf="@+id/maxAttendeesEditText" />
+
+
 </android.support.constraint.ConstraintLayout>
