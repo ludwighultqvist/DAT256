@@ -11,6 +11,12 @@
     <color name="silver">#C0C0C0</color>
     <color name="red">#FF0000</color>
     <color name="mainColor">#FF553388</color>
-    <color name="mainTranslucentColor">#5315</color>
-    <color name="darkTranslucentColor">#6315</color>
+    <color name="mainTranslucentColor">#6315</color>
+    <color name="darkTranslucentColor">#7315</color>
+    <color name="sportsColor">#0099ff</color>
+    <color name="foodColor">#ff3300</color>
+    <color name="partyColor">#00e600</color>
+    <color name="eduColor">#ffcc66</color>
+    <color name="gamesColor">#ff6600</color>
+
 </resources>
