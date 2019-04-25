@@ -14,6 +14,8 @@ import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
+import com.bulbasaur.dat256.services.firebase.DBDocument;
+import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
@@ -29,6 +31,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     static final int VERIFIED_CODE = 10;
 
+    EditTextWithError firstNameEditText;
+    EditTextWithError lastNameEditText;
+    EditTextWithError phoneNumberEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +45,9 @@ public class RegisterActivity extends AppCompatActivity {
         CountrySpinnerAdapter countrySpinnerAdapter = new CountrySpinnerAdapter(this);
         phoneNumberSpinner.setAdapter(countrySpinnerAdapter);
 
-        EditTextWithError firstNameEditText = findViewById(R.id.firstNameEditText);
-        EditTextWithError lastNameEditText = findViewById(R.id.lastNameEditText);
-        EditTextWithError phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
+        firstNameEditText = findViewById(R.id.firstNameEditText);
+        lastNameEditText = findViewById(R.id.lastNameEditText);
+        phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         createAccountButton = findViewById(R.id.createAccountButton);
         Button goToLoginViewButton = findViewById(R.id.goToLoginViewButton);
 
@@ -142,8 +148,13 @@ public class RegisterActivity extends AppCompatActivity {
         if (requestCode == VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-
-                //TODO verification was successful - log the user in
+                DBDocument document = Database.getInstance().user();
+                if (document != null) {
+                    document.set("firstname", firstNameEditText.getText());
+                    document.set("lastname", lastNameEditText.getText());
+                    document.set("phone", selectedCountryCode + phoneNumberEditText.getText());
+                    document.save();
+                }
             }
         }
     }
