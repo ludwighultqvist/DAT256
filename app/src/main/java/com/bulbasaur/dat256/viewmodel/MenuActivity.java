@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.bulbasaur.dat256.R;
@@ -17,7 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
@@ -81,7 +84,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
 
-        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", null, 0, null, null);
+        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", MeetUp.Categories.PARTY, 0, null, null);
     }
 
     @Override
@@ -98,14 +101,21 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.googleMap = googleMap;
 
         fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
-        this.googleMap.addMarker(new MarkerOptions().position(fakeMeetUpCoordinates).title(fakeMeetUp.getName()));
+        this.googleMap.addMarker(new MarkerOptions().position(fakeMeetUpCoordinates).title(fakeMeetUp.getName()).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f));
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(fakeMeetUpCoordinates));
 
-        this.googleMap.setOnMarkerClickListener(marker -> {
-            onMeetUpMarkerClick();
+        this.googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
 
-            return true;
+            @Override
+            public View getInfoContents(Marker marker) {
+                return null;
+            }
         });
+        this.googleMap.setOnInfoWindowClickListener(marker -> onMeetUpMarkerClick());
     }
 
     private void onMeetUpMarkerClick() {

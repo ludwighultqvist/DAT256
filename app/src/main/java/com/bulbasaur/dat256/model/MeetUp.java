@@ -1,26 +1,36 @@
 package com.bulbasaur.dat256.model;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+
 import com.bulbasaur.dat256.R;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class MeetUp implements Serializable {
 
-    private enum Categories{
-        SPORTS("Sports", R.color.sportsColor, R.drawable.sports_example),
-        FOOD("Food", R.color.foodColor, R.drawable.food_example),
-        EDUCATION("Education", R.color.eduColor, R.drawable.education_example),
-        PARTY("Party", R.color.partyColor, R.drawable.party_example),
-        GAMES("Games", R.color.gamesColor, R.drawable.games_example);
+    public enum Categories{
+        SPORTS("Sports", R.color.sportsColor, R.drawable.sports_example, R.drawable.map_icon_sports),
+        FOOD("Food", R.color.foodColor, R.drawable.food_example, R.drawable.map_icon_food),
+        EDUCATION("Education", R.color.eduColor, R.drawable.education_example, R.drawable.map_icon_education),
+        PARTY("Party", R.color.partyColor, R.drawable.party_example, R.drawable.map_icon_party),
+        GAMES("Games", R.color.gamesColor, R.drawable.games_example, R.drawable.map_icon_games);
 
-        private String categoty;
+        private String categoryName;
         private int color;
         private int pic;
-        private Categories(String category, int color, int pic){
-            this.categoty = category;
+        private int icon;
+        private Categories(String categoryName, int color, int pic, int icon){
+            this.categoryName = categoryName;
             this.color = color;
             this.pic = pic;
+            this.icon = icon;
         }
 
     }
@@ -58,9 +68,6 @@ public class MeetUp implements Serializable {
         this.coords = new Coordinates();
         this.coords.lat = latitude;
         this.coords.lon = longitude;
-
-        System.out.println(this.coords.lat);
-        System.out.println(this.coords.lon);
         this.description = description;
         this.category = category;
         this.maxAttendees = maxAttendees;
@@ -147,5 +154,31 @@ public class MeetUp implements Serializable {
 
     public void setCategory(Categories category) {
         this.category = category;
+    }
+
+    public int getIconDrawable() {
+        return category.icon;
+    }
+
+    public Bitmap getIconBitmap(Context context) {
+        return getBitmapFromVectorDrawable(context, category.icon, category.color);
+    }
+
+    /**
+     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
+     * @param context the bitmap's context
+     * @param drawableId the id of the vector resource
+     * @return a bitmap image of the vector resource
+     */
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
+        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }
