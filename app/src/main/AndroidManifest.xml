@@ -48,7 +48,7 @@
             android:value="9f2af23f-9628-4d21-bb38-94d38798ca9f" />
         <meta-data
             android:name="com.snapchat.kit.sdk.redirectUrl"
-            android:value="https://google.com" />
+            android:value="connect://meet_app" />
         <meta-data
             android:name="com.snapchat.kit.sdk.scopes"
             android:resource="@array/snap_kit_scopes" /> <!-- This should be a string array of scopes ! -->
@@ -60,8 +60,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="https://google.com"
-                    android:scheme="the scheme of your redirect url" />
+                    android:host="meet_app"
+                    android:scheme="connect" />
             </intent-filter>
         </activity>
         <activity
