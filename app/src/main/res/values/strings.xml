@@ -66,4 +66,5 @@
     </string-array>
     <string name="create_meetup_done">Create meet up</string>
     <string name="end_date">End date</string>
+    <string name="enter_the_verification_code_that_you_should_have_received_via_sms_below">Enter the verification code that you should have received via SMS below:</string>
 </resources>

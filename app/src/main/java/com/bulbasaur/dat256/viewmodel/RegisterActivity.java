@@ -28,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String selectedCountryCode;
 
-    static final int VERIFIED_CODE = 10;
+    static final int REGISTER_VERIFIED_CODE = 10;
 
     EditTextWithError firstNameEditText;
     EditTextWithError lastNameEditText;
@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             Database.getInstance().phoneAuthenticator(this).sendVerificationCode(phoneNumber);;
 
-            startActivityForResult(new Intent(this, VerificationView.class), VERIFIED_CODE);
+            startActivityForResult(new Intent(this, VerificationView.class), REGISTER_VERIFIED_CODE);
         });
 
         //If the user already has an account, they can go to the log-in view
@@ -144,7 +144,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VERIFIED_CODE) {
+        if (requestCode == REGISTER_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
                 DBDocument document = Database.getInstance().user();

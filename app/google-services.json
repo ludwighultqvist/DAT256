@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "481926620914-tpm8e4611f6jni8tmd9gj80ngu5ptefh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.bulbasaur.dat256",
-            "certificate_hash": "f721b20cd1ce2b184cdc6d9a895a3baa1f1455ef"
-          }
-        },
-        {
           "client_id": "481926620914-1mhmikbcutb8q8un58o5sk0pt37ld9to.apps.googleusercontent.com",
           "client_type": 3
         }
