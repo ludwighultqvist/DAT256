@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button verify;
     private String selectedCountryCode;
 
-    static final int VERIFIED_CODE = 10;
+    static final int LOGIN_VERIFIED_CODE = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
             PhoneAuthenticator.startAuthenticator(this).sendVerificationCode(phoneNumber);;
 
-            startActivityForResult(new Intent(this, VerificationView.class), VERIFIED_CODE);
+            startActivityForResult(new Intent(this, VerificationView.class), LOGIN_VERIFIED_CODE);
         });
 
         phoneNumberEditText.addTextChangedListener(new TextWatcher() {
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VERIFIED_CODE) {
+        if (requestCode == LOGIN_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
 
