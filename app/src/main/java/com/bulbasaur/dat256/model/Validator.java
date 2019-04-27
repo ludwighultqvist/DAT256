@@ -37,7 +37,7 @@ public class Validator {
 
     public static User createUser(String firstName, String lastName, String phoneNumber, Country country){
 
-        // ta bort nolla
+        // ta bort  eventuell nolla
         // kolla antal siffror
         // lägga till country code
         // kolla om namnet är rätt

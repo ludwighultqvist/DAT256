@@ -28,7 +28,7 @@ public class ConnectSnapchatActivity extends AppCompatActivity {
                     @Override
                     public void onLoginSucceeded() {
                         System.out.println("Login successfull");
-                        //TODO Give User Access to bitmoji
+                        //TODO Give User Access to bitmoji, message that login successful and change view to map.
                     }
 
                     @Override
@@ -53,6 +53,7 @@ public class ConnectSnapchatActivity extends AppCompatActivity {
         testButton = findViewById(R.id.connectButton);;
 
         testButton.setOnClickListener(v -> {
+            //TODO Om användaren ej är inloggad, tillåt ej knapptryck
             SnapLogin.getAuthTokenManager(this).startTokenGrant(); //Bör öppna Snapchat/Hemsidan för att logga in
         });
         /*
