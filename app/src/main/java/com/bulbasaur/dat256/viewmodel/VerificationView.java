@@ -54,12 +54,7 @@ public class VerificationView extends AppCompatActivity {
 
             public void afterTextChanged(Editable s) {
 
-                if (s.length() ==1 ) {
-                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
-                        checkCode();
-                    }
-                    second.requestFocus();
-                }
+
 
 
             }
@@ -70,12 +65,30 @@ public class VerificationView extends AppCompatActivity {
 
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+                if (s.length() ==1 ) {
+                    if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                        checkCode();
+                    }
+                    second.requestFocus();
+                }
             }
         });
 
 
         second.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
+
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
                 if (s.length() == 1) {
                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
                         checkCode();
@@ -84,19 +97,19 @@ public class VerificationView extends AppCompatActivity {
                 }
 
             }
+        });
+        third.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+            }
 
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-
             }
 
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
 
-            }
-        });
-        third.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
                 if (s.length() == 1) {
                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
                         checkCode();
@@ -105,23 +118,10 @@ public class VerificationView extends AppCompatActivity {
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
-
         });
          fourth.addTextChangedListener(new TextWatcher() {
              public void afterTextChanged(Editable s) {
-                 if (s.length() == 1) {
-                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
-                         checkCode();
-                     }
-                     fifth.requestFocus();
-                 }
+
              }
 
              public void beforeTextChanged(CharSequence s, int start, int count,
@@ -131,6 +131,12 @@ public class VerificationView extends AppCompatActivity {
 
              public void onTextChanged(CharSequence s, int start, int before,
                                        int count) {
+                 if (s.length() == 1) {
+                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                         checkCode();
+                     }
+                     fifth.requestFocus();
+                 }
 
              }
 
@@ -138,6 +144,16 @@ public class VerificationView extends AppCompatActivity {
          });
         fifth.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
                 if (s.length() == 1) {
                     if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
                         checkCode();
@@ -146,22 +162,12 @@ public class VerificationView extends AppCompatActivity {
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
-
 
         });
 
         sixth.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
-                    checkCode();
-                }
+
 
                 }
 
@@ -171,6 +177,10 @@ public class VerificationView extends AppCompatActivity {
 
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+
+                if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
+                    checkCode();
+                }
             }
 
 
