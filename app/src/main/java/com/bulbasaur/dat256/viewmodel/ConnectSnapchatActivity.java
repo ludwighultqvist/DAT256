@@ -3,10 +3,10 @@ package com.bulbasaur.dat256.viewmodel;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import com.snapchat.kit.sdk.core.controller.LoginStateController;
 
 import com.bulbasaur.dat256.R;
 import com.snapchat.kit.sdk.SnapLogin;
+import com.snapchat.kit.sdk.core.controller.LoginStateController;
 
 
 public class ConnectSnapchatActivity extends AppCompatActivity {

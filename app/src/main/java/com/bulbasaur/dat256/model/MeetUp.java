@@ -16,19 +16,22 @@ import java.util.Objects;
 public class MeetUp implements Serializable {
 
     public enum Categories{
-        SPORTS("Sports", R.color.sportsColor, R.drawable.sports_example, R.drawable.map_icon_sports),
-        FOOD("Food", R.color.foodColor, R.drawable.food_example, R.drawable.map_icon_food),
-        EDUCATION("Education", R.color.eduColor, R.drawable.education_example, R.drawable.map_icon_education),
-        PARTY("Party", R.color.partyColor, R.drawable.party_example, R.drawable.map_icon_party),
-        GAMES("Games", R.color.gamesColor, R.drawable.games_example, R.drawable.map_icon_games);
+        SPORTS("Sports", R.color.sportsColor, R.color.sportsColor2, R.drawable.sports_example, R.drawable.map_icon_sports),
+        FOOD("Food", R.color.foodColor, R.color.foodColor2, R.drawable.food_example, R.drawable.map_icon_food),
+        EDUCATION("Education", R.color.eduColor, R.color.eduColor2, R.drawable.education_example, R.drawable.map_icon_education),
+        PARTY("Party", R.color.partyColor, R.color.partyColor2, R.drawable.party_example, R.drawable.map_icon_party),
+        GAMES("Games", R.color.gamesColor, R.color.gamesColor2, R.drawable.games_example, R.drawable.map_icon_games);
 
-        private String categoryName;
-        private int color;
-        private int pic;
-        private int icon;
-        private Categories(String categoryName, int color, int pic, int icon){
+        public String categoryName;
+        public int color;
+        public int pic;
+        public int icon;
+        public int secondaryColor;
+
+        private Categories(String categoryName, int color, int secondaryColor, int pic, int icon){
             this.categoryName = categoryName;
             this.color = color;
+            this.secondaryColor = secondaryColor;
             this.pic = pic;
             this.icon = icon;
         }

@@ -18,5 +18,10 @@
     <color name="partyColor">#00e600</color>
     <color name="eduColor">#ffcc66</color>
     <color name="gamesColor">#ff6600</color>
+    <color name="sportsColor2">#0088ee</color>
+    <color name="foodColor2">#ee2200</color>
+    <color name="partyColor2">#00d600</color>
+    <color name="eduColor2">#eebb55</color>
+    <color name="gamesColor2">#ee5500</color>
 
 </resources>
