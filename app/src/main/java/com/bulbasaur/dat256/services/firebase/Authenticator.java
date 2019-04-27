@@ -1,4 +1,4 @@
-package com.bulbasaur.dat256.services.Database;
+package com.bulbasaur.dat256.services.firebase;
 
 /**
  * @author ludwighultqvist

@@ -9,8 +9,8 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 
 import com.bulbasaur.dat256.R;
-import com.bulbasaur.dat256.services.Database.Authenticator;
-import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
+import com.bulbasaur.dat256.services.firebase.Authenticator;
+import com.bulbasaur.dat256.services.firebase.Database;
 
 public class VerificationView extends AppCompatActivity {
     private EditText first, second, third, fourth, fifth, sixth;
@@ -27,7 +27,7 @@ public class VerificationView extends AppCompatActivity {
         fifth = (EditText)findViewById(R.id.FifthNumber);
         sixth = (EditText)findViewById(R.id.SixthNumber);
 
-        authenticator = PhoneAuthenticator.activeAuthenticator();
+        authenticator = Database.getInstance().activeAuthenticator();
         init();
         }
 
@@ -35,6 +35,7 @@ public class VerificationView extends AppCompatActivity {
         code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
         authenticator.verify(code);
         if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
+            Database.testIt();
             setResult(Activity.RESULT_OK, new Intent());
             finish();
         }

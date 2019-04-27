@@ -1,5 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,7 +52,6 @@ class Collection implements DBCollection {
      * @param id the given id string
      * @return a new DBDocument object
      */
-    // todo save only works if changes has been made
     @Override
     public DBDocument create(String id) {
         return new Document(collection.document(id));
@@ -64,11 +65,13 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument get(String id) {
+        Log.d("COLLECTION", "Getting document: " + id + " from collection: " + collection.getPath());
         Document result = new Document();
 
         collection.document(id).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d("COLLECTION", "Getting document succeeded");
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             result.init(snapshot.getReference());
@@ -86,15 +89,19 @@ class Collection implements DBCollection {
      */
     @Override
     public List<? extends DBDocument> all() {
+        Log.d("COLLECTION", "Getting all documents from " + collection.getPath());
         List<Document> result = new ArrayList<>();
 
         collection.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d("COLLECTION", "Getting all documents succeeded");
                         QuerySnapshot snapshot = task.getResult();
 
-                        for (DocumentSnapshot document : snapshot.getDocuments()) {
-                            result.add(new Document(document.getReference()));
+                        if (snapshot != null) {
+                            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                                result.add(new Document(document.getReference()));
+                            }
                         }
                     }
                 })

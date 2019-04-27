@@ -1,4 +1,4 @@
-package com.bulbasaur.dat256.services.Database;
+package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
 import android.util.Log;
@@ -17,8 +17,7 @@ import java.util.concurrent.TimeUnit;
  * a class which implements the Authenticator interfaces methods where the validation code is
  * sent by sms to a phone number and verified as such
  */
-public class PhoneAuthenticator implements Authenticator {
-    private static Authenticator activeAuthenticator;
+class PhoneAuthenticator implements Authenticator {
 
     private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
@@ -27,20 +26,12 @@ public class PhoneAuthenticator implements Authenticator {
     private Activity activity;
     private VerificationStatus status;
 
-    public static Authenticator startAuthenticator(Activity activity) {
-        activeAuthenticator = new PhoneAuthenticator(activity);
-        return activeAuthenticator;
-    }
-
-    public static Authenticator activeAuthenticator() {
-        return activeAuthenticator;
-    }
     /**
      * creates a new PhoneAuthenticator object, which sets up the phone authentication to the
      * Firebase database.
      * @param activity an activity required by the Firebase phone authentication, cannot be null
      */
-     public PhoneAuthenticator(Activity activity) {
+    PhoneAuthenticator(Activity activity) {
         this.activity = activity;
         auth = FirebaseAuth.getInstance();
 
@@ -54,7 +45,6 @@ public class PhoneAuthenticator implements Authenticator {
                 if (code != null) {
                     verify(code);
                 }
-                //signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
@@ -74,7 +64,6 @@ public class PhoneAuthenticator implements Authenticator {
             }
         };
 
-        activeAuthenticator = this;
     }
 
     /**

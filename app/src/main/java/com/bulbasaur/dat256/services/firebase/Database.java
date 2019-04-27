@@ -2,8 +2,6 @@ package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
 
-import com.bulbasaur.dat256.services.Database.Authenticator;
-import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

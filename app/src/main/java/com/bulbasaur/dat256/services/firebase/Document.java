@@ -45,10 +45,12 @@ class Document implements DBDocument {
      * @param document the given DocumentReference object
      */
     void init(DocumentReference document) {
+        Log.d("DOCUMENT", "Initializing document: " + document.getPath());
         this.document = document;
         document.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d("DOCUMENT", "Initializing document succeeded");
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             Map<String, Object> data = snapshot.getData();
@@ -96,10 +98,13 @@ class Document implements DBDocument {
      */
     @Override
     public void save() {
+        Log.d("DOCUMENT", "Saving document: " + document.getPath());
         set("last-save", DateFormat.getDateInstance().format(new Date()));
         document.set(data, SetOptions.merge())
                 .addOnCompleteListener(task -> {
-                    Log.d("DOCUMENT", "saving");
+                    if (task.isSuccessful()) {
+                        Log.d("DOCUMENT", "Saving document succeeded");
+                    }
                 })
                 .addOnFailureListener(e -> {});
     }
