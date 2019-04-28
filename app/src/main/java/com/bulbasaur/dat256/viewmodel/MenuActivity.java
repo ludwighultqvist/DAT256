@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.MeetUp;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
@@ -31,13 +33,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawer;
     private SearchView searchView;
 
-    private GoogleMap googleMap;
+    private GoogleMap map;
 
     private MeetUp fakeMeetUp;
     private LatLng fakeMeetUpCoordinates;
 
     private static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
+
+    private boolean markerInMiddle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,19 +104,33 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+        this.map = googleMap;
 
         fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
 
         MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().color, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().color);
         Gson markerDataGson = new Gson();
         String markerDataString = markerDataGson.toJson(markerData);
+        MarkerOptions markerOptions = new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f);
+        Marker marker = this.map.addMarker(markerOptions);
+        this.map.moveCamera(CameraUpdateFactory.newLatLng(fakeMeetUpCoordinates));
 
-        this.googleMap.addMarker(new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f));
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(fakeMeetUpCoordinates));
+        this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
+        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick());
+        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp());
+        this.map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int reason) {
+                if (reason == REASON_GESTURE) {
+                    marker.hideInfoWindow();
+                }
+            }
+        });
+    }
 
-        this.googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        this.googleMap.setOnInfoWindowClickListener(marker -> onMeetUpMarkerClick());
+    private void joinMarkedMeetUp() {
+        //TODO make the user join the marked event here
+        Toast.makeText(this, "Joined " + fakeMeetUp.getName(), Toast.LENGTH_SHORT).show();
     }
 
     private void onMeetUpMarkerClick() {
@@ -124,7 +142,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SHOW_EVENT_ON_MAP_CODE) {
             if (resultCode == RESULT_OK) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fakeMeetUpCoordinates, DEFAULT_MEET_UP_ZOOM_LEVEL));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(fakeMeetUpCoordinates, DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
         }
     }

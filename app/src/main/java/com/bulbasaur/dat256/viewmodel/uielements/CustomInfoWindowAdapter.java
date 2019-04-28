@@ -1,8 +1,12 @@
 package com.bulbasaur.dat256.viewmodel.uielements;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -80,10 +84,17 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }
 
         String snippet = markerData.getDescription();
+        String joinText = context.getString(R.string.join_by_long_press);
         TextView snippetUi = view.findViewById(R.id.snippet);
         if (snippet != null) {
-            SpannableString snippetText = new SpannableString(snippet);
-            snippetText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getDescriptionColor())), 0, snippetText.length(), 0);
+            SpannableString snippetText = new SpannableString(snippet + "\n\n" + joinText);
+
+            snippetText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getDescriptionColor())), 0, markerData.getDescription().length(), 0);
+
+            //snippetText.setSpan(new ForegroundColorSpan(context.getColor(R.color.mainColor)), markerData.getDescription().length(), snippet.length(), 0);
+            //snippetText.setSpan(new StyleSpan(Typeface.BOLD), markerData.getDescription().length(), snippet.length(), 0);
+            //snippetText.setSpan(new RelativeSizeSpan(2f), markerData.getDescription().length(), snippet.length(), 0);
+
             snippetUi.setText(snippetText);
         } else {
             snippetUi.setText("");
