@@ -6,14 +6,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.view.View;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.firebase.Authenticator;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 public class VerificationView extends AppCompatActivity {
     private EditText first, second, third, fourth, fifth, sixth;
+    private TextView wrongCode;
     private Authenticator authenticator;
     private String code;
     @Override
@@ -26,6 +32,7 @@ public class VerificationView extends AppCompatActivity {
         fourth = (EditText)findViewById(R.id.FourthNumber);
         fifth = (EditText)findViewById(R.id.FifthNumber);
         sixth = (EditText)findViewById(R.id.SixthNumber);
+        wrongCode = (TextView)findViewById(R.id.wrongCode);
 
         authenticator = Database.getInstance().activeAuthenticator();
         init();
@@ -45,7 +52,9 @@ public class VerificationView extends AppCompatActivity {
     }
 
     private void makeRed(){
-
+        wrongCode.setVisibility(View.VISIBLE);
+        finish();
+        startActivity(new Intent(this, VerificationView.class));
     }
 
 
