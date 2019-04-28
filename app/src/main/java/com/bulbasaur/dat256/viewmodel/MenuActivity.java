@@ -63,6 +63,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_profile:
                     break;
                 case R.id.nav_qr:
+                    startActivity(new Intent(this, ScanQRActivity.class));
                     break;
                 case R.id.nav_settings:
                     break;
