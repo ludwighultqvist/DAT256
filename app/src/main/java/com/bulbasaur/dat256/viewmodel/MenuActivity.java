@@ -70,6 +70,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
   
     private Coordinates currentCoords;
 
+    private Marker meMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,9 +144,38 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Gson markerDataGson = new Gson();
         String markerDataString = markerDataGson.toJson(markerData);
         MarkerOptions markerOptions = new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f);
-        Marker marker = this.map.addMarker(markerOptions);
+        Marker fakeMeetUpMarker = this.map.addMarker(markerOptions);
 
+        showUserLocationOnMapWithRegularMarkerAndMoveMapToIt();
 
+        this.map.setOnMarkerClickListener(marker -> {
+            if (marker.equals(fakeMeetUpMarker)) {
+                fakeMeetUpMarker.showInfoWindow();
+            } else if (marker.equals(meMarker)) {
+                Toast.makeText(this, "Your location", Toast.LENGTH_SHORT).show();
+            }
+
+            map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));//TODO ideally lerp to this location
+
+            return true;
+        });
+
+        this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
+        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick());
+        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp());
+        this.map.setOnCameraMoveStartedListener(reason -> {
+            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                fakeMeetUpMarker.hideInfoWindow();//TODO hide the currently open marker, not just the fake one
+            }
+        });
+        this.map.setOnCameraIdleListener(() -> {
+            System.out.println("camera idle - meetups update");
+
+            requestNewMapItemsAndUpdate(getCurrentMapBounds());
+        });
+    }
+
+    private void showUserLocationOnMapWithRegularMarkerAndMoveMapToIt() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -158,23 +189,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 System.out.println(lastLocationCoords.latitude + " " + lastLocationCoords.longitude);
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(lastLocationCoords));
                 this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationCoords,DEFAULT_MEET_UP_ZOOM_LEVEL));
-                Marker me = map.addMarker(new MarkerOptions().position(lastLocationCoords).title("Your location"));
+                meMarker = map.addMarker(new MarkerOptions().position(lastLocationCoords).title("Your location"));
             }
-        });
-
-
-        this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick());
-        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp());
-        this.map.setOnCameraMoveStartedListener(reason -> {
-            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                marker.hideInfoWindow();
-            }
-        });
-        this.map.setOnCameraIdleListener(() -> {
-            System.out.println("camera idle - meetups update");
-
-            requestNewMapItemsAndUpdate(getCurrentMapBounds());
         });
     }
 
