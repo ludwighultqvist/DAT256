@@ -43,4 +43,8 @@ public interface DBCollection {
     DBDocument get(String id, RequestListener listener);
 
     List<? extends DBDocument> all(RequestListener listener);
+
+    List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener listener);
+
+    List<? extends DBDocument> search(List<QueryFilter> filters);
 }
