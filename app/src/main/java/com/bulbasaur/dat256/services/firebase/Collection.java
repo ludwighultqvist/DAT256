@@ -44,7 +44,8 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create() {
-        return new Document(collection.document());
+        //return new Document(collection.document());
+        return create(null, null);
     }
 
     /**
@@ -54,7 +55,8 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(String id) {
-        return new Document(collection.document(id));
+        //return new Document(collection.document(id));
+        return create(id, null);
     }
 
     /**
@@ -65,6 +67,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument get(String id) {
+        /*
         Log.d("COLLECTION", "Getting document: " + id + " from collection: " + collection.getPath());
         Document result = new Document();
 
@@ -81,6 +84,8 @@ class Collection implements DBCollection {
                 .addOnFailureListener(e -> {});
 
         return result.isEmpty() ? null : result;
+        */
+        return get(id, null);
     }
 
     /**
@@ -89,6 +94,7 @@ class Collection implements DBCollection {
      */
     @Override
     public List<? extends DBDocument> all() {
+        /*
         Log.d("COLLECTION", "Getting all documents from " + collection.getPath());
         List<Document> result = new ArrayList<>();
 
@@ -106,6 +112,97 @@ class Collection implements DBCollection {
                     }
                 })
                 .addOnFailureListener(e -> {});
+
+        return result;
+        */
+        return all(null);
+    }
+
+    /*
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+     */
+
+    @Override
+    public DBDocument create(RequestListener listener) {
+        return create(null, listener);
+    }
+
+    @Override
+    public DBDocument create(String id, RequestListener listener) {
+        DBDocument document;
+
+        if (id == null) {
+            document = new Document(collection.document(), listener);
+        }
+        else {
+            document = new Document(collection.document(id), listener);
+        }
+
+        return document;
+    }
+
+    @Override
+    public DBDocument get(String id, RequestListener listener) {
+        Document result = new Document();
+
+        collection.document(id).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            result.init(snapshot.getReference());
+                        }
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
+
+        return result.isEmpty() ? null : result;
+    }
+
+    @Override
+    public List<? extends DBDocument> all(RequestListener listener) {
+        List<Document> result = new ArrayList<>();
+
+        collection.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+
+                        if (snapshot != null) {
+                            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                                result.add(new Document(document.getReference()));
+                            }
+                        }
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
 
         return result;
     }

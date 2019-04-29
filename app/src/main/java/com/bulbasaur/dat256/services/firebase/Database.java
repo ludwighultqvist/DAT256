@@ -89,6 +89,7 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
+        /*
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return null;
 
@@ -99,6 +100,8 @@ public class Database {
         }
 
         return document;
+        */
+        return user(null);
     }
 
     public static void testIt() {
@@ -118,5 +121,32 @@ public class Database {
         DBDocument meetup = database.meetups().create();
         meetup.set("name", "Test-Meetup");
         meetup.save();
+    }
+
+    /*
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+     */
+
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
+        return authenticator;
+    }
+
+    public DBDocument user(RequestListener listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return null;
+        }
+        DBDocument document = users().get(user.getUid(), listener);
+        if (document == null) {
+            document = users().create(user.getUid(), listener);
+            document.save();
+        }
+        return document;
     }
 }

@@ -35,4 +35,12 @@ public interface DBCollection {
      * @return the list of DBDocument objects
      */
     List<? extends DBDocument> all();
+
+    DBDocument create(String id, RequestListener listener);
+
+    DBDocument create(RequestListener listener);
+
+    DBDocument get(String id, RequestListener listener);
+
+    List<? extends DBDocument> all(RequestListener listener);
 }
