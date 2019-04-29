@@ -102,6 +102,11 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             } else {
                 Snackbar.make(findViewById(R.id.createMeetUpLinearLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
             }
+
+            /*
+             currentUser.createdMeetUps.add(meetUp);
+             */
+
         });
     }
 

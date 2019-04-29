@@ -51,18 +51,15 @@ class Document implements DBDocument {
                         }
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(this);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(this);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(this);
                     }
                 });
@@ -106,18 +103,15 @@ class Document implements DBDocument {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(this);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(this);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(this);
                     }
                 });
@@ -145,18 +139,15 @@ class Document implements DBDocument {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(this);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(this);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onComplete(this);
                     }
                 });

@@ -10,6 +10,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import com.bulbasaur.dat256.R;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -53,6 +54,8 @@ public class MeetUp implements Serializable {
     private Calendar end;
 
     private Categories category;
+
+    private ArrayList<User> usersJoined = new ArrayList<>();
 
     public MeetUp() {
         this.coords = new Coordinates();
@@ -168,6 +171,10 @@ public class MeetUp implements Serializable {
 
     public void setCategory(Categories category) {
         this.category = category;
+    }
+
+    public void joinMeetup(User user){
+        usersJoined.add(user);
     }
 
     public int getIconDrawable() {

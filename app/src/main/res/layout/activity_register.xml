@@ -21,15 +21,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="140dp"
         android:enabled="false"
         android:text="@string/create_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/readTermsButton" />
 
     <TextView
         android:id="@+id/createAccountTitleTextView"
@@ -138,5 +139,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createAccountButton" />
+
+    <CheckBox
+        android:id="@+id/termsCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="29dp"
+        android:text="Accept Terms and Conditions"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/createAccountButton"
+        app:layout_constraintEnd_toStartOf="@+id/readTermsButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberSpinner" />
+
+    <Button
+        android:id="@+id/readTermsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="15dp"
+        android:text="Read Terms"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/createAccountButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/termsCheckbox"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
 </android.support.constraint.ConstraintLayout>

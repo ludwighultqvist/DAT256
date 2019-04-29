@@ -67,17 +67,9 @@ public class  LoginActivity extends AppCompatActivity {
 
             this.phoneNumber = selectedCountryCode + Objects.requireNonNull(
                     Validator.removePhoneZero(phoneNumberEditText.getText().toString()));
-            System.out.println(numberInDatabase());
-            System.out.println(phoneNumber);
 
-            if(numberInDatabase()) {
-                Database.getInstance().phoneAuthenticator(LoginActivity.this).sendVerificationCode(phoneNumber);
+            checkNumber();
 
-                startActivityForResult(new Intent(LoginActivity.this, VerificationView.class), LOGIN_VERIFIED_CODE);
-            }
-            else {
-                wrongNumber.setVisibility(View.VISIBLE);
-            }
         });
 
         registerButton.setOnClickListener(v -> {
@@ -114,10 +106,45 @@ public class  LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean numberInDatabase() {
+    private void checkNumber() {
         List<QueryFilter> usernameList = new ArrayList<QueryFilter>();
         usernameList.add(new QueryFilter("phonenumber", "=", phoneNumber));
-        return Database.getInstance().users().search(usernameList) != null;
+
+        Database.getInstance().users().search(usernameList, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> result) {
+                super.onSuccess(result);
+                if (result.isEmpty()) {
+                    wrongNumber.setVisibility(View.VISIBLE);
+
+                }
+                else{
+                    Database.getInstance().phoneAuthenticator().sendVerificationCode(
+                            phoneNumber, LoginActivity.this, new RequestListener() {
+                                @Override
+                                public void onSuccess(Object object) {
+                                    super.onSuccess(object);
+                                    System.out.println("success");
+                                }
+
+                                @Override
+                                public void onComplete(Object object) {
+                                    super.onComplete(object);
+                                    startActivityForResult(new Intent(
+                                            LoginActivity.this, VerificationView.class), LOGIN_VERIFIED_CODE);
+                                        System.out.println("complete");
+                                }
+
+                                @Override
+                                public void onFailure(Object object) {
+                                    super.onFailure(object);
+                                        System.out.println("fail");
+                                }
+                            });
+
+                }
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

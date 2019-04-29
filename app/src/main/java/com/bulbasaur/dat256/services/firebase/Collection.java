@@ -89,18 +89,15 @@ class Collection implements DBCollection {
                         }
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(result);
                     }
                 });
@@ -135,18 +132,15 @@ class Collection implements DBCollection {
                         }
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(result);
                     }
                 });
@@ -194,18 +188,15 @@ class Collection implements DBCollection {
                         }
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        //listener.onComplete();
                         listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(result);
                     }
                 });
