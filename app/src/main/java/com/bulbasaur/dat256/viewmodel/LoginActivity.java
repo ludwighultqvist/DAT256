@@ -120,8 +120,28 @@ public class  LoginActivity extends AppCompatActivity {
                 }
                 else{
                     Database.getInstance().phoneAuthenticator().sendVerificationCode(
-                            phoneNumber, LoginActivity.this, new RequestListener());
-                    startActivityForResult(new Intent(LoginActivity.this, VerificationView.class), LOGIN_VERIFIED_CODE);
+                            phoneNumber, LoginActivity.this, new RequestListener() {
+                                @Override
+                                public void onSuccess(Object object) {
+                                    super.onSuccess(object);
+                                    System.out.println("success");
+                                }
+
+                                @Override
+                                public void onComplete(Object object) {
+                                    super.onComplete(object);
+                                    startActivityForResult(new Intent(
+                                            LoginActivity.this, VerificationView.class), LOGIN_VERIFIED_CODE);
+                                        System.out.println("complete");
+                                }
+
+                                @Override
+                                public void onFailure(Object object) {
+                                    super.onFailure(object);
+                                        System.out.println("fail");
+                                }
+                            });
+
                 }
             }
         });
