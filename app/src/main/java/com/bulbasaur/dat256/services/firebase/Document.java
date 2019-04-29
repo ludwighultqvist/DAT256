@@ -36,7 +36,7 @@ class Document implements DBDocument {
      * document in the Firestore database
      */
     Document() {
-        this(null);
+        this(null, null);
     }
 
     /**
@@ -45,6 +45,7 @@ class Document implements DBDocument {
      * @param document the given DocumentReference object
      */
     void init(DocumentReference document) {
+        /*
         Log.d("DOCUMENT", "Initializing document: " + document.getPath());
         this.document = document;
         document.get()
@@ -61,6 +62,8 @@ class Document implements DBDocument {
                     }
                 })
                 .addOnFailureListener(e -> {});
+        */
+        init(document, null);
     }
 
     /**
@@ -98,6 +101,7 @@ class Document implements DBDocument {
      */
     @Override
     public void save() {
+        /*
         Log.d("DOCUMENT", "Saving document: " + document.getPath());
         set("last-save", DateFormat.getDateInstance().format(new Date()));
         document.set(data, SetOptions.merge())
@@ -107,6 +111,8 @@ class Document implements DBDocument {
                     }
                 })
                 .addOnFailureListener(e -> {});
+        */
+        save(null);
     }
 
     /**
@@ -114,9 +120,12 @@ class Document implements DBDocument {
      */
     @Override
     public void delete() {
+        /*
         document.delete()
                 .addOnCompleteListener(task -> {})
                 .addOnFailureListener(e -> {});
+        */
+        delete(null);
     }
 
     /**
@@ -136,5 +145,91 @@ class Document implements DBDocument {
     @Override
     public DBCollection subCollection(String name) {
         return new Collection(document.collection(name));
+    }
+
+    /*
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+     */
+
+    Document(DocumentReference document, RequestListener listener) {
+        if (document != null) {
+            init(document, listener);
+        }
+    }
+
+    void init(DocumentReference document, RequestListener listener) {
+        this.document = document;
+
+        this.document.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            Map<String, Object> data = snapshot.getData();
+                            if (data != null) {
+                                data.putAll(snapshot.getData());
+                            }
+                        }
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
+    }
+
+    @Override
+    public void save(RequestListener listener) {
+        set("last-save", DateFormat.getDateInstance().format(new Date()));
+
+        document.set(data, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
+    }
+
+    @Override
+    public void delete(RequestListener listener) {
+        document.delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
     }
 }

@@ -6,16 +6,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Button;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.firebase.Authenticator;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
+import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
+
+import java.util.Objects;
 
 public class VerificationView extends AppCompatActivity {
     private EditText first, second, third, fourth, fifth, sixth;
+    private TextView wrongCode;
     private Authenticator authenticator;
     private String code;
+    private Button newCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,36 +36,55 @@ public class VerificationView extends AppCompatActivity {
         fourth = (EditText)findViewById(R.id.FourthNumber);
         fifth = (EditText)findViewById(R.id.FifthNumber);
         sixth = (EditText)findViewById(R.id.SixthNumber);
+        wrongCode = (TextView)findViewById(R.id.wrongCode);
+        newCode = (Button)findViewById(R.id.newCode);
 
         authenticator = Database.getInstance().activeAuthenticator();
         init();
         }
 
+
     private void checkCode() {
         code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
-        authenticator.verify(code);
-        if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
+        /*if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
             Database.testIt();
-            setResult(Activity.RESULT_OK, new Intent());
-            finish();
+
         }
         else{
-            makeRed();
-        }
+         */
+
+        authenticator.verify(code, this, new RequestListener() {
+            @Override
+            public void onComplete() {
+                displayErrorMessage();
+            }
+
+            @Override
+            public void onSuccess() {
+                finish();
+                startActivity(new Intent(VerificationView.this, MenuActivity.class));
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 
-    private void makeRed(){
-
+    private void displayErrorMessage(){
+        wrongCode.setVisibility(View.VISIBLE);
+        finish();
+        startActivity(new Intent(this, VerificationView.class));
     }
 
 
     private void init(){
+
         first.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
-
-
-
 
             }
 
@@ -185,5 +214,7 @@ public class VerificationView extends AppCompatActivity {
 
 
         });
+
     }
+
 }

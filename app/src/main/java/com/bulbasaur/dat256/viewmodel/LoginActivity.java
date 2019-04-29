@@ -9,21 +9,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
+import com.bulbasaur.dat256.services.firebase.Authenticator;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class  LoginActivity extends AppCompatActivity {
 
     private boolean phoneNumberValid = false;
     private Button verify;
     private String selectedCountryCode;
+    private String phoneNumber;
+    private Authenticator authenticator;
+    private TextView wrongNumber;
 
     static final int LOGIN_VERIFIED_CODE = 11;
 
@@ -31,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        wrongNumber = (TextView)findViewById(R.id.wrongNumber);
         init();
     }
 
@@ -51,11 +58,12 @@ public class LoginActivity extends AppCompatActivity {
 
         //Sets up the validation code for the phone number text field
         verify.setOnClickListener(v -> {
-            String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
-
+            phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
+            /*
             Database.getInstance().phoneAuthenticator(this).sendVerificationCode(phoneNumber);
 
             startActivityForResult(new Intent(this, VerificationView.class), LOGIN_VERIFIED_CODE);
+            */
         });
 
         phoneNumberEditText.addTextChangedListener(new TextWatcher() {
@@ -70,10 +78,14 @@ public class LoginActivity extends AppCompatActivity {
                     phoneNumberEditText.setError(getApplicationContext().getString(R.string.phone_number_error));
                 }
                 updateVerifyButton();
+
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                //phoneNumber = phoneNumberEditText.getText().toString();
+                //numberInDatabase();
+            }
         });
     }
     private void updateVerifyButton() {
@@ -83,13 +95,22 @@ public class LoginActivity extends AppCompatActivity {
             verify.setEnabled(false);
         }
     }
+/*
+    private boolean numberInDatabase() {
 
+        if(!phoneNumber.isInDatabase())
+
+            return false;
+        return true;
+
+    }
+*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
         if (requestCode == LOGIN_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-
-                //TODO verification was successful - log the user in
             }
         }
     }
