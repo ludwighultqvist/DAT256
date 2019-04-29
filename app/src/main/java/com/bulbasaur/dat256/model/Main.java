@@ -20,27 +20,30 @@ public class Main {
     }
 
     public void updateMap(List<MeetUp> meetUps, List<User> friends) {
-        updateMap(meetUpsWithinMapView, meetUps);
-        updateMap(friendsWithinMapView, friends);
+        updateMapGeneric(meetUpsWithinMapView, meetUps);
+        updateMapGeneric(friendsWithinMapView, friends);
     }
 
-    public <T> void updateMap(List<T> into, List<T> from) {
+    public void updateMapMeetUps(List<MeetUp> meetUps) {
+        updateMapGeneric(meetUpsWithinMapView, meetUps);
+
+        System.out.println("updating map meetups");
+    }
+
+    public void updateMapFriends(List<User> friends) {
+        updateMapGeneric(friendsWithinMapView, friends);
+    }
+
+    public <T> void updateMapGeneric(List<T> into, List<T> from) {
         for (T existingItem : into) {
             if (!from.contains(existingItem)) {
-                from
+                into.remove(existingItem);
             }
         }
 
-
-        for (MeetUp existingMeetUp : meetUpsWithinMapView) {
-            if (!meetUps.contains(existingMeetUp)) {
-                meetUpsWithinMapView.remove(existingMeetUp);
-            }
-        }
-
-        for (MeetUp newMeetUp : meetUps) {
-            if (!meetUpsWithinMapView.contains(newMeetUp)) {
-                meetUpsWithinMapView.add(newMeetUp);
+        for (T newItem : from) {
+            if (!into.contains(newItem)) {
+                into.add(newItem);
             }
         }
     }
