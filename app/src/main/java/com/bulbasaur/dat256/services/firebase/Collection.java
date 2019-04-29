@@ -39,7 +39,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public DBDocument create(String id, RequestListener listener) {
+    public DBDocument create(String id, RequestListener<DBDocument> listener) {
         DBDocument document;
 
         if (id == null) {
@@ -63,7 +63,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public DBDocument create(RequestListener listener) {
+    public DBDocument create(RequestListener<DBDocument> listener) {
         return create(null, listener);
     }
 
@@ -77,7 +77,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public DBDocument get(String id, RequestListener listener) {
+    public DBDocument get(String id, RequestListener<DBDocument> listener) {
         Document result = new Document();
 
         collection.document(id).get()
@@ -89,16 +89,19 @@ class Collection implements DBCollection {
                         }
 
                         if (listener != null) {
-                            listener.onSuccess();
+                            //listener.onSuccess();
+                            listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        listener.onComplete();
+                        //listener.onComplete();
+                        listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        listener.onFailure();
+                        //listener.onFailure();
+                        listener.onFailure(result);
                     }
                 });
 
@@ -117,7 +120,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public List<? extends DBDocument> all(RequestListener listener) {
+    public List<? extends DBDocument> all(RequestListener<List<? extends DBDocument>> listener) {
         List<Document> result = new ArrayList<>();
 
         collection.get()
@@ -127,24 +130,26 @@ class Collection implements DBCollection {
 
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), listener));
+                                result.add(new Document(document.getReference(), null));
                             }
                         }
 
                         if (listener != null) {
-                            listener.onSuccess();
+                            //listener.onSuccess();
+                            listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        listener.onComplete();
+                        //listener.onComplete();
+                        listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        listener.onFailure();
+                        //listener.onFailure();
+                        listener.onFailure(result);
                     }
                 });
-
         return result;
     }
 
@@ -158,7 +163,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener listener) {
+    public List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener<List<? extends DBDocument>> listener) {
         Query query = collection;
         List<Document> result = new ArrayList<>();
 
@@ -184,21 +189,24 @@ class Collection implements DBCollection {
 
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), listener));
+                                result.add(new Document(document.getReference(), null));
                             }
                         }
 
                         if (listener != null) {
-                            listener.onSuccess();
+                            //listener.onSuccess();
+                            listener.onSuccess(result);
                         }
                     }
                     else if (listener != null) {
-                        listener.onComplete();
+                        //listener.onComplete();
+                        listener.onComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        listener.onFailure();
+                        //listener.onFailure();
+                        listener.onFailure(result);
                     }
                 });
 
@@ -211,7 +219,7 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public List<? extends DBDocument> search(QueryFilter filter, RequestListener listener) {
+    public List<? extends DBDocument> search(QueryFilter filter, RequestListener<List<? extends DBDocument>> listener) {
         List<QueryFilter> filters = new LinkedList<>();
         filters.add(filter);
         return search(filters, listener);
