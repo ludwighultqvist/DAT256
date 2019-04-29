@@ -49,4 +49,8 @@ public interface DBDocument {
      * @return the DBCollection object
      */
     DBCollection subCollection(String name);
+
+    void save(RequestListener listener);
+
+    void delete(RequestListener listener);
 }

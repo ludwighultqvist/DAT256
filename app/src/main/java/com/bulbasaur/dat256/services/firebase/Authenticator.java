@@ -1,5 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
+import android.app.Activity;
+
 /**
  * @author ludwighultqvist
  * interface with in general required code to send verification codes to recipients
@@ -38,4 +40,7 @@ public interface Authenticator {
      */
     VerificationStatus status();
 
+    void sendVerificationCode(String recipient, Activity activity, RequestListener listener);
+
+    void verify(String verificationCode, Activity activity, RequestListener listener);
 }

@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
  */
 class PhoneAuthenticator implements Authenticator {
 
-    private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
     private PhoneAuthProvider.ForceResendingToken token;
@@ -33,7 +32,6 @@ class PhoneAuthenticator implements Authenticator {
      */
     PhoneAuthenticator(Activity activity) {
         this.activity = activity;
-        auth = FirebaseAuth.getInstance();
 
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -72,6 +70,7 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void sendVerificationCode(String recipient) {
+        /*
         Log.d("AUTH", "Sending verification code to: " + recipient);
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 recipient,
@@ -82,6 +81,8 @@ class PhoneAuthenticator implements Authenticator {
         );
         Log.d("AUTH", "Verification code sent to: " + recipient);
         status = VerificationStatus.WAITING;
+        */
+        sendVerificationCode(recipient, activity, null);
     }
 
     /**
@@ -90,9 +91,22 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void verify(String verificationCode) {
+        /*
         Log.d("AUTH", "Verifying code: " + verificationCode);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
-        signInWithPhoneAuthCredential(credential);
+        //signInWithPhoneAuthCredential(credential);
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(activity, task -> {
+            if (task.isSuccessful()) {
+                Log.d("AUTH", "Verification completed.");
+                status = VerificationStatus.COMPLETED;
+            }
+            else {
+                Log.d("AUTH", "Verification failed.");
+                status = VerificationStatus.FAILED;
+            }
+        });
+        */
+        verify(verificationCode, activity, null);
     }
 
     /**
@@ -109,8 +123,9 @@ class PhoneAuthenticator implements Authenticator {
      * the code to be validated. If the task is successful a user is fetched.
      * @param credential the object containing the data of the validation
      */
+
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(activity, task -> {
             if (task.isSuccessful()) {
                 Log.d("AUTH", "Verification completed.");
                 status = VerificationStatus.COMPLETED;
@@ -122,5 +137,153 @@ class PhoneAuthenticator implements Authenticator {
         });
     }
 
+    /*
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+    ==========================================================================================
+     */
 
+    PhoneAuthenticator(Activity activity, RequestListener listener) {
+        this.activity = activity;
+
+        callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                Log.d("AUTH", "Automatic verification in progress");
+                String code = phoneAuthCredential.getSmsCode();
+
+                if (code != null) {
+                    verify(code);
+                }
+
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            }
+
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+                Log.d("AUTH", "Verification failed");
+                if (listener != null) {
+                    listener.onFailure();
+                }
+            }
+
+            @Override
+            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+
+                Log.d("AUTH", "Manual verification required");
+                verificationId = s;
+                token = forceResendingToken;
+
+                if (listener != null) {
+                    listener.onComplete();
+                }
+            }
+        };
+
+    }
+
+    PhoneAuthenticator() {
+        this(null, null);
+    }
+
+    @Override
+    public void sendVerificationCode(String recipient, Activity activity, RequestListener listener) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                recipient,
+                60,
+                TimeUnit.SECONDS,
+                activity,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                        String code = phoneAuthCredential.getSmsCode();
+
+                        if (code != null) {
+                            verify(code);
+                        }
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
+                        status = VerificationStatus.FAILED;
+
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
+                    }
+
+                    @Override
+                    public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        super.onCodeSent(s, forceResendingToken);
+
+                        verificationId = s;
+                        token = forceResendingToken;
+                        status = VerificationStatus.SENT;
+
+                        if (listener != null) {
+                            listener.onComplete();
+                        }
+                    }
+                }
+        );
+        status = VerificationStatus.WAITING;
+    }
+
+    @Override
+    public void verify(String verificationCode, Activity activity, RequestListener listener) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
+        //signInWithPhoneAuthCredential(credential, listener);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        status = VerificationStatus.COMPLETED;
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else {
+                        status = VerificationStatus.FAILED;
+
+                        if (listener != null) {
+                            listener.onComplete();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
+    }
+
+    /*
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, RequestListener listener) {
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(activity, task -> {
+            if (task.isSuccessful()) {
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            }
+            else if (listener != null) {
+                listener.onComplete();
+            }
+        })
+        .addOnFailureListener(e -> {
+            if (listener != null) {
+                listener.onFailure();
+            }
+        });
+    }
+    */
 }
