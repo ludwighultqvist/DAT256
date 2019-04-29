@@ -23,14 +23,14 @@ public class MeetUp implements Serializable {
         GAMES("Games", R.color.gamesColor, R.color.gamesColor2, R.drawable.games_example, R.drawable.map_icon_games);
 
         public String categoryName;
-        public int color;
+        public int primaryColor;
         public int pic;
         public int icon;
         public int secondaryColor;
 
-        private Categories(String categoryName, int color, int secondaryColor, int pic, int icon){
+        Categories(String categoryName, int color, int secondaryColor, int pic, int icon){
             this.categoryName = categoryName;
-            this.color = color;
+            this.primaryColor = color;
             this.secondaryColor = secondaryColor;
             this.pic = pic;
             this.icon = icon;
@@ -164,7 +164,7 @@ public class MeetUp implements Serializable {
     }
 
     public Bitmap getIconBitmap(Context context) {
-        return getBitmapFromVectorDrawable(context, category.icon, category.color);
+        return getBitmapFromVectorDrawable(context, category.icon, category.primaryColor);
     }
 
     /**

@@ -108,7 +108,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
 
-        MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().color, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().color);
+        MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().primaryColor, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().primaryColor);
         Gson markerDataGson = new Gson();
         String markerDataString = markerDataGson.toJson(markerData);
         MarkerOptions markerOptions = new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f);
