@@ -2,9 +2,9 @@ package com.bulbasaur.dat256.services.firebase;
 
 public abstract class RequestListener {
 
-    abstract void onComplete();
+    public abstract void onComplete();
 
-    abstract void onSuccess();
+    public abstract void onSuccess();
 
-    abstract void onFailure();
+    public abstract void onFailure();
 }

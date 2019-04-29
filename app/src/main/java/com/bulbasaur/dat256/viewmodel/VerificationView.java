@@ -14,6 +14,7 @@ import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.firebase.Authenticator;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 public class VerificationView extends AppCompatActivity {
@@ -39,15 +40,31 @@ public class VerificationView extends AppCompatActivity {
 
     private void checkCode() {
         code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
-        authenticator.verify(code);
-        if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
+        /*if (authenticator.status() == Authenticator.VerificationStatus.COMPLETED) {
             Database.testIt();
-            setResult(Activity.RESULT_OK, new Intent(this,MenuActivity.class));
-            finish();
+
         }
         else{
-            displayErrorMessage();
-        }
+         */
+
+        authenticator.verify(code, this, new RequestListener() {
+            @Override
+            public void onComplete() {
+                displayErrorMessage();
+            }
+
+            @Override
+            public void onSuccess() {
+                finish();
+                startActivity(new Intent(VerificationView.this, MenuActivity.class));
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 
     private void displayErrorMessage(){
@@ -61,6 +78,9 @@ public class VerificationView extends AppCompatActivity {
         first.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
+
+
+
 
             }
 
@@ -182,6 +202,7 @@ public class VerificationView extends AppCompatActivity {
 
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+
                 if(first.length()==1 && second.length()==1 && third.length()==1 && fourth.length()==1 && fifth.length()==1 && sixth.length()==1){
                     checkCode();
                 }
