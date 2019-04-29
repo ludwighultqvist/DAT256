@@ -1,6 +1,6 @@
 package com.bulbasaur.dat256.services.firebase;
 
-public abstract class RequestListener<E> {
+public class RequestListener<E> {
 
     public void onComplete() {
 
