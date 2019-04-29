@@ -1,10 +1,9 @@
 package com.bulbasaur.dat256.services.firebase;
 
-import android.util.Log;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -205,5 +204,57 @@ class Collection implements DBCollection {
                 });
 
         return result;
+    }
+
+    @Override
+    public List<? extends DBDocument> search(List<QueryFilter> filters) {
+        return search(filters, null);
+    }
+
+    @Override
+    public List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener listener) {
+        Query query = collection;
+        List<Document> result = new ArrayList<>();
+
+        for (QueryFilter filter : filters) {
+            switch (filter.getComparison()) {
+                case "=":
+                    query = query.whereEqualTo(filter.getField(), filter.getValue());
+                    break;
+                case "<":
+                    query = query.whereLessThan(filter.getField(), filter.getValue());
+                    break;
+                case ">":
+                    query = query.whereGreaterThan(filter.getField(), filter.getValue());
+                    break;
+            }
+        }
+
+        query.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+
+                        if (snapshot != null) {
+                            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                                result.add(new Document(document.getReference()));
+                            }
+                        }
+
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                });
+
+        return result.isEmpty() ? null : result;
     }
 }

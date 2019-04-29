@@ -5,6 +5,9 @@ import android.app.Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author ludwighultqvist
  * class that acts as as the main entry point for fetching and updating the Firestore database.
@@ -121,6 +124,10 @@ public class Database {
         DBDocument meetup = database.meetups().create();
         meetup.set("name", "Test-Meetup");
         meetup.save();
+
+        List<QueryFilter> filters = new LinkedList<>();
+        filters.add(new QueryFilter("name", "<", "hassan"));
+        List<? extends DBDocument> search = database.users().search(filters);
     }
 
     /*
