@@ -13,7 +13,11 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.MapBounds;
 import com.bulbasaur.dat256.model.MeetUp;
+import com.bulbasaur.dat256.services.firebase.DBCollection;
+import com.bulbasaur.dat256.services.firebase.DBDocument;
+import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.viewmodel.uielements.CustomInfoWindowAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.MarkerData;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,10 +26,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MenuActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -118,13 +124,17 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
         this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick());
         this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp());
-        this.map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int reason) {
-                if (reason == REASON_GESTURE) {
-                    marker.hideInfoWindow();
-                }
+        this.map.setOnCameraMoveStartedListener(reason -> {
+            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                marker.hideInfoWindow();
             }
+        });
+        this.map.setOnCameraIdleListener(() -> {
+            //get events and friends within the new map coordinates
+            //unload events and friends outside the new map coordinates
+
+            updateMapItems(requestNewMapItems(getCurrentMapBounds()));
+
         });
     }
 
@@ -145,5 +155,31 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(fakeMeetUpCoordinates, DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
         }
+    }
+
+    private MapBounds getCurrentMapBounds() {
+        LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+
+        return new MapBounds(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude);
+    }
+
+    private List<? extends DBDocument> requestNewMapItems(MapBounds bounds) {
+        //DBCollection newVisibleFriends = Database.getInstance().users(main.currentUser.id, "friends", new RequestListener(){onSuccuss()});
+
+        Database.getInstance().user().get("friends")
+                ref.query (, , //put request listener here);
+                )
+        newVisibleFriends
+    }
+
+    private void updateMapItems(List<? extends DBDocument> newMapItems) {
+        DBCollection asdf = Database.getInstance().meetups();
+        List<? extends DBDocument> asdd = asdf.all();
+        for (DBDocument asdf :)
+        for (DBDocument e : asdd) {
+            double longit = (Double) e.get("longitude");
+        }
+
+
     }
 }

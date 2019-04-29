@@ -7,6 +7,11 @@ public class Coordinates implements Serializable {
 
     public double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;   //default to a number that cannot be shown on the map and is not a valid coordinate
 
+    public Coordinates(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
     public static String convertToNSEW(boolean latitude, double coordinate, char numDecimalPlaces) {
         if (latitude) {
             if (coordinate < 0) {
