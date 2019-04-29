@@ -53,21 +53,21 @@ public class VerificationView extends AppCompatActivity {
         else{
          */
 
-        authenticator.verify(code, this, new RequestListener() {
+        authenticator.verify(code, this, new RequestListener<Object>() {
             @Override
-            public void onComplete() {
+            public void onComplete(Object o) {
                 displayErrorMessage();
             }
 
             @Override
-            public void onSuccess() {
+            public void onSuccess(Object o) {
                 finish();
                 startActivity(new Intent(VerificationView.this, MenuActivity.class));
 
             }
 
             @Override
-            public void onFailure() {
+            public void onFailure(Object o) {
 
             }
         });
