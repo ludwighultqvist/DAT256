@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Validator;
@@ -17,11 +18,14 @@ import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
+import java.util.Objects;
+
 public class VerificationView extends AppCompatActivity {
     private EditText first, second, third, fourth, fifth, sixth;
     private TextView wrongCode;
     private Authenticator authenticator;
     private String code;
+    private Button newCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +37,12 @@ public class VerificationView extends AppCompatActivity {
         fifth = (EditText)findViewById(R.id.FifthNumber);
         sixth = (EditText)findViewById(R.id.SixthNumber);
         wrongCode = (TextView)findViewById(R.id.wrongCode);
+        newCode = (Button)findViewById(R.id.newCode);
 
         authenticator = Database.getInstance().activeAuthenticator();
         init();
         }
+
 
     private void checkCode() {
         code = first.getText().toString() + second.getText().toString() + third.getText().toString() + fourth.getText().toString() + fifth.getText().toString() + sixth.getText().toString();
@@ -75,12 +81,10 @@ public class VerificationView extends AppCompatActivity {
 
 
     private void init(){
+
         first.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
-
-
-
 
             }
 
@@ -210,5 +214,7 @@ public class VerificationView extends AppCompatActivity {
 
 
         });
+
     }
+
 }
