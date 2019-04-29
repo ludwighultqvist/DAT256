@@ -34,7 +34,6 @@ class PhoneAuthenticator implements Authenticator {
      */
     PhoneAuthenticator(Activity activity) {
         this.activity = activity;
-        //this(activity, null);
     }
 
     PhoneAuthenticator() {
@@ -58,7 +57,6 @@ class PhoneAuthenticator implements Authenticator {
                         }
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(null);
                         }
                     }
@@ -68,7 +66,6 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.FAILED;
 
                         if (listener != null) {
-                            //listener.onFailure();
                             listener.onFailure(null);
                         }
                     }
@@ -82,7 +79,6 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.SENT;
 
                         if (listener != null) {
-                            //listener.onComplete();
                             listener.onComplete(null);
                         }
                     }
@@ -109,7 +105,6 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.COMPLETED;
 
                         if (listener != null) {
-                            //listener.onSuccess();
                             listener.onSuccess(null);
                         }
                     }
@@ -117,14 +112,12 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.FAILED;
 
                         if (listener != null) {
-                            //listener.onComplete();
                             listener.onComplete(null);
                         }
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        //listener.onFailure();
                         listener.onFailure(null);
                     }
                 });

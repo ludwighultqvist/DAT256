@@ -87,7 +87,7 @@ public class Database {
         return new Collection(GROUPS);
     }
 
-    public DBDocument user(RequestListener listener) {
+    public DBDocument user(RequestListener<DBDocument> listener) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             return null;
@@ -114,6 +114,7 @@ public class Database {
     }
 
     public static void testIt() {
+        /*
         Database database = Database.getInstance();
 
         // create a user with given ID
@@ -134,6 +135,7 @@ public class Database {
         List<QueryFilter> filters = new LinkedList<>();
         filters.add(new QueryFilter("name", "<", "hassan"));
         List<? extends DBDocument> search = database.users().search(filters);
+        */
     }
 
 }
