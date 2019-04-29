@@ -21,11 +21,15 @@ public interface Authenticator {
         WAITING, SENT, COMPLETED, FAILED,
     }
 
+    void sendVerificationCode(String recipient, Activity activity, RequestListener listener);
+
     /**
      * sends a verification-code to the given recipient
      * @param recipient the string which is where to code is sent, e.g. email, phone number etc.
      */
     void sendVerificationCode(String recipient);
+
+    void verify(String verificationCode, Activity activity, RequestListener listener);
 
     /**
      * verifies if the given code is the same as the one sent to recipient.
@@ -39,8 +43,4 @@ public interface Authenticator {
      * @return the enum object of the validation
      */
     VerificationStatus status();
-
-    void sendVerificationCode(String recipient, Activity activity, RequestListener listener);
-
-    void verify(String verificationCode, Activity activity, RequestListener listener);
 }

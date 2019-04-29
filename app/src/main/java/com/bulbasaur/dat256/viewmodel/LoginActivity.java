@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,17 +16,21 @@ import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
 import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.firebase.Authenticator;
+import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.QueryFilter;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class  LoginActivity extends AppCompatActivity {
 
     private boolean phoneNumberValid = false;
-    private Button verify;
+    private Button verify, registerButton;
     private String selectedCountryCode;
     private String phoneNumber;
     private Authenticator authenticator;
@@ -38,6 +43,7 @@ public class  LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         wrongNumber = (TextView)findViewById(R.id.wrongNumber);
+        registerButton = findViewById(R.id.registerButton);
         init();
     }
 
@@ -58,12 +64,25 @@ public class  LoginActivity extends AppCompatActivity {
 
         //Sets up the validation code for the phone number text field
         verify.setOnClickListener(v -> {
-            phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
-            /*
-            Database.getInstance().phoneAuthenticator(this).sendVerificationCode(phoneNumber);
 
-            startActivityForResult(new Intent(this, VerificationView.class), LOGIN_VERIFIED_CODE);
-            */
+            this.phoneNumber = selectedCountryCode + Objects.requireNonNull(
+                    Validator.removePhoneZero(phoneNumberEditText.getText().toString()));
+            System.out.println(numberInDatabase());
+            System.out.println(phoneNumber);
+
+            if(numberInDatabase()) {
+                Database.getInstance().phoneAuthenticator(LoginActivity.this).sendVerificationCode(phoneNumber);
+
+                startActivityForResult(new Intent(LoginActivity.this, VerificationView.class), LOGIN_VERIFIED_CODE);
+            }
+            else {
+                wrongNumber.setVisibility(View.VISIBLE);
+            }
+        });
+
+        registerButton.setOnClickListener(v -> {
+            finish();
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         phoneNumberEditText.addTextChangedListener(new TextWatcher() {
@@ -83,8 +102,7 @@ public class  LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //phoneNumber = phoneNumberEditText.getText().toString();
-                //numberInDatabase();
+
             }
         });
     }
@@ -95,16 +113,13 @@ public class  LoginActivity extends AppCompatActivity {
             verify.setEnabled(false);
         }
     }
-/*
+
     private boolean numberInDatabase() {
-
-        if(!phoneNumber.isInDatabase())
-
-            return false;
-        return true;
-
+        List<QueryFilter> usernameList = new ArrayList<QueryFilter>();
+        usernameList.add(new QueryFilter("phonenumber", "=", phoneNumber));
+        return Database.getInstance().users().search(usernameList) != null;
     }
-*/
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
