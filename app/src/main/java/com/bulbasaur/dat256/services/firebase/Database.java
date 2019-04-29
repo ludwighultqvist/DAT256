@@ -5,6 +5,9 @@ import android.app.Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author ludwighultqvist
  * class that acts as as the main entry point for fetching and updating the Firestore database.
@@ -35,6 +38,11 @@ public class Database {
      * private constructor, needed for the class to be a singleton
      */
     private Database() {}
+
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
+        return authenticator;
+    }
 
     /**
      * creates a new PhoneAuthenticator object, stores in the Database object and returns it
@@ -79,6 +87,19 @@ public class Database {
         return new Collection(GROUPS);
     }
 
+    public DBDocument user(RequestListener listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return null;
+        }
+        DBDocument document = users().get(user.getUid(), listener);
+        if (document == null) {
+            document = users().create(user.getUid(), listener);
+            document.save();
+        }
+        return document;
+    }
+
     /**
      * returns the currently logged in user.
      * if no user is logged in null will be returned.
@@ -89,16 +110,7 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return null;
-
-        DBDocument document = users().get(user.getUid());
-        if (document == null) {
-            document = users().create(user.getUid());
-            document.save();
-        }
-
-        return document;
+        return user(null);
     }
 
     public static void testIt() {
@@ -118,5 +130,10 @@ public class Database {
         DBDocument meetup = database.meetups().create();
         meetup.set("name", "Test-Meetup");
         meetup.save();
+
+        List<QueryFilter> filters = new LinkedList<>();
+        filters.add(new QueryFilter("name", "<", "hassan"));
+        List<? extends DBDocument> search = database.users().search(filters);
     }
+
 }

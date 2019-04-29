@@ -1,9 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -19,12 +17,15 @@ import java.util.concurrent.TimeUnit;
  */
 class PhoneAuthenticator implements Authenticator {
 
-    private FirebaseAuth auth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
     private PhoneAuthProvider.ForceResendingToken token;
     private Activity activity;
     private VerificationStatus status;
+
+    PhoneAuthenticator(Activity activity, RequestListener listener) {
+        this(activity);
+    }
 
     /**
      * creates a new PhoneAuthenticator object, which sets up the phone authentication to the
@@ -33,37 +34,61 @@ class PhoneAuthenticator implements Authenticator {
      */
     PhoneAuthenticator(Activity activity) {
         this.activity = activity;
-        auth = FirebaseAuth.getInstance();
+        //this(activity, null);
+    }
 
-        callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                // automatically log in
-                Log.d("AUTH", "Automatic verification in progress");
-                String code = phoneAuthCredential.getSmsCode();
+    PhoneAuthenticator() {
+        this(null);
+    }
 
-                if (code != null) {
-                    verify(code);
+    @Override
+    public void sendVerificationCode(String recipient, Activity activity, RequestListener listener) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                recipient,
+                60,
+                TimeUnit.SECONDS,
+                activity,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                        String code = phoneAuthCredential.getSmsCode();
+
+                        if (code != null) {
+                            verify(code);
+                        }
+
+                        if (listener != null) {
+                            //listener.onSuccess();
+                            listener.onSuccess(null);
+                        }
+                    }
+
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
+                        status = VerificationStatus.FAILED;
+
+                        if (listener != null) {
+                            //listener.onFailure();
+                            listener.onFailure(null);
+                        }
+                    }
+
+                    @Override
+                    public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        super.onCodeSent(s, forceResendingToken);
+
+                        verificationId = s;
+                        token = forceResendingToken;
+                        status = VerificationStatus.SENT;
+
+                        if (listener != null) {
+                            //listener.onComplete();
+                            listener.onComplete(null);
+                        }
+                    }
                 }
-            }
-
-            @Override
-            public void onVerificationFailed(FirebaseException e) {
-                Log.d("AUTH", "Verification failed");
-                status = VerificationStatus.FAILED;
-            }
-
-            @Override
-            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                Log.d("AUTH", "Manual verification required");
-                // manually log in
-                verificationId = s;
-                token = forceResendingToken;
-                status = VerificationStatus.SENT;
-            }
-        };
-
+        );
+        status = VerificationStatus.WAITING;
     }
 
     /**
@@ -72,16 +97,37 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void sendVerificationCode(String recipient) {
-        Log.d("AUTH", "Sending verification code to: " + recipient);
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                recipient,
-                60,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                callbacks
-        );
-        Log.d("AUTH", "Verification code sent to: " + recipient);
-        status = VerificationStatus.WAITING;
+        sendVerificationCode(recipient, activity, null);
+    }
+
+    @Override
+    public void verify(String verificationCode, Activity activity, RequestListener listener) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        status = VerificationStatus.COMPLETED;
+
+                        if (listener != null) {
+                            //listener.onSuccess();
+                            listener.onSuccess(null);
+                        }
+                    }
+                    else {
+                        status = VerificationStatus.FAILED;
+
+                        if (listener != null) {
+                            //listener.onComplete();
+                            listener.onComplete(null);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        //listener.onFailure();
+                        listener.onFailure(null);
+                    }
+                });
     }
 
     /**
@@ -90,9 +136,7 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void verify(String verificationCode) {
-        Log.d("AUTH", "Verifying code: " + verificationCode);
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
-        signInWithPhoneAuthCredential(credential);
+        verify(verificationCode, activity, null);
     }
 
     /**
@@ -103,24 +147,5 @@ class PhoneAuthenticator implements Authenticator {
     public VerificationStatus status() {
         return status;
     }
-
-    /**
-     * tries a sign in / sign up in the Firebase date with the given credential object containing
-     * the code to be validated. If the task is successful a user is fetched.
-     * @param credential the object containing the data of the validation
-     */
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
-            if (task.isSuccessful()) {
-                Log.d("AUTH", "Verification completed.");
-                status = VerificationStatus.COMPLETED;
-            }
-            else {
-                Log.d("AUTH", "Verification failed.");
-                status = VerificationStatus.FAILED;
-            }
-        });
-    }
-
 
 }
