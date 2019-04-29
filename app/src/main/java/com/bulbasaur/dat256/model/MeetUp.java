@@ -68,6 +68,17 @@ public class MeetUp implements Serializable {
         this.description = description;
     }
 
+    public MeetUp(long id, String name, Coordinates coordinates, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
+        this.id = id;
+        this.name = name;
+        this.coords = coordinates;
+        this.description = description;
+        this.category = category;
+        this.maxAttendees = maxAttendees;
+        this.start = start;
+        this.end = end;
+    }
+
     public MeetUp(long id, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
         this.id = id;
         this.name = name;
