@@ -88,6 +88,11 @@
             android:name=".viewmodel.RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewmodel.Terms_And_Conditions_Activity"
+            android:label="Terms_And_Conditions_View"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

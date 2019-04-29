@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import com.bulbasaur.dat256.R;
@@ -25,7 +26,9 @@ import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private Button createAccountButton;
+    private Button createAccountButton, readTerms;
+    private CheckBox checkBox;
+
 
     private boolean firstNameValid = false, lastNameValid = false, phoneNumberValid = false;
 
@@ -54,6 +57,8 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         createAccountButton = findViewById(R.id.createAccountButton);
         Button goToLoginViewButton = findViewById(R.id.goToLoginViewButton);
+        readTerms = findViewById(R.id.readTermsButton);
+        checkBox = findViewById(R.id.termsCheckbox);
 
         //Updates the selected country code to the correct value
         phoneNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -64,7 +69,16 @@ public class RegisterActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        //Sets up the validation code for the first name text field
+        readTerms.setOnClickListener(v -> {
+                    startActivity(new Intent(RegisterActivity.this, Terms_And_Conditions_Activity.class));
+                });
+        checkBox.setOnClickListener(v -> {
+            checkBox.isChecked();
+            updateCreateAccountButton();
+        });
+
+
+          //Sets up the validation code for the first name text field
         firstNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -160,8 +174,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void updateCreateAccountButton() {
-        if (firstNameValid && lastNameValid && phoneNumberValid) {
+        if (firstNameValid && lastNameValid && phoneNumberValid && checkBox.isChecked()) {
             createAccountButton.setEnabled(true);
         } else {
             createAccountButton.setEnabled(false);
