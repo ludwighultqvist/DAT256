@@ -39,6 +39,11 @@ public class Database {
      */
     private Database() {}
 
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
+        return authenticator;
+    }
+
     /**
      * creates a new PhoneAuthenticator object, stores in the Database object and returns it
      * @param activity the activity required by the authenticator
@@ -82,6 +87,19 @@ public class Database {
         return new Collection(GROUPS);
     }
 
+    public DBDocument user(RequestListener listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return null;
+        }
+        DBDocument document = users().get(user.getUid(), listener);
+        if (document == null) {
+            document = users().create(user.getUid(), listener);
+            document.save();
+        }
+        return document;
+    }
+
     /**
      * returns the currently logged in user.
      * if no user is logged in null will be returned.
@@ -92,18 +110,6 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
-        /*
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return null;
-
-        DBDocument document = users().get(user.getUid());
-        if (document == null) {
-            document = users().create(user.getUid());
-            document.save();
-        }
-
-        return document;
-        */
         return user(null);
     }
 
@@ -130,30 +136,4 @@ public class Database {
         List<? extends DBDocument> search = database.users().search(filters);
     }
 
-    /*
-    ==========================================================================================
-    ==========================================================================================
-    ==========================================================================================
-    ==========================================================================================
-    ==========================================================================================
-    ==========================================================================================
-     */
-
-    public Authenticator phoneAuthenticator() {
-        authenticator = new PhoneAuthenticator();
-        return authenticator;
-    }
-
-    public DBDocument user(RequestListener listener) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            return null;
-        }
-        DBDocument document = users().get(user.getUid(), listener);
-        if (document == null) {
-            document = users().create(user.getUid(), listener);
-            document.save();
-        }
-        return document;
-    }
 }
