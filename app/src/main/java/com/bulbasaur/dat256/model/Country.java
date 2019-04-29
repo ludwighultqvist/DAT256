@@ -4,8 +4,8 @@ import com.bulbasaur.dat256.R;
 
 public enum Country {
 
-    SWEDEN("Sweden", "SE", "0046", "+46", R.drawable.se),
-    USA("USA", "US", "001", "+1", R.drawable.us);
+    SWEDEN("Sweden", "SE", "+46", "+46", R.drawable.se),
+    USA("USA", "US", "+1", "+1", R.drawable.us);
 
     public String name, shortName, countryCode, countryCodeVisual;
     public int iconResource;
