@@ -49,7 +49,7 @@ public class Validator {
             if (checkPhoneChar(phoneNumber)) {
                 phoneNumber = addCountryCode(country, phoneNumber);
                 if (detectSpecialChar(firstName) && detectSpecialChar(lastName)) {
-                    return new User(firstName, lastName, phoneNumber);
+                    return new User(firstName, lastName, phoneNumber, 0, 0);//TODO add coords
                 }
             }
         }
