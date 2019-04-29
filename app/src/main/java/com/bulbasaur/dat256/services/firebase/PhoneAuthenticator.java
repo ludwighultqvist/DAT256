@@ -24,7 +24,7 @@ class PhoneAuthenticator implements Authenticator {
     private VerificationStatus status;
 
     PhoneAuthenticator(Activity activity, RequestListener listener) {
-        this.activity = activity;
+        this(activity);
     }
 
     /**
@@ -33,11 +33,12 @@ class PhoneAuthenticator implements Authenticator {
      * @param activity an activity required by the Firebase phone authentication, cannot be null
      */
     PhoneAuthenticator(Activity activity) {
-        this(activity, null);
+        this.activity = activity;
+        //this(activity, null);
     }
 
     PhoneAuthenticator() {
-        this(null, null);
+        this(null);
     }
 
     @Override
@@ -57,7 +58,8 @@ class PhoneAuthenticator implements Authenticator {
                         }
 
                         if (listener != null) {
-                            listener.onSuccess();
+                            //listener.onSuccess();
+                            listener.onSuccess(null);
                         }
                     }
 
@@ -66,7 +68,8 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.FAILED;
 
                         if (listener != null) {
-                            listener.onFailure();
+                            //listener.onFailure();
+                            listener.onFailure(null);
                         }
                     }
 
@@ -79,7 +82,8 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.SENT;
 
                         if (listener != null) {
-                            listener.onComplete();
+                            //listener.onComplete();
+                            listener.onComplete(null);
                         }
                     }
                 }
@@ -105,20 +109,23 @@ class PhoneAuthenticator implements Authenticator {
                         status = VerificationStatus.COMPLETED;
 
                         if (listener != null) {
-                            listener.onSuccess();
+                            //listener.onSuccess();
+                            listener.onSuccess(null);
                         }
                     }
                     else {
                         status = VerificationStatus.FAILED;
 
                         if (listener != null) {
-                            listener.onComplete();
+                            //listener.onComplete();
+                            listener.onComplete(null);
                         }
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (listener != null) {
-                        listener.onFailure();
+                        //listener.onFailure();
+                        listener.onFailure(null);
                     }
                 });
     }

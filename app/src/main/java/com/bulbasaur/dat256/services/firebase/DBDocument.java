@@ -27,14 +27,14 @@ public interface DBDocument {
      */
     void set(String field, Object object);
 
-    void save(RequestListener listener);
+    void save(RequestListener<DBDocument> listener);
 
     /**
      * saves the stored objects of the fields in the Firestore database
      */
     void save();
 
-    void delete(RequestListener listener);
+    void delete(RequestListener<DBDocument> listener);
 
     /**
      * deletes the document from the Firestore database
