@@ -19,7 +19,7 @@ import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class  LoginActivity extends AppCompatActivity {
 
     private boolean phoneNumberValid = false;
     private Button verify;
