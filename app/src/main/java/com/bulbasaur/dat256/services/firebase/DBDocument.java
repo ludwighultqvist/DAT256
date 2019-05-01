@@ -1,5 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
+import android.support.annotation.NonNull;
+
 /**
  * @author ludwighultqvist
  * interface that acts as a document in the Firestore database
@@ -27,14 +29,14 @@ public interface DBDocument {
      */
     void set(String field, Object object);
 
-    void save(RequestListener<DBDocument> listener);
+    void save(@NonNull RequestListener<DBDocument> listener);
 
     /**
      * saves the stored objects of the fields in the Firestore database
      */
     void save();
 
-    void delete(RequestListener<DBDocument> listener);
+    void delete(@NonNull RequestListener<DBDocument> listener);
 
     /**
      * deletes the document from the Firestore database

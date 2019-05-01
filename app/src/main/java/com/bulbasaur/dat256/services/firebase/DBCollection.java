@@ -1,5 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -26,7 +28,7 @@ public interface DBCollection {
      */
     DBDocument create();
 
-    DBDocument get(String id, RequestListener<DBDocument> listener);
+    DBDocument get(String id, @NonNull RequestListener<DBDocument> listener);
 
     /**
      * fetches a document with the given id from the collection in the database.
@@ -36,7 +38,7 @@ public interface DBCollection {
      */
     DBDocument get(String id);
 
-    List<? extends DBDocument> all(RequestListener<List<? extends DBDocument>> listener);
+    List<? extends DBDocument> all(@NonNull RequestListener<List<? extends DBDocument>> listener);
 
     /**
      * fetches and returns a list of all documents from the collection in the database
@@ -44,11 +46,11 @@ public interface DBCollection {
      */
     List<? extends DBDocument> all();
 
-    List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener<List<? extends DBDocument>> listener);
+    List<? extends DBDocument> search(List<QueryFilter> filters, @NonNull RequestListener<List<? extends DBDocument>> listener);
 
     List<? extends DBDocument> search(List<QueryFilter> filters);
 
-    List<? extends DBDocument> search(QueryFilter filter, RequestListener<List<? extends DBDocument>> listener);
+    List<? extends DBDocument> search(QueryFilter filter, @NonNull RequestListener<List<? extends DBDocument>> listener);
 
     List<? extends DBDocument> search(QueryFilter filter);
 }

@@ -1,6 +1,9 @@
 package com.bulbasaur.dat256.services.firebase;
 
+import android.support.annotation.NonNull;
+
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -10,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 
 /**
  * @author ludwighultqvist
@@ -41,17 +43,9 @@ class Collection implements DBCollection {
     }
 
     @Override
-    public DBDocument create(String id, RequestListener<DBDocument> listener) {
-        DBDocument document;
-
-        if (id == null) {
-            document = new Document(collection.document(), listener);
-        }
-        else {
-            document = new Document(collection.document(id), listener);
-        }
-
-        return document;
+    public DBDocument create(String id,@NonNull  RequestListener<DBDocument> listener) {
+        DocumentReference reference = id == null ? collection.document() : collection.document(id);
+        return new Document(reference, listener);
     }
 
     /**
@@ -61,11 +55,11 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(String id) {
-        return create(id, null);
+        return create(id, new RequestListener<>(true));
     }
 
     @Override
-    public DBDocument create(RequestListener<DBDocument> listener) {
+    public DBDocument create(@NonNull RequestListener<DBDocument> listener) {
         return create(null, listener);
     }
 
@@ -75,11 +69,35 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create() {
-        return create(null, null);
+        return create(new RequestListener<>(true));
     }
 
     @Override
-    public DBDocument get(String id, RequestListener<DBDocument> listener) {
+    public DBDocument get(String id, @NonNull RequestListener<DBDocument> listener) {
+        Document document = new Document();
+
+        collection.document(id).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            document.init(snapshot.getReference(), listener);
+                            //listener.onSuccess(document);
+                        }
+                        else {
+                            listener.onComplete(document);
+                        }
+                    }
+                    else {
+                        listener.onComplete(document);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(document));
+
+        listener.finish();
+        return listener.getObject();
+
+        /*
         Document result = new Document();
 
         collection.document(id).get()
@@ -108,6 +126,7 @@ class Collection implements DBCollection {
                 });
 
         return result;
+        */
     }
 
     /**
@@ -118,11 +137,37 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument get(String id) {
-        return get(id, null);
+        return get(id, new RequestListener<>(true));
     }
 
     @Override
-    public List<? extends DBDocument> all(RequestListener<List<? extends DBDocument>> listener) {
+    public List<? extends DBDocument> all(@NonNull RequestListener<List<? extends DBDocument>> listener) {
+        List<Document> documents = new ArrayList<>();
+
+        collection.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+                        if (snapshot != null) {
+                            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                            }
+                            listener.onSuccess(documents);
+                        }
+                        else {
+                            listener.onComplete(documents);
+                        }
+                    }
+                    else {
+                        listener.onComplete(documents);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(documents));
+
+        listener.finish();
+        return listener.getObject();
+
+        /*
         List<Document> result = new ArrayList<>();
 
         collection.get()
@@ -152,6 +197,7 @@ class Collection implements DBCollection {
                     }
                 });
         return result;
+        */
     }
 
     /**
@@ -160,11 +206,54 @@ class Collection implements DBCollection {
      */
     @Override
     public List<? extends DBDocument> all() {
-        return all(null);
+        return all(new RequestListener<>(true));
     }
 
     @Override
-    public List<? extends DBDocument> search(List<QueryFilter> filters, RequestListener<List<? extends DBDocument>> listener) {
+    public List<? extends DBDocument> search(List<QueryFilter> filters, @NonNull RequestListener<List<? extends DBDocument>> listener) {
+        Query query = collection;
+        List<Document> documents = new ArrayList<>();
+
+        for (QueryFilter filter : filters) {
+            switch (filter.getComparison()) {
+                case "=":
+                    query = query.whereEqualTo(filter.getField(), filter.getValue());
+                    break;
+                case "<":
+                    query = query.whereLessThan(filter.getField(), filter.getValue());
+                    break;
+                case ">":
+                    query = query.whereGreaterThan(filter.getField(), filter.getValue());
+                    break;
+                default:
+            }
+        }
+
+        query.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+
+                        if (snapshot != null) {
+                            for (DocumentSnapshot document : snapshot.getDocuments()) {
+                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                            }
+                            listener.onSuccess(documents);
+                        }
+                        else {
+                            listener.onComplete(documents);
+                        }
+                    }
+                    else {
+                        listener.onComplete(documents);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(documents));
+
+        listener.finish();
+        return listener.getObject();
+
+        /*
         Query query = collection;
         List<Document> result = new ArrayList<>();
 
@@ -209,15 +298,16 @@ class Collection implements DBCollection {
                 });
 
         return result.isEmpty() ? null : result;
+        */
     }
 
     @Override
     public List<? extends DBDocument> search(List<QueryFilter> filters) {
-        return search(filters, null);
+        return search(filters, new RequestListener<>(true));
     }
 
     @Override
-    public List<? extends DBDocument> search(QueryFilter filter, RequestListener<List<? extends DBDocument>> listener) {
+    public List<? extends DBDocument> search(QueryFilter filter, @NonNull RequestListener<List<? extends DBDocument>> listener) {
         List<QueryFilter> filters = new LinkedList<>();
         filters.add(filter);
         return search(filters, listener);
@@ -225,6 +315,6 @@ class Collection implements DBCollection {
 
     @Override
     public List<? extends DBDocument> search(QueryFilter filter) {
-        return search(filter, null);
+        return search(filter, new RequestListener<>(true));
     }
 }
