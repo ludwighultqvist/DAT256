@@ -1,12 +1,10 @@
 package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author ludwighultqvist
@@ -87,12 +85,11 @@ public class Database {
         return new Collection(GROUPS);
     }
 
-    public DBDocument user(RequestListener<DBDocument> listener) {
+    public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             return null;
         }
-
         users().get(user.getUid(), new RequestListener<DBDocument>(){
             @Override
             public void onSuccess(DBDocument object) {
@@ -101,12 +98,10 @@ public class Database {
                     listener.onSuccess(object);
                 }
                 else {
-                    // create user
                     users().create(user.getUid(), new RequestListener<DBDocument>() {
                         @Override
                         public void onSuccess(DBDocument object) {
                             super.onSuccess(object);
-
                             listener.onSuccess(object);
                         }
 
@@ -137,7 +132,9 @@ public class Database {
                 listener.onFailure(object);
             }
         });
-        return null;
+
+        listener.finish();
+        return listener.getObject();
         /*
         DBDocument document = users().get(user.getUid(), listener);
         if (document == null) {
@@ -158,7 +155,7 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
-        return user(null);
+        return user(new RequestListener<>(true));
     }
 
 
