@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author ludwighultqvist
  * a class that implements the Collection interface
@@ -86,10 +88,13 @@ class Collection implements DBCollection {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             result.init(snapshot.getReference(), listener);
-                        }
 
-                        if (listener != null) {
-                            listener.onSuccess(result);
+                            if (listener != null) {
+                                listener.onSuccess(result);
+                            }
+                        }
+                        else if (listener != null) {
+                            listener.onComplete(result);
                         }
                     }
                     else if (listener != null) {
@@ -102,7 +107,7 @@ class Collection implements DBCollection {
                     }
                 });
 
-        return result.isEmpty() ? null : result;
+        return result;
     }
 
     /**
@@ -124,15 +129,17 @@ class Collection implements DBCollection {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot snapshot = task.getResult();
-
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
                                 result.add(new Document(document.getReference(), null));
                             }
-                        }
 
-                        if (listener != null) {
-                            listener.onSuccess(result);
+                            if (listener != null) {
+                                listener.onSuccess(result);
+                            }
+                        }
+                        else if (listener != null) {
+                            listener.onComplete(result);
                         }
                     }
                     else if (listener != null) {

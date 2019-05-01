@@ -92,12 +92,60 @@ public class Database {
         if (user == null) {
             return null;
         }
+
+        users().get(user.getUid(), new RequestListener<DBDocument>(){
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
+                if (object != null) {
+                    listener.onSuccess(object);
+                }
+                else {
+                    // create user
+                    users().create(user.getUid(), new RequestListener<DBDocument>() {
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
+
+                            listener.onSuccess(object);
+                        }
+
+                        @Override
+                        public void onComplete(DBDocument object) {
+                            super.onComplete(object);
+                            listener.onComplete(object);
+                        }
+
+                        @Override
+                        public void onFailure(DBDocument object) {
+                            super.onFailure(object);
+                            listener.onFailure(object);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onComplete(DBDocument object) {
+                super.onComplete(object);
+                listener.onComplete(object);
+            }
+
+            @Override
+            public void onFailure(DBDocument object) {
+                super.onFailure(object);
+                listener.onFailure(object);
+            }
+        });
+        return null;
+        /*
         DBDocument document = users().get(user.getUid(), listener);
         if (document == null) {
             document = users().create(user.getUid(), listener);
             document.save();
         }
         return document;
+        */
     }
 
     /**
@@ -112,6 +160,7 @@ public class Database {
     public DBDocument user() {
         return user(null);
     }
+
 
     public static void testIt() {
         /*
