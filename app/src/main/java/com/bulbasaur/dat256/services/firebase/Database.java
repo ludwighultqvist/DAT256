@@ -85,11 +85,17 @@ public class Database {
         return new Collection(GROUPS);
     }
 
+    public boolean hasUser() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
     public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        if (!hasUser()) {
             return null;
         }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         users().get(user.getUid(), new RequestListener<DBDocument>(){
             @Override
             public void onSuccess(DBDocument object) {

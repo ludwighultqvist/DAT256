@@ -21,6 +21,7 @@ import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MapBounds;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.MeetUp.Categories;
+import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
@@ -67,10 +68,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<DBDocument> myMeetUpsDocs;
 
     private List<? extends DBDocument> myMeetUpsDocsLat, myMeetUpsDocsLon;
-  
-    private Coordinates currentCoords;
 
     private Marker meMarker;
+
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,22 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
 
         fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", Categories.PARTY, 0, null, null);
+
+        if(Database.getInstance().hasUser()){
+            Database.getInstance().user(new RequestListener<DBDocument>(){
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+                    currentUser = new User(object.id());
+                    currentUser.setFirstName((String)object.get("firstname"));
+                    currentUser.setLastName((String)object.get("lastname"));
+                    currentUser.setPhoneNumber((String)object.get("phonenumber"));
+
+                    //TODO get friends from DB and add them to the currentUser.friends list
+
+                }
+            });
+        }
     }
 
     @Override
@@ -190,6 +207,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(lastLocationCoords));
                 this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationCoords,DEFAULT_MEET_UP_ZOOM_LEVEL));
                 meMarker = map.addMarker(new MarkerOptions().position(lastLocationCoords).title("Your location"));
+                currentUser.setCoordinates(lastLocationCoords);
             }
         });
     }
