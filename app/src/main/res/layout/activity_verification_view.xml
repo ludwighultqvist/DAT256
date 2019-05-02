@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toStartOf="@+id/ThirdNumber"
         app:layout_constraintStart_toEndOf="@+id/FirstNumber"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/ThirdNumber"
@@ -76,7 +76,7 @@
         app:layout_constraintEnd_toStartOf="@+id/FifthNumber"
         app:layout_constraintStart_toEndOf="@+id/ThirdNumber"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/FifthNumber"
@@ -112,6 +112,58 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/FifthNumber"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="139dp"
+        android:text="@string/enter_the_verification_code_that_you_should_have_received_via_sms_below"
+        android:textAlignment="center"
+        android:textColor="@color/mainColor"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/FirstNumber"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/wrongCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="166dp"
+        android:layout_marginTop="89dp"
+        android:layout_marginEnd="165dp"
+        android:layout_marginBottom="357dp"
+        android:background="#00D81010"
+        android:backgroundTint="#00E70A0A"
+        android:text="Wrong code "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ThirdNumber"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/newCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="162dp"
+        android:layout_marginBottom="288dp"
+        android:text="Send new verification code"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wrongCode" />
 
 </android.support.constraint.ConstraintLayout>

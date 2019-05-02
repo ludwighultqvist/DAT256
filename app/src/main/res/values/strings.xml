@@ -34,11 +34,39 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="toolbar_search_hint">Search for users or meet ups</string>
     <string name="log_in">Log in</string>
     <string name="settings">Settings</string>
     <string name="scan_qr_code">Scan QR code</string>
     <string name="profile">Profile</string>
     <string name="meetapp">MeetApp</string>
+
     <string name="connect_bitmoji">Connect Bitmoji</string>
     <string name="title_activity_connect_snap">Sign in</string>
+    <string name="already_a_user_log_in_here">Already a user? Log in here!</string>
+
+    <string name="create_meetup_title">Create a MeetUp</string>
+    <string name="party_at_hassan_s_place">Title - e.g. Party at Hassan\'s place</string>
+    <string name="very_fun_party_bring_your_friends">Description - e.g. Very fun party - bring your friends</string>
+    <string name="choose_location">Choose Location...</string>
+    <string name="title_activity_location_picker">Pick a location for your MeetUp...</string>
+    <string name="create_account_log_in">Create account/log in</string>
+    <string name="pick_this_location">Pick this location</string>
+    <string name="coordinates">Coordinates: %1$s %2$s</string>
+    <string name="center_of_map">center of map</string>
+    <string name="max_attendees">Max attendees:</string>
+    <string name="max_attendees_hint">Unlimited</string>
+    <string name="start_date">Start date:</string>
+    <string name="category">Category:</string>
+    <string-array name="category_array">
+        <item>Sports</item>
+        <item>Food</item>
+        <item>Games</item>
+        <item>Party</item>
+        <item>Education</item>
+    </string-array>
+    <string name="create_meetup_done">Create meet up</string>
+    <string name="join_by_long_press">Long press to join MeetUp</string>
+    <string name="end_date">End date</string>
+    <string name="enter_the_verification_code_that_you_should_have_received_via_sms_below">Enter the verification code that you should have received via SMS below:</string>
 </resources>

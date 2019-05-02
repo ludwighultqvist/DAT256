@@ -1,9 +1,8 @@
 package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
-import com.bulbasaur.dat256.services.Database.Authenticator;
-import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -37,6 +36,11 @@ public class Database {
      * private constructor, needed for the class to be a singleton
      */
     private Database() {}
+
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
+        return authenticator;
+    }
 
     /**
      * creates a new PhoneAuthenticator object, stores in the Database object and returns it
@@ -81,6 +85,66 @@ public class Database {
         return new Collection(GROUPS);
     }
 
+    public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return null;
+        }
+        users().get(user.getUid(), new RequestListener<DBDocument>(){
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
+                if (object != null) {
+                    listener.onSuccess(object);
+                }
+                else {
+                    users().create(user.getUid(), new RequestListener<DBDocument>() {
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
+                            listener.onSuccess(object);
+                        }
+
+                        @Override
+                        public void onComplete(DBDocument object) {
+                            super.onComplete(object);
+                            listener.onComplete(object);
+                        }
+
+                        @Override
+                        public void onFailure(DBDocument object) {
+                            super.onFailure(object);
+                            listener.onFailure(object);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onComplete(DBDocument object) {
+                super.onComplete(object);
+                listener.onComplete(object);
+            }
+
+            @Override
+            public void onFailure(DBDocument object) {
+                super.onFailure(object);
+                listener.onFailure(object);
+            }
+        });
+
+        listener.finish();
+        return listener.getObject();
+        /*
+        DBDocument document = users().get(user.getUid(), listener);
+        if (document == null) {
+            document = users().create(user.getUid(), listener);
+            document.save();
+        }
+        return document;
+        */
+    }
+
     /**
      * returns the currently logged in user.
      * if no user is logged in null will be returned.
@@ -91,19 +155,12 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return null;
-
-        DBDocument document = users().get(user.getUid());
-        if (document == null) {
-            document = users().create(user.getUid());
-            document.save();
-        }
-
-        return document;
+        return user(new RequestListener<>(true));
     }
 
+
     public static void testIt() {
+        /*
         Database database = Database.getInstance();
 
         // create a user with given ID
@@ -120,5 +177,11 @@ public class Database {
         DBDocument meetup = database.meetups().create();
         meetup.set("name", "Test-Meetup");
         meetup.save();
+
+        List<QueryFilter> filters = new LinkedList<>();
+        filters.add(new QueryFilter("name", "<", "hassan"));
+        List<? extends DBDocument> search = database.users().search(filters);
+        */
     }
+
 }

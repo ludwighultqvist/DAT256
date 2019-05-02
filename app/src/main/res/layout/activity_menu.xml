@@ -5,11 +5,10 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".viewmodel.MenuActivity"
     tools:openDrawer="start">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -17,10 +16,10 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#7509"
+            android:layout_height="wrap_content"
+            android:background="@color/darkTranslucentColor"
             android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +30,7 @@
                 android:layout_width="250dp"
                 android:layout_height="38dp"
                 tools:layout_editor_absoluteX="300dp"
-                tools:layout_editor_absoluteY="8dp"/>
+                tools:layout_editor_absoluteY="8dp" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -39,17 +38,25 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/map"
+
+            <fragment
+                android:id="@+id/main_map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".viewmodel.MapActivity" />
+                tools:context=".viewmodel.MenuActivity" />
         </FrameLayout>
 
-    </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/mainColor"
+            android:src="@drawable/ic_add_black_24dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -57,8 +64,7 @@
         android:layout_height="match_parent"
         android:paddingTop="60dp"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:background="#5315"
+        android:background="@color/mainTranslucentColor"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"

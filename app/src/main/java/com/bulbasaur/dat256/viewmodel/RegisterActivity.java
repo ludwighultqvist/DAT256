@@ -5,26 +5,42 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Country;
+import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.model.Validator;
-import com.bulbasaur.dat256.services.Database.PhoneAuthenticator;
+import com.bulbasaur.dat256.services.firebase.DBDocument;
+import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
+import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
+import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private Button createAccountButton;
+    private Button createAccountButton, readTerms;
+    private CheckBox checkBox;
+
 
     private boolean firstNameValid = false, lastNameValid = false, phoneNumberValid = false;
 
-    private String selectedCountryCode;
+    private Country country;
 
+    static final int REGISTER_VERIFIED_CODE = 10;
+
+    EditTextWithError firstNameEditText;
+    EditTextWithError lastNameEditText;
+    EditTextWithError phoneNumberEditText;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +52,33 @@ public class RegisterActivity extends AppCompatActivity {
         CountrySpinnerAdapter countrySpinnerAdapter = new CountrySpinnerAdapter(this);
         phoneNumberSpinner.setAdapter(countrySpinnerAdapter);
 
-        EditTextWithError firstNameEditText = findViewById(R.id.firstNameEditText);
-        EditTextWithError lastNameEditText = findViewById(R.id.lastNameEditText);
-        EditTextWithError phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
+        firstNameEditText = findViewById(R.id.firstNameEditText);
+        lastNameEditText = findViewById(R.id.lastNameEditText);
+        phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         createAccountButton = findViewById(R.id.createAccountButton);
+        Button goToLoginViewButton = findViewById(R.id.goToLoginViewButton);
+        readTerms = findViewById(R.id.readTermsButton);
+        checkBox = findViewById(R.id.termsCheckbox);
 
         //Updates the selected country code to the correct value
         phoneNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                selectedCountryCode = Country.values()[pos].countryCodeVisual;
+                country = Country.values()[pos];
             }
 
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        readTerms.setOnClickListener(v -> {
+                    startActivity(new Intent(RegisterActivity.this, Terms_And_Conditions_Activity.class));
+                });
+        checkBox.setOnClickListener(v -> {
+            checkBox.isChecked();
+            updateCreateAccountButton();
+        });
 
-        //Sets up the validation code for the first name text field
+
+          //Sets up the validation code for the first name text field
         firstNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -110,21 +137,65 @@ public class RegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
+        //Set what happens when "Create Account" is pressed: send verification code & go to verification view
         createAccountButton.setOnClickListener(v -> {
-            String phoneNumber = selectedCountryCode + Objects.requireNonNull(phoneNumberEditText.getText()).toString();
+            user = Validator.createUser(firstNameEditText.getText().toString(), lastNameEditText.getText().toString(), phoneNumberEditText.getText().toString(), country);
 
-            PhoneAuthenticator authenticator = new PhoneAuthenticator(this);
-            authenticator.sendVerificationCode(phoneNumber);
+            Database.getInstance().phoneAuthenticator().sendVerificationCode(user.getPhoneNumber(), this, new RequestListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    super.onSuccess(object);
+                    startActivity(new Intent(RegisterActivity.this, MenuActivity.class));
+                    Log.d("VER", "success");
+                }
 
-            startActivity(new Intent(this, VerificationView.class));
+                @Override
+                public void onComplete(Object object) {
+                    super.onComplete(object);
+                    startActivityForResult(new Intent(RegisterActivity.this, VerificationView.class), REGISTER_VERIFIED_CODE);
+                    Log.d("VER", "complete");
+                }
+
+                @Override
+                public void onFailure(Object object) {
+                    super.onFailure(object);
+                    Log.d("VER", "fail: " + user.getPhoneNumber());
+                }
+            });
+
+
+        });
+
+        //If the user already has an account, they can go to the log-in view
+        goToLoginViewButton.setOnClickListener(v -> {
+            finish();
+
+            startActivity(new Intent(this, LoginActivity.class));
         });
     }
 
+
+
     private void updateCreateAccountButton() {
-        if (firstNameValid && lastNameValid && phoneNumberValid) {
+        if (firstNameValid && lastNameValid && phoneNumberValid && checkBox.isChecked()) {
             createAccountButton.setEnabled(true);
         } else {
             createAccountButton.setEnabled(false);
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REGISTER_VERIFIED_CODE) {
+            if (resultCode == RESULT_OK) {
+                finish();
+                DBDocument document = Database.getInstance().user();
+                if (document != null) {
+                    document.set("firstname", user.getFirstName());
+                    document.set("lastname", user.getLastName());
+                    document.set("phone", user.getPhoneNumber());
+                    document.save();
+                }
+            }
         }
     }
 }

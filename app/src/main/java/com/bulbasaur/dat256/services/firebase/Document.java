@@ -1,6 +1,6 @@
 package com.bulbasaur.dat256.services.firebase;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,33 +20,44 @@ class Document implements DBDocument {
     private DocumentReference document;
     private Map<String, Object> data = new HashMap<>();
 
-    /**
-     * package private constructor which creates a new document with the given reference to a
-     * document in the Firestore database
-     * @param document the DocumentReference object
-     */
-    Document(DocumentReference document) {
-        if (document != null) {
-            init(document);
-        }
+    Document(@NonNull DocumentReference document, @NonNull RequestListener<DBDocument> listener) {
+        init(document, listener);
     }
 
     /**
      * package private constructor which creates a new empty document with no reference to a
      * document in the Firestore database
      */
-    Document() {
-        this(null);
-    }
+    Document() {}
 
-    /**
-     * initializes the document object with the given reference to a document in the Firestore
-     * database and fetches the data from it and stores it in the Map object
-     * @param document the given DocumentReference object
-     */
-    void init(DocumentReference document) {
+    void init(DocumentReference document, @NonNull RequestListener<DBDocument> listener) {
         this.document = document;
-        document.get()
+
+        this.document.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot != null && snapshot.exists()) {
+                            Map<String, Object> data = snapshot.getData();
+                            if (data != null) {
+                                data.putAll(snapshot.getData());
+                            }
+                            listener.onSuccess(this);
+                        }
+                        else {
+                            listener.onComplete(this);
+                        }
+                    }
+                    else {
+                        listener.onComplete(this);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(this));
+
+        listener.finish();
+
+        /*
+        this.document.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot snapshot = task.getResult();
@@ -56,9 +67,21 @@ class Document implements DBDocument {
                                 data.putAll(snapshot.getData());
                             }
                         }
+
+                        if (listener != null) {
+                            listener.onSuccess(this);
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete(this);
                     }
                 })
-                .addOnFailureListener(e -> {});
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure(this);
+                    }
+                });
+        */
     }
 
     /**
@@ -91,17 +114,82 @@ class Document implements DBDocument {
         data.put(field.toLowerCase(), object);
     }
 
+    @Override
+    public void save(@NonNull RequestListener<DBDocument> listener) {
+        set("last-save", DateFormat.getDateInstance().format(new Date()));
+
+        document.set(data, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listener.onSuccess(this);
+                    }
+                    else {
+                        listener.onComplete(this);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(this));
+
+        listener.finish();
+
+        /*
+        document.set(data, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (listener != null) {
+                            listener.onSuccess(this);
+                        }
+                    }
+                    else if (listener != null) {
+                        listener.onComplete(this);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onFailure(this);
+                    }
+                });
+        */
+    }
+
     /**
      * saves the stored objects of the fields in the Firestore database
      */
     @Override
     public void save() {
-        set("last-save", DateFormat.getDateInstance().format(new Date()));
-        document.set(data, SetOptions.merge())
+        save(new RequestListener<>(true));
+    }
+
+    @Override
+    public void delete(@NonNull RequestListener<DBDocument> listener) {
+        document.delete()
                 .addOnCompleteListener(task -> {
-                    Log.d("DOCUMENT", "saving");
+                    if (task.isSuccessful()) {
+                        listener.onSuccess(this);
+                    } else {
+                        listener.onSuccess(this);
+                    }
                 })
-                .addOnFailureListener(e -> {});
+                .addOnFailureListener(e -> listener.onFailure(this));
+
+        listener.finish();
+
+        /*
+        document.delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (listener != null) {
+                            listener.onSuccess(this);
+                        }
+                    } else if (listener != null) {
+                        listener.onComplete(this);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) {
+                        listener.onComplete(this);
+                    }
+                });
+        */
     }
 
     /**
@@ -109,9 +197,7 @@ class Document implements DBDocument {
      */
     @Override
     public void delete() {
-        document.delete()
-                .addOnCompleteListener(task -> {})
-                .addOnFailureListener(e -> {});
+        delete(new RequestListener<>(true));
     }
 
     /**

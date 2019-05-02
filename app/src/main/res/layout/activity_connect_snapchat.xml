@@ -4,21 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFC00"
     tools:context=".viewmodel.ConnectSnapchatActivity">
 
     <Button
         android:id="@+id/connectButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="455dp"
-        android:layout_marginEnd="175dp"
-        android:layout_marginBottom="228dp"
-        android:text="Button"
+        android:layout_width="411dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="#E92754"
+        android:fontFamily="sans-serif"
+        android:text="Connect"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="Connect" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="121dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="145dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="145dp"
+        android:layout_marginBottom="434dp"
+        app:layout_constraintBottom_toTopOf="@+id/connectButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ghost" />
 
 </android.support.constraint.ConstraintLayout>

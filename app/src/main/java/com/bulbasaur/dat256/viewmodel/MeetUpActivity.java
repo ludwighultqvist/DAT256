@@ -1,10 +1,8 @@
 package com.bulbasaur.dat256.viewmodel;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -27,12 +25,9 @@ public class MeetUpActivity extends AppCompatActivity {
         descriptionView.setText(meetUp.getDescription());
 
         Button showOnMap = findViewById(R.id.show_in_map_button);
-        showOnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(Activity.RESULT_OK, new Intent());
-                finish();
-            }
+        showOnMap.setOnClickListener(v -> {
+            setResult(Activity.RESULT_OK);
+            finish();
         });
     }
 }

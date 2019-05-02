@@ -100,8 +100,13 @@ public class CreateMeetUpActivity extends AppCompatActivity {
 
                 finish();
             } else {
-                Snackbar.make(findViewById(R.id.createMeetUpConstraintLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(R.id.createMeetUpLinearLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
             }
+
+            /*
+             currentUser.createdMeetUps.add(meetUp);
+             */
+
         });
     }
 

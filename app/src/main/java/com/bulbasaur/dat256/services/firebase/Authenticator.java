@@ -1,4 +1,7 @@
-package com.bulbasaur.dat256.services.Database;
+package com.bulbasaur.dat256.services.firebase;
+
+import android.app.Activity;
+import android.support.annotation.NonNull;
 
 /**
  * @author ludwighultqvist
@@ -7,17 +10,7 @@ package com.bulbasaur.dat256.services.Database;
  */
 public interface Authenticator {
 
-    /**
-     * enum which acts as the current state of a validation in progress
-     * WAITING - a validation is started, but waiting to be sent
-     * SENT - the validation has been sent, but not yet validated
-     * COMPLETED - the validation is done
-     * FAILED - the validation has failed
-     * null - no validation is has started
-     */
-    enum VerificationStatus {
-        WAITING, SENT, COMPLETED, FAILED,
-    }
+    void sendVerificationCode(String recipient, Activity activity,@NonNull RequestListener listener);
 
     /**
      * sends a verification-code to the given recipient
@@ -25,17 +18,13 @@ public interface Authenticator {
      */
     void sendVerificationCode(String recipient);
 
+    void verify(String verificationCode, Activity activity, @NonNull RequestListener listener);
+
     /**
      * verifies if the given code is the same as the one sent to recipient.
      * must be preceded by a call to 'sendVerificationCode'
      * @param verificationCode the string containing the code to be validated
      */
     void verify(String verificationCode);
-
-    /**
-     * returns the current status of the validation
-     * @return the enum object of the validation
-     */
-    VerificationStatus status();
 
 }

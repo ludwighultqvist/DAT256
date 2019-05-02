@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<searchable xmlns:android="http://schemas.android.com/apk/res/android"
-    android:hint="sök" />
+<searchable
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:hint="@string/toolbar_search_hint" />

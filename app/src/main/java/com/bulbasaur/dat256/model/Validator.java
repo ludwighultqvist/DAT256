@@ -1,8 +1,5 @@
 package com.bulbasaur.dat256.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Validator {
 
     public static boolean detectSpecialChar(String string) {
@@ -38,9 +35,9 @@ public class Validator {
         return country.countryCode + phoneNumber;
     }
 
-    public static User createUser(String firstName, String lastName, String phoneNumber, Country country){
+    public static User createUser (String firstName, String lastName, String phoneNumber, Country country){
 
-        // ta bort nolla
+        // ta bort  eventuell nolla
         // kolla antal siffror
         // lägga till country code
         // kolla om namnet är rätt
