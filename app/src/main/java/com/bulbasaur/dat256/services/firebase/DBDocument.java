@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * @author ludwighultqvist
  * interface that acts as a document in the Firestore database
  */
-public interface DBDocument {
+public interface DBDocument extends DBTester {
 
     /**
      * returns the id of the document
@@ -28,6 +28,8 @@ public interface DBDocument {
      * @param object the object to be saved on the field
      */
     void set(String field, Object object);
+
+    void remove(String field);
 
     void save(@NonNull RequestListener<DBDocument> listener);
 

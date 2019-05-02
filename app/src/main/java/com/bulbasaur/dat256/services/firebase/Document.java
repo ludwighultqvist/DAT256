@@ -54,7 +54,7 @@ class Document implements DBDocument {
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
 
-        listener.finish();
+        //listener.finish();
 
         /*
         this.document.get()
@@ -115,6 +115,11 @@ class Document implements DBDocument {
     }
 
     @Override
+    public void remove(String field) {
+        data.remove(field);
+    }
+
+    @Override
     public void save(@NonNull RequestListener<DBDocument> listener) {
         set("last-save", DateFormat.getDateInstance().format(new Date()));
 
@@ -129,7 +134,7 @@ class Document implements DBDocument {
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
 
-        listener.finish();
+        //listener.finish();
 
         /*
         document.set(data, SetOptions.merge())
@@ -171,7 +176,7 @@ class Document implements DBDocument {
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
 
-        listener.finish();
+        //listener.finish();
 
         /*
         document.delete()
@@ -217,5 +222,71 @@ class Document implements DBDocument {
     @Override
     public DBCollection subCollection(String name) {
         return new Collection(document.collection(name));
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (isEmpty()) return "Document: [null]";
+
+        return "Document: [" +
+                "id: " + document.getId() + ", " +
+                "path: " + document.getPath() +  ", " +
+                "data: " + data.toString() +
+                "]";
+    }
+
+    @Override
+    public void testIt() {
+        System.out.println("\n---------- DOCUMENT TEST STARTED ----------\n");
+
+        System.out.println("initial state: " + this.toString());
+
+        if (document == null) return;
+
+        init(document, new RequestListener<>(true));
+        System.out.println("init() -> this = " + this.toString() + "\n");
+
+        String f = "test-field";
+        String v = "test-value";
+
+        System.out.println("testing get...");
+        System.out.println("get(" + f + ") -> " + f + " = " + get(f));
+        System.out.println();
+
+        System.out.println("testing set...");
+        set(f,v);
+        System.out.println("set(" + f + ", " + v + ") -> " + f + " = " + get(f));
+        System.out.println();
+
+        System.out.println("testing save...");
+        save();
+        init(document, new RequestListener<>(true));
+        System.out.println("save() -> this = " + this.toString());
+        System.out.println();
+
+        System.out.println("testing remove...");
+        remove(f);
+        System.out.println("remove(" + f + ") -> " + f + " = " + get(f));
+
+        System.out.println("testing save...");
+        save();
+        init(document, new RequestListener<>(true));
+        System.out.println("save() -> this = " + this.toString());
+        System.out.println();
+
+        System.out.println("testing delete...");
+        Map<String, Object> m = data;
+        delete();
+        init(document, new RequestListener<>(true));
+        System.out.println("delete() -> this = " + this.toString());
+        System.out.println();
+
+        System.out.println("resetting...");
+        data = m;
+        save();
+        System.out.println("final state: " + this.toString());
+
+        System.out.println("\n---------- DOCUMENT TEST FINISHED ----------\n");
     }
 }

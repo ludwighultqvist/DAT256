@@ -69,7 +69,7 @@ class PhoneAuthenticator implements Authenticator {
                     }
                 });
 
-        listener.finish();
+        //listener.finish();
 
         /*
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -145,7 +145,7 @@ class PhoneAuthenticator implements Authenticator {
                     listener.onFailure(null);
                 });
 
-        listener.finish();
+        //listener.finish();
 
         /*
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
