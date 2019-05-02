@@ -1,9 +1,10 @@
 package com.bulbasaur.dat256.services.firebase;
 
+
 public class RequestListener<E> {
 
     private boolean isBusyWait;
-    private boolean done;
+    private boolean done = false;
     private E object;
 
     public RequestListener(boolean isBusyWait) {
@@ -29,7 +30,9 @@ public class RequestListener<E> {
     private void onFinish(E object, String status) {
         this.object = object;
         String objectString = object == null ? null : object.toString();
-        System.out.println("Request finished with status '" + status + "' for object: " + objectString);
+        String print = "Request finished with status '" + status + "' for object: " + objectString;
+        System.out.println(print);
+        //Log.d("REQUEST", print);
         done = true;
     }
 

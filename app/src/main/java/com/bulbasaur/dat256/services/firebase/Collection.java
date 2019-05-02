@@ -82,7 +82,6 @@ class Collection implements DBCollection {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             document.init(snapshot.getReference(), listener);
-                            //listener.onSuccess(document);
                         }
                         else {
                             listener.onComplete(document);
@@ -94,7 +93,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(document));
 
-        listener.finish();
+        //listener.finish();
         return listener.getObject();
 
         /*
@@ -164,7 +163,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        listener.finish();
+        //listener.finish();
         return listener.getObject();
 
         /*
@@ -250,7 +249,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        listener.finish();
+        //listener.finish();
         return listener.getObject();
 
         /*
@@ -316,5 +315,63 @@ class Collection implements DBCollection {
     @Override
     public List<? extends DBDocument> search(QueryFilter filter) {
         return search(filter, new RequestListener<>(true));
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Collection: [" + "id: " + collection.getId() + ", " + "path: " + collection.getPath() + "]";
+    }
+
+    @Override
+    public void testIt() {
+        /*
+        System.out.println("\n---------- COLLECTION TEST STARTED ----------\n");
+
+        System.out.println("initial state: " + this.toString());
+
+        String id = "test-document-id";
+        System.out.println("testing get...");
+        String s = get(id) == null ? null : get(id).toString();
+        System.out.println("get(" + id + ") -> " + s);
+        System.out.println();
+
+        System.out.println("testing create...");
+        DBDocument d = create();
+        d.save();
+        System.out.println("create() -> " + d.toString());
+        System.out.println();
+
+        System.out.println("testing get...");
+        System.out.println("get(" + d.id() + ") -> " + get(id).toString());
+        d.delete();
+        System.out.println();
+
+        System.out.println("testing create(id)...");
+        id = "test-document-custom-id";
+        d = create(id);
+        System.out.println("create(" + id + ") -> " + d.toString());
+        System.out.println();
+
+        System.out.println("testing get...");
+        System.out.println("get(" + id + ") -> " + get(id).toString());
+        d.delete();
+        System.out.println();
+
+        System.out.println("testing all...");
+        System.out.print("all() -> " + all().toString());
+        System.out.println();
+
+
+        System.out.println("testing search...");
+        System.out.print("NOT IMPLEMENTED");
+        System.out.println();
+
+
+        System.out.println("resetting...");
+        System.out.println("final state: " + this.toString());
+
+        System.out.println("\n---------- COLLECTION TEST FINISHED ----------\n");
+        */
     }
 }
