@@ -27,7 +27,7 @@ import java.util.Objects;
 public class RegisterActivity extends AppCompatActivity {
 
     private Button createAccountButton, readTerms;
-    private CheckBox checkBox;
+    private CheckBox checkBox, ageCheck;
 
 
     private boolean firstNameValid = false, lastNameValid = false, phoneNumberValid = false;
@@ -59,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         Button goToLoginViewButton = findViewById(R.id.goToLoginViewButton);
         readTerms = findViewById(R.id.readTermsButton);
         checkBox = findViewById(R.id.termsCheckbox);
+        ageCheck = findViewById(R.id.ageCheck);
 
         //Updates the selected country code to the correct value
         phoneNumberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -74,6 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                 });
         checkBox.setOnClickListener(v -> {
             checkBox.isChecked();
+            updateCreateAccountButton();
+        });
+        ageCheck.setOnClickListener(v -> {
+            ageCheck.isChecked();
             updateCreateAccountButton();
         });
 
@@ -177,7 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void updateCreateAccountButton() {
-        if (firstNameValid && lastNameValid && phoneNumberValid && checkBox.isChecked()) {
+        if (firstNameValid && lastNameValid && phoneNumberValid && checkBox.isChecked() && ageCheck.isChecked()) {
             createAccountButton.setEnabled(true);
         } else {
             createAccountButton.setEnabled(false);
