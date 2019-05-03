@@ -40,7 +40,7 @@ class Document implements DBDocument {
                         if (snapshot != null && snapshot.exists()) {
                             Map<String, Object> data = snapshot.getData();
                             if (data != null) {
-                                data.putAll(snapshot.getData());
+                                this.data.putAll(data);
                             }
                             listener.onSuccess(this);
                         }
@@ -82,6 +82,10 @@ class Document implements DBDocument {
                     }
                 });
         */
+    }
+
+    public void init(@NonNull RequestListener<DBDocument> listener) {
+        init(document, listener);
     }
 
     /**
