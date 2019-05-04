@@ -44,6 +44,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -55,8 +57,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
 
-    private MeetUp fakeMeetUp;
-    private LatLng fakeMeetUpCoordinates;
+    //private MeetUp fakeMeetUp;
+    //private LatLng fakeMeetUpCoordinates;
 
     private static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
@@ -69,9 +71,13 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private List<? extends DBDocument> myMeetUpsDocsLat, myMeetUpsDocsLon;
 
+    private HashMap<Marker, MeetUp> meetUpMarkerMap;
+
     private Marker meMarker;
 
     private User currentUser;
+
+    private Marker currentlyOpenMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_menu);
 
         main = new Main();
+
+        meetUpMarkerMap = new HashMap<>();
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -123,7 +131,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
 
-        fakeMeetUp = new MeetUp(0, "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", Categories.PARTY, 0, null, null);
+        //fakeMeetUp = new MeetUp("120391290312", "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", Categories.PARTY, 0, null, null);
 
         if(Database.getInstance().hasUser()){
             Database.getInstance().user(new RequestListener<DBDocument>(){
@@ -155,19 +163,21 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
 
-        fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
+        //fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
 
-        MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().primaryColor, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().primaryColor);
+        /*MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().primaryColor, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().primaryColor);
         Gson markerDataGson = new Gson();
         String markerDataString = markerDataGson.toJson(markerData);
         MarkerOptions markerOptions = new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f);
-        Marker fakeMeetUpMarker = this.map.addMarker(markerOptions);
+        Marker fakeMeetUpMarker = this.map.addMarker(markerOptions);*/
 
         showUserLocationOnMapWithRegularMarkerAndMoveMapToIt();
 
         this.map.setOnMarkerClickListener(marker -> {
-            if (marker.equals(fakeMeetUpMarker)) {
-                fakeMeetUpMarker.showInfoWindow();
+            if (!marker.equals(meMarker)) {
+                marker.showInfoWindow();
+
+                currentlyOpenMarker = marker;
             } else if (marker.equals(meMarker)) {
                 Toast.makeText(this, "Your location", Toast.LENGTH_SHORT).show();
             }
@@ -178,17 +188,20 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick());
-        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp());
+        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick(m));
+        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
         this.map.setOnCameraMoveStartedListener(reason -> {
             if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                fakeMeetUpMarker.hideInfoWindow();//TODO hide the currently open marker, not just the fake one
+                if (currentlyOpenMarker != null) {
+                    currentlyOpenMarker.hideInfoWindow();//TODO hide the currently open marker, not just the fake one
+                    currentlyOpenMarker = null;
+                }
             }
         });
         this.map.setOnCameraIdleListener(() -> {
             System.out.println("camera idle - meetups update");
 
-            requestNewMapItemsAndUpdate(getCurrentMapBounds());
+            if (currentlyOpenMarker == null) requestNewMapItemsAndUpdate(getCurrentMapBounds());
         });
     }
 
@@ -201,7 +214,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //set map to user position if possible
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-            if (location != null) {
+            if (location != null && currentUser != null) {
                 LatLng lastLocationCoords = new LatLng(location.getLatitude(), location.getLongitude());
                 System.out.println(lastLocationCoords.latitude + " " + lastLocationCoords.longitude);
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(lastLocationCoords));
@@ -212,21 +225,22 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void joinMarkedMeetUp() {
+    private void joinMarkedMeetUp(Marker m) {
         //TODO make the user join the marked event here
-        Toast.makeText(this, "Joined " + fakeMeetUp.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Joined " + meetUpMarkerMap.get(m).getName(), Toast.LENGTH_SHORT).show();
     }
 
-    private void onMeetUpMarkerClick() {
+    private void onMeetUpMarkerClick(Marker m) {
         Intent meetUpIntent = new Intent(this, MeetUpActivity.class);
-        meetUpIntent.putExtra("MeetUp", fakeMeetUp);
+        meetUpIntent.putExtra("MeetUp", meetUpMarkerMap.get(m));
         startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP_CODE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SHOW_EVENT_ON_MAP_CODE) {
             if (resultCode == RESULT_OK) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(fakeMeetUpCoordinates, DEFAULT_MEET_UP_ZOOM_LEVEL));
+                MeetUp resultMeetup = (MeetUp) data.getSerializableExtra("MeetUpReturn");
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultMeetup.getCoordinates().lat, resultMeetup.getCoordinates().lon), DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
         }
     }
@@ -240,7 +254,13 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void requestNewMapItemsAndUpdate(MapBounds bounds) {
         System.out.println("creating request");
 
-        DBDocument user = Database.getInstance().user();
+        DBCollection allMeetupsCollection = Database.getInstance().meetups();
+
+        if (allMeetupsCollection == null) return;
+
+        System.out.println("reference to all meetups worked");
+
+        /*DBDocument user = null;
 
         if (user == null) return;
 
@@ -250,19 +270,19 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (myMeetupsDatabase == null) return;
 
-        System.out.println("my meetups database exists");
+        System.out.println("my meetups database exists");*/
 
         List<QueryFilter> latitudeFilter = new LinkedList<>();
-        latitudeFilter.add(new QueryFilter("latitude", ">", bounds.getBottomLeft().lat));
-        latitudeFilter.add(new QueryFilter("latitude", "<", bounds.getTopRight().lat));
+        latitudeFilter.add(new QueryFilter("coord_lat", ">", bounds.getBottomLeft().lat));
+        latitudeFilter.add(new QueryFilter("coord_lat", "<", bounds.getTopRight().lat));
 
         List<QueryFilter> longitudeFilter = new LinkedList<>();
-        longitudeFilter.add(new QueryFilter("longitude", ">", bounds.getBottomLeft().lon));
-        longitudeFilter.add(new QueryFilter("longitude", "<", bounds.getTopRight().lon));
+        longitudeFilter.add(new QueryFilter("coord_lon", ">", bounds.getBottomLeft().lon));
+        longitudeFilter.add(new QueryFilter("coord_lon", "<", bounds.getTopRight().lon));
 
-        System.out.println("query created");
+        System.out.println("filters created");
 
-        search(myMeetupsDatabase, latitudeFilter, longitudeFilter);
+        search(allMeetupsCollection, latitudeFilter, longitudeFilter);
     }
 
     private void search(DBCollection collection, List<QueryFilter> latFilter, List<QueryFilter> lonFilter) {
@@ -273,6 +293,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(List<? extends DBDocument> latFilteredDocs) {
                 myMeetUpsDocsLat = latFilteredDocs;
 
+                System.out.println(myMeetUpsDocsLat);
+
                 System.out.println("success 1: searching with query 2");
 
                 collection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
@@ -280,15 +302,56 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(List<? extends DBDocument> lonFilteredDocs) {
                         myMeetUpsDocsLon = lonFilteredDocs;
 
+                        System.out.println(myMeetUpsDocsLon);
+
                         System.out.println("successful search queries 1 & 2");
 
                         myMeetUpsDocs = intersection((List<DBDocument>) myMeetUpsDocsLat, (List<DBDocument>) myMeetUpsDocsLon);
 
                         main.updateMapMeetUps(convertDocsToMeetUps(myMeetUpsDocs));
+
+                        showUpdatedMeetUps();
                     }
                 });
             }
         });
+    }
+
+    private void showUpdatedMeetUps() {
+        Iterator<Marker> markerIterator = meetUpMarkerMap.keySet().iterator();
+        while (markerIterator.hasNext()) {
+            Marker m = markerIterator.next();
+
+            if (!main.getMeetUpsWithinMapView().contains(meetUpMarkerMap.get(m))) {
+                m.remove();
+                markerIterator.remove();
+
+                System.out.println("one removed");
+            }
+        }
+
+        for (MeetUp m : main.getMeetUpsWithinMapView()) {
+            if (!meetUpMarkerMap.values().contains(m)) {
+                Marker marker = map.addMarker(createMarkerOptions(m));
+
+                meetUpMarkerMap.put(marker, m);
+
+                System.out.println("one added");
+            }
+        }
+
+        for (MeetUp m : meetUpMarkerMap.values()) {
+            System.out.println(m.getName());
+        }
+    }
+
+    private MarkerOptions createMarkerOptions(MeetUp m) {
+        return new MarkerOptions()
+                .position(new LatLng(m.getCoordinates().lat, m.getCoordinates().lon))
+                .snippet(new Gson().toJson(new MarkerData(m.getName(), m.getCategory().primaryColor, m.getDescription(), m.getCategory().secondaryColor)))
+                .icon(BitmapDescriptorFactory.fromBitmap(m.getIconBitmap(this)))
+                .anchor(0.5f, 0.5f)
+                .alpha(0.6f);
     }
 
     private List<DBDocument> intersection(List<DBDocument> first, List<DBDocument> second) {
@@ -305,21 +368,45 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         List<MeetUp> meetUps = new ArrayList<>();
 
         for (DBDocument doc : meetUpDocs) {
-            meetUps.add(convertDocToMeetUp(doc));
+            MeetUp meetUp = convertDocToMeetUp(doc);
+            if (meetUp == null) continue;
+            meetUps.add(meetUp);
         }
 
         return meetUps;
     }
 
     private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
-        return new MeetUp(
-                Long.parseLong(meetUpDoc.id()),
-                (String) meetUpDoc.get("name"),
-                (Coordinates) meetUpDoc.get("coordinates"),
-                (String) meetUpDoc.get("description"),
-                (Categories) meetUpDoc.get("category"),
-                (Integer) meetUpDoc.get("maxattendees"),
-                (Calendar) meetUpDoc.get("startdate"),
-                (Calendar) meetUpDoc.get("enddate"));
+        String id = meetUpDoc.id();
+        String name = (String) meetUpDoc.get("name");
+        Double coord_lat = (Double) meetUpDoc.get("coord_lat");
+        Double coord_lon = (Double) meetUpDoc.get("coord_lon");
+        String description = (String) meetUpDoc.get("description");
+        Categories category = MeetUp.getCategoryFromString((String) meetUpDoc.get("category"));
+        Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
+        /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
+        Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
+
+
+        if (id == null || name == null || coord_lat == null || coord_lon == null
+                || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
+            return null;
+        }
+
+        return new MeetUp(id, name, new Coordinates(coord_lat, coord_lon), description, category,
+                maxAttendees, null, null);
+    }
+
+    class MeetUpsRequestListener extends RequestListener<List<? extends DBDocument>> {
+
+        @Override
+        public void onSuccess(List<? extends DBDocument> object) {
+            super.onSuccess(object);
+
+            System.out.println("this was a success");
+
+            System.out.println(object.get(0).get("name"));
+            //System.out.println("test" + object.get(0).get("name").toString());
+        }
     }
 }
