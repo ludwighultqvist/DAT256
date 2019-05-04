@@ -129,7 +129,8 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         //gör så för alla attribut för en meetup
         meetup.set("name", meetUp.getName());
         meetup.set("description", meetUp.getDescription());
-        meetup.set("coordinates", meetUp.getCoordinates());
+        meetup.set("coord_lat", meetUp.getCoordinates().lat);
+        meetup.set("coord_lon", meetUp.getCoordinates().lon);
         meetup.set("maxAttendees", meetUp.getMaxAttendees());
         meetup.set("startDate", meetUp.getStart());
         meetup.set("endDate", meetUp.getEnd());

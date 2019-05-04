@@ -228,6 +228,15 @@ class Document implements DBDocument {
         return new Collection(document.collection(name));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Document)) {
+            return false;
+        }
+
+        return this.id().equals(((Document) obj).id());
+    }
+
     @NonNull
     @Override
     public String toString() {

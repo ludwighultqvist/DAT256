@@ -28,6 +28,10 @@ public class Main {
         updateMapGeneric(meetUpsWithinMapView, meetUps);
 
         System.out.println("updating map meetups");
+
+        for (MeetUp m : meetUpsWithinMapView) {
+            System.out.println(m.getId() + " " + m.getName());
+        }
     }
 
     public void updateMapFriends(List<User> friends) {
@@ -35,16 +39,22 @@ public class Main {
     }
 
     public <T> void updateMapGeneric(List<T> into, List<T> from) {
-        for (T existingItem : into) {
+        for (int i = into.size() - 1; i >= 0; i--) {
+            T existingItem = into.get(i);
             if (!from.contains(existingItem)) {
                 into.remove(existingItem);
             }
         }
 
-        for (T newItem : from) {
+        for (int i = from.size() - 1; i >= 0; i--) {
+            T newItem = from.get(i);
             if (!into.contains(newItem)) {
                 into.add(newItem);
             }
         }
+    }
+
+    public List<MeetUp> getMeetUpsWithinMapView() {
+        return meetUpsWithinMapView;
     }
 }
