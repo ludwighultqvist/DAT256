@@ -68,54 +68,6 @@ class PhoneAuthenticator implements Authenticator {
                         listener.onFailure(null);
                     }
                 });
-
-        //listener.finish();
-
-        /*
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                recipient,
-                60,
-                TimeUnit.SECONDS,
-                activity,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                        String code = phoneAuthCredential.getSmsCode();
-
-                        if (code != null) {
-                            verify(code);
-                        }
-
-                        if (listener != null) {
-                            listener.onSuccess(null);
-                        }
-                    }
-
-                    @Override
-                    public void onVerificationFailed(FirebaseException e) {
-                        status = VerificationStatus.FAILED;
-
-                        if (listener != null) {
-                            listener.onFailure(null);
-                        }
-                    }
-
-                    @Override
-                    public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        super.onCodeSent(s, forceResendingToken);
-
-                        verificationId = s;
-                        token = forceResendingToken;
-                        status = VerificationStatus.SENT;
-
-                        if (listener != null) {
-                            listener.onComplete(null);
-                        }
-                    }
-                }
-        );
-        status = VerificationStatus.WAITING;
-        */
     }
 
     /**
@@ -124,7 +76,7 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void sendVerificationCode(String recipient) {
-        sendVerificationCode(recipient, activity, new RequestListener(true));
+        sendVerificationCode(recipient, activity, new RequestListener());
     }
 
 
@@ -144,32 +96,6 @@ class PhoneAuthenticator implements Authenticator {
                 .addOnFailureListener(e -> {
                     listener.onFailure(null);
                 });
-
-        //listener.finish();
-
-        /*
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-
-                        if (listener != null) {
-                            listener.onSuccess(null);
-                        }
-                    }
-                    else {
-
-                        if (listener != null) {
-                            listener.onComplete(null);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(null);
-                    }
-                });
-        */
     }
 
     /**
@@ -178,6 +104,6 @@ class PhoneAuthenticator implements Authenticator {
      */
     @Override
     public void verify(String verificationCode) {
-        verify(verificationCode, activity, new RequestListener(true));
+        verify(verificationCode, activity, new RequestListener());
     }
 }

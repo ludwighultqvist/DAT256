@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,35 +53,6 @@ class Document implements DBDocument {
                     }
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
-
-        //listener.finish();
-
-        /*
-        this.document.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        if (snapshot != null && snapshot.exists()) {
-                            Map<String, Object> data = snapshot.getData();
-                            if (data != null) {
-                                data.putAll(snapshot.getData());
-                            }
-                        }
-
-                        if (listener != null) {
-                            listener.onSuccess(this);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(this);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(this);
-                    }
-                });
-        */
     }
 
     public void init(@NonNull RequestListener<DBDocument> listener) {
@@ -125,9 +96,9 @@ class Document implements DBDocument {
 
     @Override
     public void save(@NonNull RequestListener<DBDocument> listener) {
-        set("last-save", DateFormat.getDateInstance().format(new Date()));
+        set("last-save", DateFormat.getDateTimeInstance().format(new Date()));
 
-        document.set(data, SetOptions.merge())
+        document.set(data)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         listener.onSuccess(this);
@@ -137,27 +108,6 @@ class Document implements DBDocument {
                     }
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
-
-        //listener.finish();
-
-        /*
-        document.set(data, SetOptions.merge())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (listener != null) {
-                            listener.onSuccess(this);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(this);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(this);
-                    }
-                });
-        */
     }
 
     /**
@@ -165,7 +115,7 @@ class Document implements DBDocument {
      */
     @Override
     public void save() {
-        save(new RequestListener<>(true));
+        save(new RequestListener<>());
     }
 
     @Override
@@ -175,30 +125,10 @@ class Document implements DBDocument {
                     if (task.isSuccessful()) {
                         listener.onSuccess(this);
                     } else {
-                        listener.onSuccess(this);
+                        listener.onComplete(this);
                     }
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
-
-        //listener.finish();
-
-        /*
-        document.delete()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (listener != null) {
-                            listener.onSuccess(this);
-                        }
-                    } else if (listener != null) {
-                        listener.onComplete(this);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onComplete(this);
-                    }
-                });
-        */
     }
 
     /**
@@ -206,7 +136,7 @@ class Document implements DBDocument {
      */
     @Override
     public void delete() {
-        delete(new RequestListener<>(true));
+        delete(new RequestListener<>());
     }
 
     /**
@@ -229,6 +159,11 @@ class Document implements DBDocument {
     }
 
     @Override
+    public Runnable tester() {
+        return new Tester();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Document)) {
             return false;
@@ -240,7 +175,7 @@ class Document implements DBDocument {
     @NonNull
     @Override
     public String toString() {
-        if (isEmpty()) return "Document: [null]";
+        if (document == null) return  "Document: [null]";
 
         return "Document: [" +
                 "id: " + document.getId() + ", " +
@@ -249,57 +184,115 @@ class Document implements DBDocument {
                 "]";
     }
 
-    @Override
-    public void testIt() {
-        System.out.println("\n---------- DOCUMENT TEST STARTED ----------\n");
+    private class Tester implements Runnable {
+        private static final String FIELD = "test-field";
+        private static final String VALUE = "test-value";
+        private static final boolean DEBUG = false;
 
-        System.out.println("initial state: " + this.toString());
+        private Document document = Document.this;;
+        private Map<String, Object> data;
 
-        if (document == null) return;
 
-        init(document, new RequestListener<>(true));
-        System.out.println("init() -> this = " + this.toString() + "\n");
+        private void reset() {
+            System.out.println("resetting...");
+            if (data == null) return;
+            document.data = data;
 
-        String f = "test-field";
-        String v = "test-value";
+            document.save(new RequestListener<DBDocument>(DEBUG) {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+                    System.out.println("final state: " + document.toString());
+                    System.out.println("\n---------- DOCUMENT TEST FINISHED ----------\n");
+                }
+            });
+        }
 
-        System.out.println("testing get...");
-        System.out.println("get(" + f + ") -> " + f + " = " + get(f));
-        System.out.println();
+        private void delete() {
+            System.out.println("testing delete...");
+            data = document.data;
+            document.delete(new RequestListener<DBDocument>(DEBUG) {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+                    document.init(new RequestListener<DBDocument>(true) {
+                        @Override
+                        public void onComplete(DBDocument object) {
+                            super.onSuccess(object);
+                            System.out.println("delete() -> document = " + document.toString());
+                            reset();
+                        }
+                    });
+                }
+            });
+        }
 
-        System.out.println("testing set...");
-        set(f,v);
-        System.out.println("set(" + f + ", " + v + ") -> " + f + " = " + get(f));
-        System.out.println();
+        private void remove() {
+            document.remove(FIELD);
+            System.out.println("testing remove...\n" + "remove(" + FIELD + ") -> " + FIELD + " = " + document.get(FIELD) + "\n");
 
-        System.out.println("testing save...");
-        save();
-        init(document, new RequestListener<>(true));
-        System.out.println("save() -> this = " + this.toString());
-        System.out.println();
+            System.out.println("testing save after remove...");
+            document.save(new RequestListener<DBDocument>(DEBUG) {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
 
-        System.out.println("testing remove...");
-        remove(f);
-        System.out.println("remove(" + f + ") -> " + f + " = " + get(f));
+                    document.init(new RequestListener<DBDocument>(DEBUG) {
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
 
-        System.out.println("testing save...");
-        save();
-        init(document, new RequestListener<>(true));
-        System.out.println("save() -> this = " + this.toString());
-        System.out.println();
+                            System.out.println("save() after remove -> document = " + document.toString());
+                            delete();
+                        }
+                    });
+                }
+            });
+        }
 
-        System.out.println("testing delete...");
-        Map<String, Object> m = data;
-        delete();
-        init(document, new RequestListener<>(true));
-        System.out.println("delete() -> this = " + this.toString());
-        System.out.println();
+        private void getAndSet() {
+            System.out.println("testing get...\n" + "get(" + FIELD + ") -> " + FIELD + " = " + document.get(FIELD) + "\n");
 
-        System.out.println("resetting...");
-        data = m;
-        save();
-        System.out.println("final state: " + this.toString());
+            document.set(FIELD, VALUE);
+            System.out.println("testing set...\n" + "set(" + FIELD + ", " + VALUE + ") -> " + FIELD + " = " + document.get(FIELD) + "\n");
 
-        System.out.println("\n---------- DOCUMENT TEST FINISHED ----------\n");
+            System.out.println("testing save after set...");
+            document.save(new RequestListener<DBDocument>(DEBUG) {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+
+                    document.init(new RequestListener<DBDocument>(DEBUG) {
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
+
+                            System.out.println("save() after set() -> document = " + document.toString());
+                            remove();
+                        }
+                    });
+                }
+            });
+        }
+
+        private void init() {
+            System.out.println("testing init...");
+            document.init(new RequestListener<DBDocument>(DEBUG) {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+
+                    System.out.println("init() -> document = " + document.toString());
+                    getAndSet();
+                }
+            });
+        }
+
+        @Override
+        public void run() {
+            System.out.println("\n---------- DOCUMENT TEST STARTED ----------\n");
+            System.out.println("initial state: " + this.toString());
+            init();
+        }
     }
 }

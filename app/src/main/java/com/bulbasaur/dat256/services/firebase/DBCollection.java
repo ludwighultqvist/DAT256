@@ -9,7 +9,7 @@ import java.util.List;
  * interface that acts as a collection stored in the database.
  * e.g. collection of users, meetups, groups etc.
  */
-public interface DBCollection extends DBTester {
+public interface DBCollection {
 
     DBDocument create(String id, RequestListener<DBDocument> listener);
 
@@ -53,4 +53,6 @@ public interface DBCollection extends DBTester {
     List<? extends DBDocument> search(QueryFilter filter, @NonNull RequestListener<List<? extends DBDocument>> listener);
 
     List<? extends DBDocument> search(QueryFilter filter);
+
+    Runnable tester();
 }

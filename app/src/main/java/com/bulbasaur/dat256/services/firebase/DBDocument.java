@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * @author ludwighultqvist
  * interface that acts as a document in the Firestore database
  */
-public interface DBDocument extends DBTester {
+public interface DBDocument {
 
     /**
      * returns the id of the document
@@ -57,4 +57,6 @@ public interface DBDocument extends DBTester {
      * @return the DBCollection object
      */
     DBCollection subCollection(String name);
+
+    Runnable tester();
 }
