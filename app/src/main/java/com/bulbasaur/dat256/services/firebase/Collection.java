@@ -55,7 +55,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(String id) {
-        return create(id, new RequestListener<>(true));
+        return create(id, new RequestListener<>());
     }
 
     @Override
@@ -69,7 +69,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create() {
-        return create(new RequestListener<>(true));
+        return create(new RequestListener<>());
     }
 
     @Override
@@ -93,39 +93,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(document));
 
-        //listener.finish();
         return listener.getObject();
-
-        /*
-        Document result = new Document();
-
-        collection.document(id).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        if (snapshot != null && snapshot.exists()) {
-                            result.init(snapshot.getReference(), listener);
-
-                            if (listener != null) {
-                                listener.onSuccess(result);
-                            }
-                        }
-                        else if (listener != null) {
-                            listener.onComplete(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-
-        return result;
-        */
     }
 
     /**
@@ -136,7 +104,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument get(String id) {
-        return get(id, new RequestListener<>(true));
+        return get(id, new RequestListener<>());
     }
 
     @Override
@@ -149,7 +117,7 @@ class Collection implements DBCollection {
                         QuerySnapshot snapshot = task.getResult();
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                                documents.add(new Document(document.getReference(), new RequestListener<>()));
                             }
                             listener.onSuccess(documents);
                         }
@@ -163,40 +131,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        //listener.finish();
         return listener.getObject();
-
-        /*
-        List<Document> result = new ArrayList<>();
-
-        collection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-                        if (snapshot != null) {
-                            for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), null));
-                            }
-
-                            if (listener != null) {
-                                listener.onSuccess(result);
-                            }
-                        }
-                        else if (listener != null) {
-                            listener.onComplete(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-        return result;
-        */
     }
 
     /**
@@ -205,7 +140,7 @@ class Collection implements DBCollection {
      */
     @Override
     public List<? extends DBDocument> all() {
-        return all(new RequestListener<>(true));
+        return all(new RequestListener<>());
     }
 
     @Override
@@ -235,7 +170,7 @@ class Collection implements DBCollection {
 
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                                documents.add(new Document(document.getReference(), new RequestListener<>()));
                             }
                             listener.onSuccess(documents);
                         }
@@ -249,60 +184,12 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        //listener.finish();
         return listener.getObject();
-
-        /*
-        Query query = collection;
-        List<Document> result = new ArrayList<>();
-
-        for (QueryFilter filter : filters) {
-            switch (filter.getComparison()) {
-                case "=":
-                    query = query.whereEqualTo(filter.getField(), filter.getValue());
-                    break;
-                case "<":
-                    query = query.whereLessThan(filter.getField(), filter.getValue());
-                    break;
-                case ">":
-                    query = query.whereGreaterThan(filter.getField(), filter.getValue());
-                    break;
-                default:
-            }
-        }
-
-        query.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-
-                        if (snapshot != null) {
-                            for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), null));
-                            }
-                        }
-
-                        if (listener != null) {
-                            listener.onSuccess(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-
-        return result.isEmpty() ? null : result;
-        */
     }
 
     @Override
     public List<? extends DBDocument> search(List<QueryFilter> filters) {
-        return search(filters, new RequestListener<>(true));
+        return search(filters, new RequestListener<>());
     }
 
     @Override
@@ -314,16 +201,22 @@ class Collection implements DBCollection {
 
     @Override
     public List<? extends DBDocument> search(QueryFilter filter) {
-        return search(filter, new RequestListener<>(true));
+        return search(filter, new RequestListener<>());
+    }
+
+    @Override
+    public Runnable tester() {
+        return null;
     }
 
     @NonNull
     @Override
     public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
         return "Collection: [" + "id: " + collection.getId() + ", " + "path: " + collection.getPath() + "]";
     }
 
-    @Override
+
     public void testIt() {
         /*
         System.out.println("\n---------- COLLECTION TEST STARTED ----------\n");
@@ -373,5 +266,28 @@ class Collection implements DBCollection {
 
         System.out.println("\n---------- COLLECTION TEST FINISHED ----------\n");
         */
+    }
+
+    private class Tester implements Runnable {
+        private static final String ID = "test-collection";
+        private Collection collection = Collection.this;
+
+        /*
+        1. get -> null
+        2. create -> get
+        4. create(id) -> get
+        5. create multiple
+        5. all
+        6. search
+        7. reset
+        */
+
+        private void get() {
+
+        }
+
+        @Override
+        public void run() {
+        }
     }
 }
