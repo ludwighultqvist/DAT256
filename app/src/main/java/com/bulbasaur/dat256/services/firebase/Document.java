@@ -28,11 +28,28 @@ class Document implements DBDocument {
      * package private constructor which creates a new empty document with no reference to a
      * document in the Firestore database
      */
+    Document(@NonNull DocumentReference document) {
+        this.document = document;
+    }
+
     Document() {}
 
+    /**
+     * initializes the document by fetching its content from the database using the given reference
+     * @param document the given reference
+     * @param listener the listener of the request
+     */
     void init(DocumentReference document, @NonNull RequestListener<DBDocument> listener) {
         this.document = document;
+        init(listener);
+    }
 
+    /**
+     * initializes the document by fetching its content from the database using the saved reference
+     * @param listener the listener of the request
+     */
+    @Override
+    public void init(@NonNull RequestListener<DBDocument> listener) {
         this.document.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -53,10 +70,6 @@ class Document implements DBDocument {
                     }
                 })
                 .addOnFailureListener(e -> listener.onFailure(this));
-    }
-
-    public void init(@NonNull RequestListener<DBDocument> listener) {
-        init(document, listener);
     }
 
     /**
@@ -89,11 +102,19 @@ class Document implements DBDocument {
         data.put(field.toLowerCase(), object);
     }
 
+    /**
+     * removes the local object of the given field
+     * @param field the field string
+     */
     @Override
     public void remove(String field) {
         data.remove(field);
     }
 
+    /**
+     * saves the stored objects of the fields in the Firestore database
+     * @param listener the listener of the request
+     */
     @Override
     public void save(@NonNull RequestListener<DBDocument> listener) {
         set("last-save", DateFormat.getDateTimeInstance().format(new Date()));
@@ -111,13 +132,9 @@ class Document implements DBDocument {
     }
 
     /**
-     * saves the stored objects of the fields in the Firestore database
+     * deletes the document from the database
+     * @param listener the listener of the request
      */
-    @Override
-    public void save() {
-        save(new RequestListener<>());
-    }
-
     @Override
     public void delete(@NonNull RequestListener<DBDocument> listener) {
         document.delete()
@@ -132,23 +149,6 @@ class Document implements DBDocument {
     }
 
     /**
-     * deletes the document from the Firestore database
-     */
-    @Override
-    public void delete() {
-        delete(new RequestListener<>());
-    }
-
-    /**
-     * returns a boolean if the document does not exist in the database
-     * @return the boolean value
-     */
-    @Override
-    public boolean isEmpty() {
-        return document == null;
-    }
-
-    /**
      * fetches a subCollection of the document with the name, e.g. the groups of a user etc.
      * @param name the name string
      * @return the DBCollection object
@@ -158,6 +158,10 @@ class Document implements DBDocument {
         return new Collection(document.collection(name));
     }
 
+    /**
+     * creates and returns a runnable tester of the document.
+     * @return the runnable object
+     */
     @Override
     public Runnable tester() {
         return new Tester();
@@ -184,6 +188,9 @@ class Document implements DBDocument {
                 "]";
     }
 
+    /**
+     * private class used for running tests
+     */
     private class Tester implements Runnable {
         private static final String FIELD = "test-field";
         private static final String VALUE = "test-value";
@@ -192,7 +199,9 @@ class Document implements DBDocument {
         private Document document = Document.this;;
         private Map<String, Object> data;
 
-
+        /*
+        reset the document after the tests
+         */
         private void reset() {
             System.out.println("resetting...");
             if (data == null) return;
@@ -208,6 +217,9 @@ class Document implements DBDocument {
             });
         }
 
+        /*
+        test of the delete method
+         */
         private void delete() {
             System.out.println("testing delete...");
             data = document.data;
@@ -227,6 +239,9 @@ class Document implements DBDocument {
             });
         }
 
+        /*
+        test of the remove method
+         */
         private void remove() {
             document.remove(FIELD);
             System.out.println("testing remove...\n" + "remove(" + FIELD + ") -> " + FIELD + " = " + document.get(FIELD) + "\n");
@@ -250,6 +265,9 @@ class Document implements DBDocument {
             });
         }
 
+        /*
+        test of the get and set methods
+         */
         private void getAndSet() {
             System.out.println("testing get...\n" + "get(" + FIELD + ") -> " + FIELD + " = " + document.get(FIELD) + "\n");
 
@@ -275,6 +293,9 @@ class Document implements DBDocument {
             });
         }
 
+        /*
+        test of the init method
+         */
         private void init() {
             System.out.println("testing init...");
             document.init(new RequestListener<DBDocument>(DEBUG) {
@@ -288,6 +309,9 @@ class Document implements DBDocument {
             });
         }
 
+        /**
+         * method used to run all tests
+         */
         @Override
         public void run() {
             System.out.println("\n---------- DOCUMENT TEST STARTED ----------\n");
