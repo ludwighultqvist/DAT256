@@ -1,6 +1,7 @@
 package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,32 +18,15 @@ import java.util.concurrent.TimeUnit;
  */
 class PhoneAuthenticator implements Authenticator {
 
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String verificationId;
-    private PhoneAuthProvider.ForceResendingToken token;
-    private Activity activity;
-    private VerificationStatus status;
-
-    PhoneAuthenticator(Activity activity, RequestListener listener) {
-        this(activity);
-    }
 
     /**
-     * creates a new PhoneAuthenticator object, which sets up the phone authentication to the
-     * Firebase database.
-     * @param activity an activity required by the Firebase phone authentication, cannot be null
+     * creates a new PhoneAuthenticator object, which sets up the phone authentication to the database.
      */
-    PhoneAuthenticator(Activity activity) {
-        this.activity = activity;
-        //this(activity, null);
-    }
-
-    PhoneAuthenticator() {
-        this(null);
-    }
+    PhoneAuthenticator() {}
 
     @Override
-    public void sendVerificationCode(String recipient, Activity activity, RequestListener listener) {
+    public void sendVerificationCode(String recipient, Activity activity, @NonNull RequestListener listener) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 recipient,
                 60,
@@ -54,98 +38,42 @@ class PhoneAuthenticator implements Authenticator {
                         String code = phoneAuthCredential.getSmsCode();
 
                         if (code != null) {
-                            verify(code);
+                            verify(code, activity, listener);
                         }
-
-                        if (listener != null) {
-                            //listener.onSuccess();
-                            listener.onSuccess(null);
-                        }
-                    }
-
-                    @Override
-                    public void onVerificationFailed(FirebaseException e) {
-                        status = VerificationStatus.FAILED;
-
-                        if (listener != null) {
-                            //listener.onFailure();
-                            listener.onFailure(null);
+                        else {
+                            listener.onComplete(null);
                         }
                     }
 
                     @Override
                     public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(s, forceResendingToken);
-
                         verificationId = s;
-                        token = forceResendingToken;
-                        status = VerificationStatus.SENT;
-
-                        if (listener != null) {
-                            //listener.onComplete();
-                            listener.onComplete(null);
-                        }
+                        listener.onComplete(null);
                     }
-                }
-        );
-        status = VerificationStatus.WAITING;
-    }
 
-    /**
-     * sends a verification code to the given phone number
-     * @param recipient the string which is where to code is sent, e.g. email, phone number etc.
-     */
-    @Override
-    public void sendVerificationCode(String recipient) {
-        sendVerificationCode(recipient, activity, null);
-    }
-
-    @Override
-    public void verify(String verificationCode, Activity activity, RequestListener listener) {
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        status = VerificationStatus.COMPLETED;
-
-                        if (listener != null) {
-                            //listener.onSuccess();
-                            listener.onSuccess(null);
-                        }
-                    }
-                    else {
-                        status = VerificationStatus.FAILED;
-
-                        if (listener != null) {
-                            //listener.onComplete();
-                            listener.onComplete(null);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        //listener.onFailure();
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
                         listener.onFailure(null);
                     }
                 });
     }
 
-    /**
-     * verifies the given code
-     * @param verificationCode the string containing the code to be validated
-     */
     @Override
-    public void verify(String verificationCode) {
-        verify(verificationCode, activity, null);
-    }
+    public void verify(String verificationCode, Activity activity, @NonNull RequestListener listener) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
 
-    /**
-     * returns the current status of the validation
-     * @return the enum object of the validation
-     */
-    @Override
-    public VerificationStatus status() {
-        return status;
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        listener.onSuccess(null);
+                    }
+                    else {
+                        listener.onFailure(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure(null);
+                });
     }
-
 }

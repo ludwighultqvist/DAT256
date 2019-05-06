@@ -17,7 +17,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_glasseslogo"
-        android:label="Meet App"
+        android:label="MeetApp"
         android:roundIcon="@mipmap/ic_glasseslogo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -90,6 +90,11 @@
             android:name=".viewmodel.RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewmodel.Terms_And_Conditions_Activity"
+            android:label="Terms_And_Conditions_View"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

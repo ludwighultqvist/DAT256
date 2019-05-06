@@ -17,6 +17,7 @@ import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CustomDateTimePickerHelper;
 
 public class CreateMeetUpActivity extends AppCompatActivity {
@@ -102,6 +103,11 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             } else {
                 Snackbar.make(findViewById(R.id.createMeetUpLinearLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
             }
+
+            /*
+             currentUser.createdMeetUps.add(meetUp);
+             */
+
         });
     }
 
@@ -116,22 +122,22 @@ public class CreateMeetUpActivity extends AppCompatActivity {
 
         //koden nedan är till för att spara själva meetupen på databasen
         Database db = Database.getInstance();
-        DBDocument meetup = db.meetups().create();
+        DBDocument meetup = db.meetups().create(new RequestListener<DBDocument>());
 
         //hur man får tag i ett id.
-        db.meetups().get(meetup.id());
+        db.meetups().get(meetup.id(), new RequestListener<DBDocument>());
 
         //gör så för alla attribut för en meetup
         meetup.set("name", meetUp.getName());
         meetup.set("description", meetUp.getDescription());
-        meetup.set("coordinates", meetUp.getCoordinates());
+        meetup.set("coord_lat", meetUp.getCoordinates().lat);
+        meetup.set("coord_lon", meetUp.getCoordinates().lon);
         meetup.set("maxAttendees", meetUp.getMaxAttendees());
         meetup.set("startDate", meetUp.getStart());
         meetup.set("endDate", meetUp.getEnd());
         meetup.set("category", meetUp.getCategory());
 
-        meetup.save();
-
+        meetup.save(new RequestListener<DBDocument>());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

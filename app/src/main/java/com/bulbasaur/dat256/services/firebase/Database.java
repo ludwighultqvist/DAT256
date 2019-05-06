@@ -1,12 +1,12 @@
 package com.bulbasaur.dat256.services.firebase;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author ludwighultqvist
@@ -39,18 +39,12 @@ public class Database {
      */
     private Database() {}
 
-    public Authenticator phoneAuthenticator() {
-        authenticator = new PhoneAuthenticator();
-        return authenticator;
-    }
-
     /**
      * creates a new PhoneAuthenticator object, stores in the Database object and returns it
-     * @param activity the activity required by the authenticator
      * @return the PhoneAuthenticator object
      */
-    public Authenticator phoneAuthenticator(Activity activity) {
-        authenticator = new PhoneAuthenticator(activity);
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
         return authenticator;
     }
 
@@ -87,17 +81,8 @@ public class Database {
         return new Collection(GROUPS);
     }
 
-    public DBDocument user(RequestListener listener) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            return null;
-        }
-        DBDocument document = users().get(user.getUid(), listener);
-        if (document == null) {
-            document = users().create(user.getUid(), listener);
-            document.save();
-        }
-        return document;
+    public boolean hasUser() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
     /**
@@ -109,31 +94,72 @@ public class Database {
      * with the logged in users uid
      * @return the DBDocument or null
      */
-    public DBDocument user() {
-        return user(null);
+    public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return null;
+        }
+
+        users().get(user.getUid(), new RequestListener<DBDocument>(){
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
+                if (object != null) {
+                    listener.onSuccess(object);
+                }
+                else {
+                    users().create(user.getUid(), new RequestListener<DBDocument>() {
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
+                            listener.onSuccess(object);
+                        }
+
+                        @Override
+                        public void onComplete(DBDocument object) {
+                            super.onComplete(object);
+                            listener.onComplete(object);
+                        }
+
+                        @Override
+                        public void onFailure(DBDocument object) {
+                            super.onFailure(object);
+                            listener.onFailure(object);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onComplete(DBDocument object) {
+                super.onComplete(object);
+                listener.onComplete(object);
+            }
+
+            @Override
+            public void onFailure(DBDocument object) {
+                super.onFailure(object);
+                listener.onFailure(object);
+            }
+        });
+
+        return listener.getObject();
     }
 
-    public static void testIt() {
-        Database database = Database.getInstance();
 
-        // create a user with given ID
-        DBDocument user = database.user();
-        user.set("name", "Test Testson");
-        user.save();
 
-        // create a group with random ID
-        DBDocument group = database.groups().create();
-        group.set("name", "Test-Group");
-        group.save();
+    public void testIt() {
+        System.out.println("\n---------- DATABASE TEST STARTED ----------\n");
 
-        // create a meetup with random ID
-        DBDocument meetup = database.meetups().create();
-        meetup.set("name", "Test-Meetup");
-        meetup.save();
-
-        List<QueryFilter> filters = new LinkedList<>();
-        filters.add(new QueryFilter("name", "<", "hassan"));
-        List<? extends DBDocument> search = database.users().search(filters);
+        DBCollection test = new Collection("test");
+        test.get("test-document", new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
+                object.tester().run();
+            }
+        });
     }
 
 }
