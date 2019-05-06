@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +18,6 @@ class Document implements DBDocument {
 
     private DocumentReference document;
     private Map<String, Object> data = new HashMap<>();
-
-    Document(@NonNull DocumentReference document, @NonNull RequestListener<DBDocument> listener) {
-        init(document, listener);
-    }
 
     /**
      * package private constructor which creates a new empty document with no reference to a
@@ -156,6 +151,11 @@ class Document implements DBDocument {
     @Override
     public DBCollection subCollection(String name) {
         return new Collection(document.collection(name));
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return document == null;
     }
 
     /**
