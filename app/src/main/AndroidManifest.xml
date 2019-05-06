@@ -16,9 +16,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/meet_app_logo"
+        android:icon="@mipmap/ic_glasseslogo"
         android:label="Meet App"
-        android:roundIcon="@mipmap/meet_app_logo_round"
+        android:roundIcon="@mipmap/ic_glasseslogo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".viewmodel.ScanQRActivity"></activity>
@@ -45,11 +45,12 @@
             android:value="9f2af23f-9628-4d21-bb38-94d38798ca9f" />
         <meta-data
             android:name="com.snapchat.kit.sdk.redirectUrl"
-            android:value="connect://meet_app" />
+            android:value="connect://meet_app/oauth2" />
         <meta-data
             android:name="com.snapchat.kit.sdk.scopes"
             android:resource="@array/snap_kit_scopes" /> <!-- This should be a string array of scopes ! -->
-        <activity android:name=".viewmodel.ConnectSnapchatActivity">
+        <activity android:name=".viewmodel.ConnectSnapchatActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -58,7 +59,8 @@
 
                 <data
                     android:host="meet_app"
-                    android:scheme="connect" />
+                    android:scheme="connect"
+                    android:path="/oauth2"/>
             </intent-filter>
         </activity>
         <activity
