@@ -2,16 +2,15 @@ package com.bulbasaur.dat256.services.firebase;
 
 public class RequestListener<E> {
 
-    private boolean isBusyWait;
-    private boolean done;
+    private boolean debug;
     private E object;
 
-    public RequestListener(boolean isBusyWait) {
-        this.isBusyWait = isBusyWait;
+    public RequestListener(boolean debug) {
+        this.debug = debug;
     }
 
     public RequestListener() {
-        this(false);
+        this(true);
     }
 
     public void onComplete(E object) {
@@ -28,22 +27,12 @@ public class RequestListener<E> {
 
     private void onFinish(E object, String status) {
         this.object = object;
-        String objectString = object == null ? null : object.toString();
-        System.out.println("Request finished with status '" + status + "' for object: " + objectString);
-        done = true;
-    }
-
-    void finish() {
-        if (isBusyWait) {
-            while (!done);
+        if (debug) {
+            System.out.println("Request finished with status '" + status + "' for object: " + object);
         }
     }
 
     public E getObject() {
         return object;
-    }
-
-    boolean isBusyWait() {
-        return isBusyWait;
     }
 }

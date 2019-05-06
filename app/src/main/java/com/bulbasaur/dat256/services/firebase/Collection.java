@@ -55,7 +55,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(String id) {
-        return create(id, new RequestListener<>(true));
+        return create(id, new RequestListener<>());
     }
 
     @Override
@@ -69,7 +69,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create() {
-        return create(new RequestListener<>(true));
+        return create(new RequestListener<>());
     }
 
     @Override
@@ -82,7 +82,6 @@ class Collection implements DBCollection {
                         DocumentSnapshot snapshot = task.getResult();
                         if (snapshot != null && snapshot.exists()) {
                             document.init(snapshot.getReference(), listener);
-                            //listener.onSuccess(document);
                         }
                         else {
                             listener.onComplete(document);
@@ -94,39 +93,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(document));
 
-        listener.finish();
         return listener.getObject();
-
-        /*
-        Document result = new Document();
-
-        collection.document(id).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        if (snapshot != null && snapshot.exists()) {
-                            result.init(snapshot.getReference(), listener);
-
-                            if (listener != null) {
-                                listener.onSuccess(result);
-                            }
-                        }
-                        else if (listener != null) {
-                            listener.onComplete(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-
-        return result;
-        */
     }
 
     /**
@@ -137,7 +104,7 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument get(String id) {
-        return get(id, new RequestListener<>(true));
+        return get(id, new RequestListener<>());
     }
 
     @Override
@@ -150,7 +117,7 @@ class Collection implements DBCollection {
                         QuerySnapshot snapshot = task.getResult();
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                                documents.add(new Document(document.getReference(), new RequestListener<>()));
                             }
                             listener.onSuccess(documents);
                         }
@@ -164,40 +131,7 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        listener.finish();
         return listener.getObject();
-
-        /*
-        List<Document> result = new ArrayList<>();
-
-        collection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-                        if (snapshot != null) {
-                            for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), null));
-                            }
-
-                            if (listener != null) {
-                                listener.onSuccess(result);
-                            }
-                        }
-                        else if (listener != null) {
-                            listener.onComplete(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-        return result;
-        */
     }
 
     /**
@@ -206,7 +140,7 @@ class Collection implements DBCollection {
      */
     @Override
     public List<? extends DBDocument> all() {
-        return all(new RequestListener<>(true));
+        return all(new RequestListener<>());
     }
 
     @Override
@@ -236,7 +170,7 @@ class Collection implements DBCollection {
 
                         if (snapshot != null) {
                             for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                documents.add(new Document(document.getReference(), new RequestListener<>(listener.isBusyWait())));
+                                documents.add(new Document(document.getReference(), new RequestListener<>()));
                             }
                             listener.onSuccess(documents);
                         }
@@ -250,60 +184,12 @@ class Collection implements DBCollection {
                 })
                 .addOnFailureListener(e -> listener.onFailure(documents));
 
-        listener.finish();
         return listener.getObject();
-
-        /*
-        Query query = collection;
-        List<Document> result = new ArrayList<>();
-
-        for (QueryFilter filter : filters) {
-            switch (filter.getComparison()) {
-                case "=":
-                    query = query.whereEqualTo(filter.getField(), filter.getValue());
-                    break;
-                case "<":
-                    query = query.whereLessThan(filter.getField(), filter.getValue());
-                    break;
-                case ">":
-                    query = query.whereGreaterThan(filter.getField(), filter.getValue());
-                    break;
-                default:
-            }
-        }
-
-        query.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-
-                        if (snapshot != null) {
-                            for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                result.add(new Document(document.getReference(), null));
-                            }
-                        }
-
-                        if (listener != null) {
-                            listener.onSuccess(result);
-                        }
-                    }
-                    else if (listener != null) {
-                        listener.onComplete(result);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onFailure(result);
-                    }
-                });
-
-        return result.isEmpty() ? null : result;
-        */
     }
 
     @Override
     public List<? extends DBDocument> search(List<QueryFilter> filters) {
-        return search(filters, new RequestListener<>(true));
+        return search(filters, new RequestListener<>());
     }
 
     @Override
@@ -315,6 +201,93 @@ class Collection implements DBCollection {
 
     @Override
     public List<? extends DBDocument> search(QueryFilter filter) {
-        return search(filter, new RequestListener<>(true));
+        return search(filter, new RequestListener<>());
+    }
+
+    @Override
+    public Runnable tester() {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return "Collection: [" + "id: " + collection.getId() + ", " + "path: " + collection.getPath() + "]";
+    }
+
+
+    public void testIt() {
+        /*
+        System.out.println("\n---------- COLLECTION TEST STARTED ----------\n");
+
+        System.out.println("initial state: " + this.toString());
+
+        String id = "test-document-id";
+        System.out.println("testing get...");
+        String s = get(id) == null ? null : get(id).toString();
+        System.out.println("get(" + id + ") -> " + s);
+        System.out.println();
+
+        System.out.println("testing create...");
+        DBDocument d = create();
+        d.save();
+        System.out.println("create() -> " + d.toString());
+        System.out.println();
+
+        System.out.println("testing get...");
+        System.out.println("get(" + d.id() + ") -> " + get(id).toString());
+        d.delete();
+        System.out.println();
+
+        System.out.println("testing create(id)...");
+        id = "test-document-custom-id";
+        d = create(id);
+        System.out.println("create(" + id + ") -> " + d.toString());
+        System.out.println();
+
+        System.out.println("testing get...");
+        System.out.println("get(" + id + ") -> " + get(id).toString());
+        d.delete();
+        System.out.println();
+
+        System.out.println("testing all...");
+        System.out.print("all() -> " + all().toString());
+        System.out.println();
+
+
+        System.out.println("testing search...");
+        System.out.print("NOT IMPLEMENTED");
+        System.out.println();
+
+
+        System.out.println("resetting...");
+        System.out.println("final state: " + this.toString());
+
+        System.out.println("\n---------- COLLECTION TEST FINISHED ----------\n");
+        */
+    }
+
+    private class Tester implements Runnable {
+        private static final String ID = "test-collection";
+        private Collection collection = Collection.this;
+
+        /*
+        1. get -> null
+        2. create -> get
+        4. create(id) -> get
+        5. create multiple
+        5. all
+        6. search
+        7. reset
+        */
+
+        private void get() {
+
+        }
+
+        @Override
+        public void run() {
+        }
     }
 }

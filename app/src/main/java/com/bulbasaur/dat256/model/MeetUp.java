@@ -39,7 +39,7 @@ public class MeetUp implements Serializable {
 
     }
 
-    private long id;
+    private String id;
 
     //owner - either person or group?
 
@@ -47,7 +47,7 @@ public class MeetUp implements Serializable {
 
     private Coordinates coords;
 
-    private int maxAttendees;
+    private long maxAttendees;
 
     private Calendar start;
 
@@ -61,14 +61,14 @@ public class MeetUp implements Serializable {
         this.coords = new Coordinates();
     }
 
-    public MeetUp(long id, String name, Coordinates coordinates, String description) {
+    public MeetUp(String id, String name, Coordinates coordinates, String description) {
         this.id = id;
         this.name = name;
         this.coords = coordinates;
         this.description = description;
     }
 
-    public MeetUp(long id, String name, Coordinates coordinates, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
+    public MeetUp(String id, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end) {
         this.id = id;
         this.name = name;
         this.coords = coordinates;
@@ -79,7 +79,7 @@ public class MeetUp implements Serializable {
         this.end = end;
     }
 
-    public MeetUp(long id, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
+    public MeetUp(String id, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
         this.id = id;
         this.name = name;
         this.coords = new Coordinates();
@@ -90,6 +90,17 @@ public class MeetUp implements Serializable {
         this.maxAttendees = maxAttendees;
         this.start = start;
         this.end = end;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof MeetUp)) return false;
+
+        return this.id.equals(((MeetUp) obj).id);
     }
 
     public String getName() {
@@ -124,7 +135,7 @@ public class MeetUp implements Serializable {
         return end;
     }
 
-    public int getMaxAttendees(){
+    public long getMaxAttendees(){
         return maxAttendees;
     }
 
@@ -132,17 +143,21 @@ public class MeetUp implements Serializable {
         this.coords = coordinates;
     }
 
-    public Categories getCategoryFromString(String s){
+    public static Categories getCategoryFromString(String s){
+        if (s == null) return null;
+
+        s = s.toLowerCase();
+
         switch (s){
-            case "Sports":
+            case "sports":
                 return Categories.SPORTS;
-            case "Food":
+            case "food":
                 return  Categories.FOOD;
-            case "Games":
+            case "games":
                 return  Categories.GAMES;
-            case "Party":
+            case "party":
                 return Categories.PARTY;
-            case "Education":
+            case "education":
                 return  Categories.EDUCATION;
 
         }

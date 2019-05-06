@@ -53,4 +53,6 @@ public interface DBCollection {
     List<? extends DBDocument> search(QueryFilter filter, @NonNull RequestListener<List<? extends DBDocument>> listener);
 
     List<? extends DBDocument> search(QueryFilter filter);
+
+    Runnable tester();
 }

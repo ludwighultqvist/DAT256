@@ -29,6 +29,8 @@ public interface DBDocument {
      */
     void set(String field, Object object);
 
+    void remove(String field);
+
     void save(@NonNull RequestListener<DBDocument> listener);
 
     /**
@@ -55,4 +57,6 @@ public interface DBDocument {
      * @return the DBCollection object
      */
     DBCollection subCollection(String name);
+
+    Runnable tester();
 }

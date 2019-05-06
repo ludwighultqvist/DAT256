@@ -3,8 +3,10 @@ package com.bulbasaur.dat256.services.firebase;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author ludwighultqvist
@@ -85,11 +87,17 @@ public class Database {
         return new Collection(GROUPS);
     }
 
+    public boolean hasUser() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
     public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        if (!hasUser()) {
             return null;
         }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         users().get(user.getUid(), new RequestListener<DBDocument>(){
             @Override
             public void onSuccess(DBDocument object) {
@@ -133,16 +141,8 @@ public class Database {
             }
         });
 
-        listener.finish();
+        //listener.finish();
         return listener.getObject();
-        /*
-        DBDocument document = users().get(user.getUid(), listener);
-        if (document == null) {
-            document = users().create(user.getUid(), listener);
-            document.save();
-        }
-        return document;
-        */
     }
 
     /**
@@ -155,33 +155,20 @@ public class Database {
      * @return the DBDocument or null
      */
     public DBDocument user() {
-        return user(new RequestListener<>(true));
+        return user(new RequestListener<>());
     }
 
+    public void testIt() {
+        System.out.println("\n---------- DATABASE TEST STARTED ----------\n");
 
-    public static void testIt() {
-        /*
-        Database database = Database.getInstance();
-
-        // create a user with given ID
-        DBDocument user = database.user();
-        user.set("name", "Test Testson");
-        user.save();
-
-        // create a group with random ID
-        DBDocument group = database.groups().create();
-        group.set("name", "Test-Group");
-        group.save();
-
-        // create a meetup with random ID
-        DBDocument meetup = database.meetups().create();
-        meetup.set("name", "Test-Meetup");
-        meetup.save();
-
-        List<QueryFilter> filters = new LinkedList<>();
-        filters.add(new QueryFilter("name", "<", "hassan"));
-        List<? extends DBDocument> search = database.users().search(filters);
-        */
+        DBCollection test = new Collection("test");
+        test.get("test-document", new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
+                object.tester().run();
+            }
+        });
     }
 
 }
