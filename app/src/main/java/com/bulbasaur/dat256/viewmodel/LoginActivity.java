@@ -125,6 +125,7 @@ public class  LoginActivity extends AppCompatActivity {
                                 public void onSuccess(Object object) {
                                     super.onSuccess(object);
                                     System.out.println("success");
+                                    startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                 }
 
                                 @Override
