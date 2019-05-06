@@ -172,6 +172,19 @@ public class MeetUp implements Serializable {
         return null;
     }
 
+    public static Visibility getVisibilityFromString(String s) {
+        if (s == null) return null;
+
+        switch (s.toLowerCase()) {
+            case "friends":
+                return Visibility.FRIENDS;
+            case "public":
+                return Visibility.PUBLIC;
+        }
+
+        return null;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -206,6 +219,10 @@ public class MeetUp implements Serializable {
 
     public Visibility getVisibility() {
         return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 
     public Bitmap getIconBitmap(Context context) {

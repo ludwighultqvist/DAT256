@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.MeetUp;
+import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
@@ -94,12 +96,13 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setMaxAttendees(maxAttendeesNumber);
             meetUp.setStart(startDateTime.getCalendar());
             meetUp.setEnd(endDateTime.getCalendar());
-            meetUp.setCategory(meetUp.getCategoryFromString(meetUpCategory));
+            meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
+            meetUp.setVisibility(MeetUp.getVisibilityFromString("PUBLIC"));//TODO add a chooser in the create meetup view for this
+
+            System.out.println("created meetup object, trying to save...");
 
             if (isMeetUpValid(meetUp)) {
-                save(meetUp);
-
-                finish();
+                save();
             } else {
                 Snackbar.make(findViewById(R.id.createMeetUpLinearLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
             }
@@ -118,27 +121,63 @@ public class CreateMeetUpActivity extends AppCompatActivity {
                 && meetUp.getCategory() != null;
     }
 
-    protected void save(MeetUp meetUp){
+    private void showNetworkError() {
+        Toast.makeText(CreateMeetUpActivity.this, "Failed to create MeetUp - check your network connection", Toast.LENGTH_LONG).show();
+    }
 
-        //koden nedan är till för att spara själva meetupen på databasen
+    protected void save() {
+        System.out.println("saving...");
+
         Database db = Database.getInstance();
-        DBDocument meetup = db.meetups().create(new RequestListener<DBDocument>());
 
-        //hur man får tag i ett id.
-        db.meetups().get(meetup.id(), new RequestListener<DBDocument>());
+        if (db == null) {
+            showNetworkError();
 
-        //gör så för alla attribut för en meetup
-        meetup.set("name", meetUp.getName());
-        meetup.set("description", meetUp.getDescription());
-        meetup.set("coord_lat", meetUp.getCoordinates().lat);
-        meetup.set("coord_lon", meetUp.getCoordinates().lon);
-        meetup.set("maxAttendees", meetUp.getMaxAttendees());
-        meetup.set("startDate", meetUp.getStart());
-        meetup.set("endDate", meetUp.getEnd());
-        meetup.set("category", meetUp.getCategory());
-        meetup.set("visibility", meetUp.getVisibility());
+            return;
+        }
 
-        meetup.save(new RequestListener<DBDocument>());
+        DBCollection allMeetupsCollection = Database.getInstance().meetups();
+
+        if (allMeetupsCollection == null) {
+            showNetworkError();
+
+            return;
+        }
+
+        setMeetUpAttributesAndSave(allMeetupsCollection.create());
+    }
+
+    private void setMeetUpAttributesAndSave(DBDocument document) {
+        document.set("name", meetUp.getName());
+        document.set("description", meetUp.getDescription());
+        document.set("coord_lat", meetUp.getCoordinates().lat);
+        document.set("coord_lon", meetUp.getCoordinates().lon);
+        document.set("maxAttendees", meetUp.getMaxAttendees());
+        document.set("startDate", meetUp.getStart());
+        document.set("endDate", meetUp.getEnd());
+        document.set("category", meetUp.getCategory());
+        document.set("visibility", meetUp.getVisibility());
+
+        System.out.println("set fields");
+
+        document.save(new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument meetUpDoc) {
+                super.onSuccess(meetUpDoc);
+
+                Toast.makeText(CreateMeetUpActivity.this, "Created MeetUp!", Toast.LENGTH_SHORT).show();
+
+                setResult(RESULT_OK);
+                finish();
+            }
+
+            @Override
+            public void onFailure(DBDocument meetUpDoc) {
+                super.onFailure(meetUpDoc);
+
+                showNetworkError();
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

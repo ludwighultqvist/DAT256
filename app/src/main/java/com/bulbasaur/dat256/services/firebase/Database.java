@@ -112,7 +112,7 @@ public class Database {
                 @Override
                 public void onComplete(DBDocument object) {
                     super.onComplete(object);
-                    listener.onSuccess(users().create(user.getUid(), new RequestListener<>()));
+                    listener.onSuccess(users().create(user.getUid()));
                     /*
                     users().create(user.getUid(), new RequestListener<DBDocument>() {
                         @Override
