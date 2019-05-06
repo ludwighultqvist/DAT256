@@ -2,14 +2,20 @@ package com.bulbasaur.dat256.viewmodel.uielements;
 
 public class MarkerData {
 
+    private boolean meetUpOrNah;
     private String title, description;
     private int titleColor, descriptionColor;
 
-    public MarkerData(String title, int titleColor, String description, int descriptionColor) {
+    public MarkerData(boolean meetUpOrNah, String title, int titleColor, String description, int descriptionColor) {
+        this.meetUpOrNah = meetUpOrNah;
         this.title = title;
         this.titleColor = titleColor;
         this.description = description;
         this.descriptionColor = descriptionColor;
+    }
+
+    public boolean isMeetUpOrNah() {
+        return meetUpOrNah;
     }
 
     public String getTitle() {
