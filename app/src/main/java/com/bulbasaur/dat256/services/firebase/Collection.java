@@ -50,8 +50,9 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(String id,@NonNull  RequestListener<DBDocument> listener) {
-        DocumentReference reference = id == null ? collection.document() : collection.document(id);
-        return new Document(reference, listener);
+        return new Document(collection.document(id));
+        //DocumentReference reference = id == null ? collection.document() : collection.document(id);
+        // new Document(reference, listener);
     }
 
     /**
@@ -61,7 +62,8 @@ class Collection implements DBCollection {
      */
     @Override
     public DBDocument create(@NonNull RequestListener<DBDocument> listener) {
-        return create(null, listener);
+        return new Document(collection.document());
+        //return create(null, listener);
     }
 
     /**

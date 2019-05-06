@@ -60,6 +60,8 @@ public interface DBDocument {
      */
     DBCollection subCollection(String name);
 
+    boolean isEmpty();
+
     /**
      * creates and returns a runnable tester of the document.
      * @return the runnable object
