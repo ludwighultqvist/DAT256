@@ -193,12 +193,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (requestCode == REGISTER_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-                DBDocument document = Database.getInstance().user();
+                DBDocument document = Database.getInstance().user(new RequestListener<>());
                 if (document != null) {
                     document.set("firstname", user.getFirstName());
                     document.set("lastname", user.getLastName());
                     document.set("phone", user.getPhoneNumber());
-                    document.save();
+                    document.save(new RequestListener<>());
                 }
             }
         }
