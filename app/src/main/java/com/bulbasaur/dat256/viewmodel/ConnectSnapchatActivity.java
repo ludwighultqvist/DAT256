@@ -2,6 +2,7 @@ package com.bulbasaur.dat256.viewmodel;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 
 import com.bulbasaur.dat256.R;
@@ -28,12 +29,14 @@ public class ConnectSnapchatActivity extends AppCompatActivity {
                     @Override
                     public void onLoginSucceeded() {
                         System.out.println("Login successfull");
+                        Log.d("BIT", "YES");
                         //TODO Give User Access to bitmoji, message that login successful and change view to map.
                     }
 
                     @Override
                     public void onLoginFailed() {
                         System.out.println("Login failed");
+                        Log.d("BIT", "NO");
                         //TODO Print error message on screen
                     }
 

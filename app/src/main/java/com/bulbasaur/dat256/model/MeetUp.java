@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
+import static com.bulbasaur.dat256.viewmodel.MenuActivity.getBitmapFromVectorDrawable;
+
 public class MeetUp implements Serializable {
 
     public enum Categories{
@@ -200,21 +202,5 @@ public class MeetUp implements Serializable {
         return getBitmapFromVectorDrawable(context, category.icon, category.primaryColor);
     }
 
-    /**
-     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
-     * @param context the bitmap's context
-     * @param drawableId the id of the vector resource
-     * @return a bitmap image of the vector resource
-     */
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
-        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
 
-        return bitmap;
-    }
 }
