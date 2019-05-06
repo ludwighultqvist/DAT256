@@ -10,7 +10,7 @@ public class RequestListener<E> {
     }
 
     public RequestListener() {
-        this(true);
+        this(false);
     }
 
     public void onComplete(E object) {

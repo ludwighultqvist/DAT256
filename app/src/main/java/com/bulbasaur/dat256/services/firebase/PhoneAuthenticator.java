@@ -19,21 +19,11 @@ import java.util.concurrent.TimeUnit;
 class PhoneAuthenticator implements Authenticator {
 
     private String verificationId;
-    private PhoneAuthProvider.ForceResendingToken token;
-    private Activity activity;
 
     /**
-     * creates a new PhoneAuthenticator object, which sets up the phone authentication to the
-     * Firebase database.
-     * @param activity an activity required by the Firebase phone authentication, cannot be null
+     * creates a new PhoneAuthenticator object, which sets up the phone authentication to the database.
      */
-    PhoneAuthenticator(Activity activity) {
-        this.activity = activity;
-    }
-
-    PhoneAuthenticator() {
-        this(null);
-    }
+    PhoneAuthenticator() {}
 
     @Override
     public void sendVerificationCode(String recipient, Activity activity, @NonNull RequestListener listener) {
@@ -48,7 +38,7 @@ class PhoneAuthenticator implements Authenticator {
                         String code = phoneAuthCredential.getSmsCode();
 
                         if (code != null) {
-                            verify(code);
+                            verify(code, activity, listener);
                         }
                         else {
                             listener.onComplete(null);
@@ -59,7 +49,6 @@ class PhoneAuthenticator implements Authenticator {
                     public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(s, forceResendingToken);
                         verificationId = s;
-                        token = forceResendingToken;
                         listener.onComplete(null);
                     }
 
@@ -69,16 +58,6 @@ class PhoneAuthenticator implements Authenticator {
                     }
                 });
     }
-
-    /**
-     * sends a verification code to the given phone number
-     * @param recipient the string which is where to code is sent, e.g. email, phone number etc.
-     */
-    @Override
-    public void sendVerificationCode(String recipient) {
-        sendVerificationCode(recipient, activity, new RequestListener());
-    }
-
 
     @Override
     public void verify(String verificationCode, Activity activity, @NonNull RequestListener listener) {
@@ -96,14 +75,5 @@ class PhoneAuthenticator implements Authenticator {
                 .addOnFailureListener(e -> {
                     listener.onFailure(null);
                 });
-    }
-
-    /**
-     * verifies the given code
-     * @param verificationCode the string containing the code to be validated
-     */
-    @Override
-    public void verify(String verificationCode) {
-        verify(verificationCode, activity, new RequestListener());
     }
 }
