@@ -44,4 +44,9 @@ public class Coordinates implements Serializable {
 
         return df.format(number);
     }
+
+    @Override
+    public String toString() {
+        return convertToNSEW(true, lat, (char) 2) + " " + convertToNSEW(false, lon, (char) 2);
+    }
 }
