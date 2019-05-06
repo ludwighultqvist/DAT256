@@ -202,11 +202,10 @@ public class RegisterActivity extends AppCompatActivity {
                             document.set("firstname", user.getFirstName());
                             document.set("lastname", user.getLastName());
                             document.set("phone", user.getPhoneNumber());
-                            document.save(new RequestListener<>());
+                            document.save(new RequestListener<>(true));
                         }
                     }
                 });
-
             }
         }
     }

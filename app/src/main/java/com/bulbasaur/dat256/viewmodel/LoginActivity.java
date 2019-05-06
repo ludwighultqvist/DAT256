@@ -107,10 +107,10 @@ public class  LoginActivity extends AppCompatActivity {
     }
 
     private void checkNumber() {
-        List<QueryFilter> usernameList = new ArrayList<QueryFilter>();
-        usernameList.add(new QueryFilter("phonenumber", "=", phoneNumber));
+        QueryFilter queryFilter = new QueryFilter("phone");
+        queryFilter.addFilter("=", phoneNumber);
 
-        Database.getInstance().users().search(usernameList, new RequestListener<List<? extends DBDocument>>() {
+        Database.getInstance().users().search(queryFilter, new RequestListener<List<? extends DBDocument>>(true) {
             @Override
             public void onSuccess(List<? extends DBDocument> result) {
                 super.onSuccess(result);
@@ -142,18 +142,16 @@ public class  LoginActivity extends AppCompatActivity {
                                         System.out.println("fail");
                                 }
                             });
-
                 }
             }
         });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (requestCode == LOGIN_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
+                Database.getInstance().user(new RequestListener<>(true));
             }
         }
     }
