@@ -136,6 +136,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         meetup.set("startDate", meetUp.getStart());
         meetup.set("endDate", meetUp.getEnd());
         meetup.set("category", meetUp.getCategory());
+        meetup.set("visibility", meetUp.getVisibility());
 
         meetup.save(new RequestListener<DBDocument>());
     }
