@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class User {
-    private String ID;
+    private String id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     Country country;
     private int score;
-    private ArrayList<Long> friends = new ArrayList<>();
-    private ArrayList<Long> createdMeetUps = new ArrayList<>();
-    private ArrayList<Long> joinedMeetUps = new ArrayList<>();
+    private ArrayList<String> friends = new ArrayList<>();
+    private ArrayList<String> createdMeetUps = new ArrayList<>();
+    private ArrayList<String> joinedMeetUps = new ArrayList<>();
     private LatLng coordinates;
 
     public User(String firstName, String lastName, String phoneNumber){
@@ -25,7 +25,7 @@ public class User {
     }
 
     public User(String ID){
-        this.ID = ID;
+        this.id = ID;
     }
 
     public void setFirstName(String firstName) {
@@ -56,15 +56,15 @@ public class User {
         return phoneNumber;
     }
 
-    public void addFriend(Long newFriendID){
+    public void addFriend(String newFriendID){
         friends.add(newFriendID);
     }
 
-    public void addCreatedMeetUp(Long MeetUpID){
+    public void addCreatedMeetUp(String MeetUpID){
         createdMeetUps.add(MeetUpID);
     }
 
-    public void addJoinedMeetUp(Long MeetUpID){
+    public void addJoinedMeetUp(String MeetUpID){
         joinedMeetUps.add(MeetUpID);
     }
 }
