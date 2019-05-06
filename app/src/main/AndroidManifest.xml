@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/meet_app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".viewmodel.ScanQRActivity"></activity>
+        <activity android:name=".viewmodel.UserActivity"></activity>
+        <activity android:name=".viewmodel.ScanQRActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -37,7 +38,7 @@
         <activity
             android:name=".viewmodel.LocationPickerActivity"
             android:label="@string/title_activity_location_picker" />
-        <activity android:name=".viewmodel.CreateMeetUpActivity"></activity>
+        <activity android:name=".viewmodel.CreateMeetUpActivity" />
         <activity android:name=".viewmodel.LoginActivity" />
 
         <meta-data
@@ -92,7 +93,6 @@
             android:name=".viewmodel.Terms_And_Conditions_Activity"
             android:label="Terms_And_Conditions_View"
             android:theme="@style/AppTheme.NoActionBar" />
-
     </application>
 
 </manifest>

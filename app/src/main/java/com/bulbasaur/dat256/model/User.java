@@ -3,7 +3,6 @@ package com.bulbasaur.dat256.model;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class User {
     private String ID;
@@ -54,6 +53,10 @@ public class User {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getScore() {
+        return String.valueOf(score);
     }
 
     public void addFriend(Long newFriendID){
