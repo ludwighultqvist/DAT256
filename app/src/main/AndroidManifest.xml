@@ -92,6 +92,7 @@
             android:name=".viewmodel.Terms_And_Conditions_Activity"
             android:label="Terms_And_Conditions_View"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".viewmodel.ListActivity" />
 
     </application>
 
