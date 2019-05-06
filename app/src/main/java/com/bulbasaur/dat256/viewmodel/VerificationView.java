@@ -61,9 +61,9 @@ public class VerificationView extends AppCompatActivity {
 
             @Override
             public void onSuccess(Object o) {
+                setResult(RESULT_OK);
                 finish();
-                startActivity(new Intent(VerificationView.this, MenuActivity.class));
-
+                //startActivity(new Intent(VerificationView.this, MenuActivity.class));
             }
 
             @Override

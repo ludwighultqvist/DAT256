@@ -1,12 +1,19 @@
 package com.bulbasaur.dat256.viewmodel;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -54,6 +61,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SearchView searchView;
 
     private GoogleMap map;
+
+    private User fakeFriend;
 
     private static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
@@ -137,7 +146,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     currentUser.setPhoneNumber((String)object.get("phonenumber"));
 
                     //TODO get friends from DB and add them to the currentUser.friends list
-
                 }
             });
         }
@@ -173,7 +181,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        this.map.setOnInfoWindowClickListener(m -> onMeetUpMarkerClick(m));
+        this.map.setOnInfoWindowClickListener(m -> {
+            onMeetUpMarkerClick(m);
+        });
         this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
         this.map.setOnCameraMoveStartedListener(reason -> {
             if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
@@ -203,20 +213,36 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //set map to user position if possible
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-            if (location != null && currentUser != null) {
+            if (location != null) {
                 LatLng lastLocationCoords = new LatLng(location.getLatitude(), location.getLongitude());
                 System.out.println(lastLocationCoords.latitude + " " + lastLocationCoords.longitude);
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(lastLocationCoords));
                 this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationCoords,DEFAULT_MEET_UP_ZOOM_LEVEL));
                 meMarker = map.addMarker(new MarkerOptions().position(lastLocationCoords).title("Your location"));
-                currentUser.setCoordinates(lastLocationCoords);
+
+                if(currentUser != null) {
+                    currentUser.setCoordinates(lastLocationCoords);
+                }
+
+                //fake friend :/
+                fakeFriend = new User("Dein", "Freund", "phone");
+                MarkerData markerData = new MarkerData(false, ""+fakeFriend.getFirstName() +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
+                Gson markerDataGson = new Gson();
+                String markerDataString = markerDataGson.toJson(markerData);
+                Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
+                MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.getLatitude()+1, location.getLongitude()+2)).snippet(markerDataString).
+                        icon(BitmapDescriptorFactory.fromBitmap(icon));
+                Marker fakeFriendMarker = this.map.addMarker(markerOptions);
+            } else {
+                Toast.makeText(this, "Your location is not found", Toast.LENGTH_LONG).show();
             }
+
         });
     }
 
     private void joinMarkedMeetUp(Marker m) {
         //TODO make the user join the marked event here
-        Toast.makeText(this, "Joined " + meetUpMarkerMap.get(m).getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Joined " + meetUpMarkerMap.get(m).getName(), Toast.LENGTH_LONG).show();
     }
 
     private void onMeetUpMarkerClick(Marker m) {
@@ -349,7 +375,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerOptions createMarkerOptions(MeetUp m) {
         return new MarkerOptions()
                 .position(new LatLng(m.getCoordinates().lat, m.getCoordinates().lon))
-                .snippet(new Gson().toJson(new MarkerData(m.getName(), m.getCategory().primaryColor, m.getDescription(), m.getCategory().secondaryColor)))
+                .snippet(new Gson().toJson(new MarkerData(true, m.getName(), m.getCategory().primaryColor, m.getDescription(), m.getCategory().secondaryColor)))
                 .icon(BitmapDescriptorFactory.fromBitmap(m.getIconBitmap(this)))
                 .anchor(0.5f, 0.5f)
                 .alpha(0.6f);
@@ -385,4 +411,25 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new MeetUp(id, name, new Coordinates(coord_lat, coord_lon), description, category,
                 maxAttendees, null, null, visibility);
     }
+
+
+
+    /**
+     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
+     * @param context the bitmap's context
+     * @param drawableId the id of the vector resource
+     * @return a bitmap image of the vector resource
+     */
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
+        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
 }

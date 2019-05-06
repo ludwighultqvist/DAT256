@@ -189,17 +189,23 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REGISTER_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-                DBDocument document = Database.getInstance().user(new RequestListener<>());
-                if (document != null) {
-                    document.set("firstname", user.getFirstName());
-                    document.set("lastname", user.getLastName());
-                    document.set("phone", user.getPhoneNumber());
-                    document.save(new RequestListener<>());
-                }
+                Database.getInstance().user(new RequestListener<DBDocument>(true) {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+                        if (document != null) {
+                            document.set("firstname", user.getFirstName());
+                            document.set("lastname", user.getLastName());
+                            document.set("phone", user.getPhoneNumber());
+                            document.save(new RequestListener<>(true));
+                        }
+                    }
+                });
             }
         }
     }

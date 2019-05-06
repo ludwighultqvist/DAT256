@@ -71,33 +71,56 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             badge = 0;
         }
         ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);*/
+        if(markerData.isMeetUpOrNah()) {
+            String title = markerData.getTitle();
+            TextView titleUi = view.findViewById(R.id.title);
+            if (title != null) {
+                SpannableString titleText = new SpannableString(title);
+                System.out.println(markerData.getTitleColor());
+                titleText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getTitleColor())), 0, titleText.length(), 0);
+                titleUi.setText(titleText);
+            } else {
+                titleUi.setText("");
+            }
 
-        String title = markerData.getTitle();
-        TextView titleUi = view.findViewById(R.id.title);
-        if (title != null) {
-            SpannableString titleText = new SpannableString(title);
-            System.out.println(markerData.getTitleColor());
-            titleText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getTitleColor())), 0, titleText.length(), 0);
-            titleUi.setText(titleText);
-        } else {
-            titleUi.setText("");
-        }
+            String snippet = markerData.getDescription();
+            String joinText = context.getString(R.string.join_by_long_press);
+            TextView snippetUi = view.findViewById(R.id.snippet);
+            if (snippet != null) {
+                SpannableString snippetText = new SpannableString(snippet + "\n\n" + joinText);
 
-        String snippet = markerData.getDescription();
-        String joinText = context.getString(R.string.join_by_long_press);
-        TextView snippetUi = view.findViewById(R.id.snippet);
-        if (snippet != null) {
-            SpannableString snippetText = new SpannableString(snippet + "\n\n" + joinText);
+                snippetText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getDescriptionColor())), 0, markerData.getDescription().length(), 0);
 
-            snippetText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getDescriptionColor())), 0, markerData.getDescription().length(), 0);
+                //snippetText.setSpan(new ForegroundColorSpan(context.getColor(R.color.mainColor)), markerData.getDescription().length(), snippet.length(), 0);
+                //snippetText.setSpan(new StyleSpan(Typeface.BOLD), markerData.getDescription().length(), snippet.length(), 0);
+                //snippetText.setSpan(new RelativeSizeSpan(2f), markerData.getDescription().length(), snippet.length(), 0);
 
-            //snippetText.setSpan(new ForegroundColorSpan(context.getColor(R.color.mainColor)), markerData.getDescription().length(), snippet.length(), 0);
-            //snippetText.setSpan(new StyleSpan(Typeface.BOLD), markerData.getDescription().length(), snippet.length(), 0);
-            //snippetText.setSpan(new RelativeSizeSpan(2f), markerData.getDescription().length(), snippet.length(), 0);
+                snippetUi.setText(snippetText);
+            } else {
+                snippetUi.setText("");
+            }
+        }else{
+            String title = markerData.getTitle();
+            TextView titleUi = view.findViewById(R.id.title);
+            if (title != null) {
+                SpannableString titleText = new SpannableString(title);
+                System.out.println(markerData.getTitleColor());
+                titleText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getTitleColor())), 0, titleText.length(), 0);
+                titleUi.setText(titleText);
+            } else {
+                titleUi.setText("");
+            }
 
-            snippetUi.setText(snippetText);
-        } else {
-            snippetUi.setText("");
+            String snippet = markerData.getDescription();
+            String goToFriendPage = context.getString(R.string.go_to_friend_page);
+            TextView snippetUi = view.findViewById(R.id.snippet);
+            if (snippet != null) {
+                SpannableString snippetText = new SpannableString(snippet + "\n\n" + goToFriendPage);
+
+                snippetText.setSpan(new ForegroundColorSpan(context.getColor(markerData.getDescriptionColor())), 0, markerData.getDescription().length(), 0);
+
+                snippetUi.setText(snippetText);
+            }
         }
     }
 }
