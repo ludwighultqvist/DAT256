@@ -56,11 +56,15 @@ public class VerificationView extends AppCompatActivity {
         authenticator.verify(code, this, new RequestListener<Object>() {
             @Override
             public void onComplete(Object o) {
+                super.onComplete(o);
+
                 displayErrorMessage();
             }
 
             @Override
             public void onSuccess(Object o) {
+                super.onSuccess(o);
+
                 setResult(RESULT_OK);
                 finish();
                 //startActivity(new Intent(VerificationView.this, MenuActivity.class));
@@ -68,7 +72,7 @@ public class VerificationView extends AppCompatActivity {
 
             @Override
             public void onFailure(Object o) {
-
+                super.onFailure(o);
             }
         });
     }

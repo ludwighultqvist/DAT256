@@ -50,6 +50,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +65,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private User fakeFriend;
 
+    private static final int CREATE_NEW_EVENT_CODE = 32;
     private static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
@@ -71,7 +73,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Main main;
 
-    private List<DBDocument> myMeetUpsDocs;
+    private List<DBDocument> myMeetUpsDocs, accessibleDocs;
 
     private List<? extends DBDocument> myMeetUpsDocsLat, myMeetUpsDocsLon;
 
@@ -133,7 +135,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         FloatingActionButton addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
+        addButton.setOnClickListener(view -> startActivityForResult(new Intent(this, CreateMeetUpActivity.class), CREATE_NEW_EVENT_CODE));
 
         if(Database.getInstance().hasUser()){
             Database.getInstance().user(new RequestListener<DBDocument>(){
@@ -196,8 +198,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.map.setOnCameraIdleListener(() -> {
             System.out.println("camera idle - meetups update");
 
-            Toast.makeText(this, "BL: " + getCurrentMapBounds().getBottomLeft() + " TR: " + getCurrentMapBounds().getTopRight(), Toast.LENGTH_SHORT).show();
-
             if (currentlyOpenMarker == null) {
                 refreshMapItems(getCurrentMapBounds());
             }
@@ -257,6 +257,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MeetUp resultMeetup = (MeetUp) data.getSerializableExtra("MeetUpReturn");
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultMeetup.getCoordinates().lat, resultMeetup.getCoordinates().lon), DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
+        } else if (requestCode == CREATE_NEW_EVENT_CODE) {
+            if (resultCode == RESULT_OK) {
+                refreshMapItems(getCurrentMapBounds());
+            }
         }
     }
 
@@ -301,6 +305,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         collection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
             public void onSuccess(List<? extends DBDocument> latFilteredDocs) {
+                super.onSuccess(latFilteredDocs);
                 myMeetUpsDocsLat = latFilteredDocs;
 
                 System.out.println("latitude query result: " + myMeetUpsDocsLat);
@@ -310,6 +315,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 collection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
                     @Override
                     public void onSuccess(List<? extends DBDocument> lonFilteredDocs) {
+                        super.onSuccess(lonFilteredDocs);
                         myMeetUpsDocsLon = lonFilteredDocs;
 
                         System.out.println("longitude query result: " + myMeetUpsDocsLon);
@@ -318,34 +324,57 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         myMeetUpsDocs = intersection((List<DBDocument>) myMeetUpsDocsLat, (List<DBDocument>) myMeetUpsDocsLon);
 
-                        System.out.println("valid results (intersection): " + myMeetUpsDocs);
-
-                        System.out.println("requesting full individual valid results...");
-
-                        for (DBDocument doc : myMeetUpsDocs) {
-                            doc.init(new RequestListener<DBDocument>() {
-                                 @Override
-                                 public void onSuccess(DBDocument document) {
-                                     System.out.println("document received with id " + document.id());
-
-                                     System.out.println("converting to meetup and updating in model...");
-
-                                     MeetUp newMeetUp = convertDocToMeetUp(document);
-
-                                     main.updateMapMeetUp(newMeetUp);
-
-                                     System.out.println("model updated. updating view...");
-
-                                     showUpdatedMeetUp(newMeetUp);
-
-                                     System.out.println("view updated");
-                                 }
-                            });
-                        }
+                        searchVisibility(collection, myMeetUpsDocs);
                     }
                 });
             }
         });
+    }
+
+    private void searchVisibility(DBCollection collection, List<DBDocument> documents) {
+        QueryFilter publicFilter = new QueryFilter("visibility");
+        publicFilter.addFilter("=", "PUBLIC");
+
+        collection.search(publicFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> publicDocs) {
+                super.onSuccess(publicDocs);
+
+                accessibleDocs = union((List<DBDocument>) publicDocs, getUserMeetUpDocs());
+
+                myMeetUpsDocs = intersection(myMeetUpsDocs, accessibleDocs);
+
+                System.out.println("valid results (intersection): " + myMeetUpsDocs);
+
+                System.out.println("requesting full individual valid results...");
+
+                for (DBDocument doc : myMeetUpsDocs) {
+                    doc.init(new RequestListener<DBDocument>() {
+                        @Override
+                        public void onSuccess(DBDocument document) {
+                            super.onSuccess(document);
+                            System.out.println("document received with id " + document.id());
+
+                            System.out.println("converting to meetup and updating in model...");
+
+                            MeetUp newMeetUp = convertDocToMeetUp(document);
+
+                            main.updateMapMeetUp(newMeetUp);
+
+                            System.out.println("model updated. updating view...");
+
+                            showUpdatedMeetUp(newMeetUp);
+
+                            System.out.println("view updated");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private List<DBDocument> getUserMeetUpDocs() {
+        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
     }
 
     private void showUpdatedMeetUp(MeetUp meetUp) {
@@ -391,6 +420,16 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         return first;
     }
 
+    private List<DBDocument> union(List<DBDocument> first, List<DBDocument> second) {
+        for (DBDocument s : second) {
+            if (!first.contains(s)) {
+                first.add(s);
+            }
+        }
+
+        return first;
+    }
+
     private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
         String name = (String) meetUpDoc.get("name");
@@ -401,7 +440,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
         /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
         Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
-        Visibility visibility = (Visibility) meetUpDoc.get("visibility");
+        Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
                 || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
@@ -431,5 +470,4 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return bitmap;
     }
-
 }

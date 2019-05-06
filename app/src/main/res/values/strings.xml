@@ -65,7 +65,7 @@
         <item>Party</item>
         <item>Education</item>
     </string-array>
-    <string name="create_meetup_done">Create meet up</string>
+    <string name="create_meetup_done">Create MeetUp</string>
     <string name="join_by_long_press">Long press to join MeetUp</string>
     <string name="go_to_friend_page">Go to page</string>
     <string name="end_date">End date</string>
