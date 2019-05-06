@@ -39,18 +39,12 @@ public class Database {
      */
     private Database() {}
 
-    public Authenticator phoneAuthenticator() {
-        authenticator = new PhoneAuthenticator();
-        return authenticator;
-    }
-
     /**
      * creates a new PhoneAuthenticator object, stores in the Database object and returns it
-     * @param activity the activity required by the authenticator
      * @return the PhoneAuthenticator object
      */
-    public Authenticator phoneAuthenticator(Activity activity) {
-        authenticator = new PhoneAuthenticator(activity);
+    public Authenticator phoneAuthenticator() {
+        authenticator = new PhoneAuthenticator();
         return authenticator;
     }
 
@@ -91,12 +85,21 @@ public class Database {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
+    /**
+     * returns the currently logged in user.
+     * if no user is logged in null will be returned.
+     * if a user is logged in and it is already in the database, the reference to the users document
+     * is returned.
+     * if a user is logged in but not saved in the database, a new user document will be created
+     * with the logged in users uid
+     * @return the DBDocument or null
+     */
     public DBDocument user(@NonNull RequestListener<DBDocument> listener) {
-        if (!hasUser()) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
             return null;
         }
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         users().get(user.getUid(), new RequestListener<DBDocument>(){
             @Override
@@ -141,22 +144,10 @@ public class Database {
             }
         });
 
-        //listener.finish();
         return listener.getObject();
     }
 
-    /**
-     * returns the currently logged in user.
-     * if no user is logged in null will be returned.
-     * if a user is logged in and it is already in the database, the reference to the users document
-     * is returned.
-     * if a user is logged in but not saved in the database, a new user document will be created
-     * with the logged in users uid
-     * @return the DBDocument or null
-     */
-    public DBDocument user() {
-        return user(new RequestListener<>());
-    }
+
 
     public void testIt() {
         System.out.println("\n---------- DATABASE TEST STARTED ----------\n");
