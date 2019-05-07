@@ -73,9 +73,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Main main;
 
-    private List<DBDocument> myMeetUpsDocs, accessibleDocs;
-
-    private List<? extends DBDocument> myMeetUpsDocsLat, myMeetUpsDocsLon;
+    private List<DBDocument> validDocs;
 
     private HashMap<Marker, MeetUp> meetUpMarkerMap;
 
@@ -280,9 +278,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         System.out.println("creating request...");
 
-        DBCollection allMeetupsCollection = Database.getInstance().meetups();
+        DBCollection allMeetUpsCollection = Database.getInstance().meetups();
 
-        if (allMeetupsCollection == null) return;
+        if (allMeetUpsCollection == null) return;
 
         System.out.println("reference to all meetups worked");
 
@@ -296,59 +294,71 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         System.out.println("filters created");
 
-        search(allMeetupsCollection, latitudeFilter, longitudeFilter);
+        searchLatLon(allMeetUpsCollection, latitudeFilter, longitudeFilter);
     }
 
-    private void search(DBCollection collection, QueryFilter latFilter, QueryFilter lonFilter) {
+    private void searchLatLon(DBCollection allMeetUpsCollection, QueryFilter latFilter, QueryFilter lonFilter) {
         System.out.println("searching with query 1: latitude...");
 
-        collection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
+        allMeetUpsCollection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
             public void onSuccess(List<? extends DBDocument> latFilteredDocs) {
                 super.onSuccess(latFilteredDocs);
-                myMeetUpsDocsLat = latFilteredDocs;
 
-                System.out.println("latitude query result: " + myMeetUpsDocsLat);
+                System.out.println("latitude query result: " + latFilteredDocs);
 
                 System.out.println("success 1: searching with query 2...");
 
-                collection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
+                allMeetUpsCollection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
                     @Override
                     public void onSuccess(List<? extends DBDocument> lonFilteredDocs) {
                         super.onSuccess(lonFilteredDocs);
-                        myMeetUpsDocsLon = lonFilteredDocs;
 
-                        System.out.println("longitude query result: " + myMeetUpsDocsLon);
+                        System.out.println("longitude query result: " + lonFilteredDocs);
 
                         System.out.println("successful search queries 1 & 2");
 
-                        myMeetUpsDocs = intersection((List<DBDocument>) myMeetUpsDocsLat, (List<DBDocument>) myMeetUpsDocsLon);
+                        List<DBDocument> docsWithinView = intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
 
-                        searchVisibility(collection, myMeetUpsDocs);
+                        searchVisibility(allMeetUpsCollection, docsWithinView);
                     }
                 });
             }
         });
     }
 
-    private void searchVisibility(DBCollection collection, List<DBDocument> documents) {
+    private void searchVisibility(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
         QueryFilter publicFilter = new QueryFilter("visibility");
         publicFilter.addFilter("=", "PUBLIC");
 
-        collection.search(publicFilter, new RequestListener<List<? extends DBDocument>>() {
+        allMeetUpsCollection.search(publicFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
             public void onSuccess(List<? extends DBDocument> publicDocs) {
                 super.onSuccess(publicDocs);
 
-                accessibleDocs = union((List<DBDocument>) publicDocs, getUserMeetUpDocs());
+                searchCurrentUserDocs(allMeetUpsCollection, docsWithinView, (List<DBDocument>) publicDocs);
+            }
+        });
+    }
 
-                myMeetUpsDocs = intersection(myMeetUpsDocs, accessibleDocs);
+    private void searchCurrentUserDocs(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView, List<DBDocument> publicDocs) {
+        QueryFilter currentUserFilter = new QueryFilter("creator");
+        currentUserFilter.addFilter("=", Main.TEMP_CURRENT_USER_ID); //TODO replace this with current user ID
 
-                System.out.println("valid results (intersection): " + myMeetUpsDocs);
+        allMeetUpsCollection.search(currentUserFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> currentUserDocs) {
+                super.onSuccess(currentUserDocs);
+
+                List<DBDocument> accessibleDocs = union(publicDocs, (List<DBDocument>) currentUserDocs);
+
+                validDocs = intersection(accessibleDocs, docsWithinView);
+
+                System.out.println("valid results (intersection): " + validDocs);
 
                 System.out.println("requesting full individual valid results...");
 
-                for (DBDocument doc : myMeetUpsDocs) {
+                for (DBDocument doc : validDocs) {
                     doc.init(new RequestListener<DBDocument>() {
                         @Override
                         public void onSuccess(DBDocument document) {
@@ -371,10 +381,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-    }
-
-    private List<DBDocument> getUserMeetUpDocs() {
-        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
     }
 
     private void showUpdatedMeetUp(MeetUp meetUp) {
@@ -432,6 +438,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
+        String creatorID = (String) meetUpDoc.get("creator");
         String name = (String) meetUpDoc.get("name");
         Double coord_lat = (Double) meetUpDoc.get("coord_lat");
         Double coord_lon = (Double) meetUpDoc.get("coord_lon");
@@ -447,7 +454,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             return null;
         }
 
-        return new MeetUp(id, name, new Coordinates(coord_lat, coord_lon), description, category,
+        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
                 maxAttendees, null, null, visibility);
     }
 
@@ -470,4 +477,35 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return bitmap;
     }
+
+    /*
+
+        DBCollection usersCollection = Database.getInstance().users();
+
+        if (usersCollection == null) return null;
+
+        DBDocument currentUserDoc = usersCollection.get("8snVW8GZQzV8QYibZzRW", new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        List<String> friendIDStrings = (List<String>) document.get("friends");
+
+
+                        for (String s : friendIDStrings) {
+                            meetUpCollection.get(s, new RequestListener<>())
+                        }
+                    }
+                });
+            }
+        });
+
+
+        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
+     */
 }

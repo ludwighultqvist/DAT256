@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
+import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
@@ -98,6 +99,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setEnd(endDateTime.getCalendar());
             meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
             meetUp.setVisibility(MeetUp.getVisibilityFromString("PUBLIC"));//TODO add a chooser in the create meetup view for this
+            meetUp.setCreatorID(Main.TEMP_CURRENT_USER_ID);//TODO replace with real user id
 
             System.out.println("created meetup object, trying to save...");
 
@@ -148,6 +150,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
     }
 
     private void setMeetUpAttributesAndSave(DBDocument document) {
+        document.set("creator", meetUp.getCreatorID());
         document.set("name", meetUp.getName());
         document.set("description", meetUp.getDescription());
         document.set("coord_lat", meetUp.getCoordinates().lat);
