@@ -73,8 +73,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Main main;
 
-    private List<DBDocument> validDocs;
-
     private HashMap<Marker, MeetUp> meetUpMarkerMap;
 
     private Marker meMarker;
@@ -224,7 +222,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 //fake friend :/
                 fakeFriend = new User("Dein", "Freund", "phone");
-                MarkerData markerData = new MarkerData(false, ""+fakeFriend.getFirstName() +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
+                MarkerData markerData = new MarkerData(false, ""+fakeFriend.getFirstName()
+                        +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
                 Gson markerDataGson = new Gson();
                 String markerDataString = markerDataGson.toJson(markerData);
                 Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
@@ -320,14 +319,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         List<DBDocument> docsWithinView = intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
 
-                        searchVisibility(allMeetUpsCollection, docsWithinView);
+                        searchVisibilityPublic(allMeetUpsCollection, docsWithinView);
+                        searchVisibilityFriends(allMeetUpsCollection, docsWithinView);
                     }
                 });
             }
         });
     }
 
-    private void searchVisibility(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
+    private void searchVisibilityPublic(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
         QueryFilter publicFilter = new QueryFilter("visibility");
         publicFilter.addFilter("=", "PUBLIC");
 
@@ -352,33 +352,88 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 List<DBDocument> accessibleDocs = union(publicDocs, (List<DBDocument>) currentUserDocs);
 
-                validDocs = intersection(accessibleDocs, docsWithinView);
+                finishUpdatingMapMeetUps(intersection(accessibleDocs, docsWithinView));
+            }
+        });
+    }
 
-                System.out.println("valid results (intersection): " + validDocs);
+    public void finishUpdatingMapMeetUps(List<DBDocument> documents) {
+        System.out.println("valid results (intersection): " + documents);
 
-                System.out.println("requesting full individual valid results...");
+        System.out.println("requesting full individual valid results...");
 
-                for (DBDocument doc : validDocs) {
-                    doc.init(new RequestListener<DBDocument>() {
-                        @Override
-                        public void onSuccess(DBDocument document) {
-                            super.onSuccess(document);
-                            System.out.println("document received with id " + document.id());
+        for (DBDocument doc : documents) {
+            doc.init(new RequestListener<DBDocument>() {
+                @Override
+                public void onSuccess(DBDocument document) {
+                    super.onSuccess(document);
+                    System.out.println("document received with id " + document.id());
 
-                            System.out.println("converting to meetup and updating in model...");
+                    System.out.println("converting to meetup and updating in model...");
 
-                            MeetUp newMeetUp = convertDocToMeetUp(document);
+                    MeetUp newMeetUp = convertDocToMeetUp(document);
 
-                            main.updateMapMeetUp(newMeetUp);
+                    main.updateMapMeetUp(newMeetUp);
 
-                            System.out.println("model updated. updating view...");
+                    System.out.println("model updated. updating view...");
 
-                            showUpdatedMeetUp(newMeetUp);
+                    showUpdatedMeetUp(newMeetUp);
 
-                            System.out.println("view updated");
-                        }
-                    });
+                    System.out.println("view updated");
                 }
+            });
+        }
+    }
+
+    public void searchFriendsMeetUps(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView, List<DBDocument> friendsVisibleDocs) {
+        DBCollection usersCollection = Database.getInstance().users();
+
+        if (usersCollection == null) return;
+
+        usersCollection.get(Main.TEMP_CURRENT_USER_ID, new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        List<String> friendIDStrings = (List<String>) document.get("friends");
+
+                        for (String s : friendIDStrings) {
+                            QueryFilter friendFilter = new QueryFilter("creator");
+                            friendFilter.addFilter("=", s);
+
+                            allMeetUpsCollection.search(friendFilter, new RequestListener<List<? extends DBDocument>>() {
+                                @Override
+                                public void onSuccess(List<? extends DBDocument> docsOfFriends) {
+                                    super.onSuccess(docsOfFriends);
+
+                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, docsWithinView);
+                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, friendsVisibleDocs);
+
+                                    finishUpdatingMapMeetUps((List<DBDocument>) docsOfFriends);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void searchVisibilityFriends(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
+        QueryFilter friendsVisibilityFilter = new QueryFilter("visibility");
+        friendsVisibilityFilter.addFilter("=", "FRIENDS");
+
+        allMeetUpsCollection.search(friendsVisibilityFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> friendsVisibleDocs) {
+                super.onSuccess(friendsVisibleDocs);
+
+                searchFriendsMeetUps(allMeetUpsCollection, docsWithinView, (List<DBDocument>) friendsVisibleDocs);
             }
         });
     }
