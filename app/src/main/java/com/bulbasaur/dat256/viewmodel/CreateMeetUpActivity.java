@@ -29,7 +29,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
 
     private MeetUp meetUp;
     private TextView chosenLocationTextView;
-    private String meetUpCategory;
+    private String meetUpCategory, meetUpVisibility;
 
     private CustomDateTimePickerHelper startDateTime, endDateTime;
 
@@ -77,6 +77,21 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        //Visibility spinner
+        Spinner visibilitySpinner = findViewById(R.id.visibilitySpinner);
+        ArrayAdapter<CharSequence> visibilityAdapter = ArrayAdapter.createFromResource(this, R.array.visibility_array, android.R.layout.simple_spinner_item);
+        visibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        visibilitySpinner.setAdapter(visibilityAdapter);
+        visibilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                meetUpVisibility = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         // button
         final Button button = findViewById(R.id.createMeetUpButton);
         button.setOnClickListener(v -> {
@@ -98,7 +113,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setStart(startDateTime.getCalendar());
             meetUp.setEnd(endDateTime.getCalendar());
             meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
-            meetUp.setVisibility(MeetUp.getVisibilityFromString("PUBLIC"));//TODO add a chooser in the create meetup view for this
+            meetUp.setVisibility(MeetUp.getVisibilityFromString(meetUpVisibility));
             meetUp.setCreatorID(Main.TEMP_CURRENT_USER_ID);//TODO replace with real user id
 
             System.out.println("created meetup object, trying to save...");
