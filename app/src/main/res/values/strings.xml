@@ -65,9 +65,14 @@
         <item>Party</item>
         <item>Education</item>
     </string-array>
+    <string-array name="visibility_array">
+        <item>Public</item>
+        <item>Friends</item>
+    </string-array>
     <string name="create_meetup_done">Create MeetUp</string>
     <string name="join_by_long_press">Long press to join MeetUp</string>
     <string name="go_to_friend_page">Go to page</string>
     <string name="end_date">End date</string>
     <string name="enter_the_verification_code_that_you_should_have_received_via_sms_below">Enter the verification code that you should have received via SMS below:</string>
+    <string name="open_to">Open to:</string>
 </resources>
