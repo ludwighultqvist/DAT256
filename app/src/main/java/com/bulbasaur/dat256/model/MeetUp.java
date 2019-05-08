@@ -38,12 +38,15 @@ public class MeetUp implements Serializable {
             this.pic = pic;
             this.icon = icon;
         }
+    }
 
+    public enum Visibility {
+        FRIENDS, PUBLIC
     }
 
     private String id;
 
-    //owner - either person or group?
+    private String creatorID; //owner - either person or group?
 
     private String name, description;
 
@@ -59,19 +62,23 @@ public class MeetUp implements Serializable {
 
     private ArrayList<User> usersJoined = new ArrayList<>();
 
+    private Visibility visibility;
+
     public MeetUp() {
         this.coords = new Coordinates();
     }
 
-    public MeetUp(String id, String name, Coordinates coordinates, String description) {
+    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description) {
         this.id = id;
+        this.creatorID = creatorID;
         this.name = name;
         this.coords = coordinates;
         this.description = description;
     }
 
-    public MeetUp(String id, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end) {
+    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end, Visibility visibility) {
         this.id = id;
+        this.creatorID = creatorID;
         this.name = name;
         this.coords = coordinates;
         this.description = description;
@@ -79,10 +86,12 @@ public class MeetUp implements Serializable {
         this.maxAttendees = maxAttendees;
         this.start = start;
         this.end = end;
+        this.visibility = visibility;
     }
 
-    public MeetUp(String id, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
+    public MeetUp(String id, String creatorID, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
         this.id = id;
+        this.creatorID = creatorID;
         this.name = name;
         this.coords = new Coordinates();
         this.coords.lat = latitude;
@@ -96,6 +105,14 @@ public class MeetUp implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public String getCreatorID() {
+        return creatorID;
+    }
+
+    public void setCreatorID(String creatorID) {
+        this.creatorID = creatorID;
     }
 
     @Override
@@ -166,6 +183,19 @@ public class MeetUp implements Serializable {
         return null;
     }
 
+    public static Visibility getVisibilityFromString(String s) {
+        if (s == null) return null;
+
+        switch (s.toLowerCase()) {
+            case "friends":
+                return Visibility.FRIENDS;
+            case "public":
+                return Visibility.PUBLIC;
+        }
+
+        return null;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -196,6 +226,14 @@ public class MeetUp implements Serializable {
 
     public int getIconDrawable() {
         return category.icon;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 
     public Bitmap getIconBitmap(Context context) {

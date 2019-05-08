@@ -28,6 +28,7 @@ import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MapBounds;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.MeetUp.Categories;
+import com.bulbasaur.dat256.model.MeetUp.Visibility;
 import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
@@ -50,10 +51,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,20 +63,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
 
-    //private MeetUp fakeMeetUp;
-    //private LatLng fakeMeetUpCoordinates;
     private User fakeFriend;
 
+    private static final int CREATE_NEW_EVENT_CODE = 32;
     private static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
     private boolean markerInMiddle = false;
 
     private Main main;
-
-    private List<DBDocument> myMeetUpsDocs;
-
-    private List<? extends DBDocument> myMeetUpsDocsLat, myMeetUpsDocsLon;
 
     private HashMap<Marker, MeetUp> meetUpMarkerMap;
 
@@ -137,9 +131,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         FloatingActionButton addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(view -> startActivity(new Intent(this, CreateMeetUpActivity.class)));
-
-        //fakeMeetUp = new MeetUp("120391290312", "Fest hos Hassan", 57.714957, 11.909446, "Yippie!", Categories.PARTY, 0, null, null);
+        addButton.setOnClickListener(view -> startActivityForResult(new Intent(this, CreateMeetUpActivity.class), CREATE_NEW_EVENT_CODE));
 
         if(Database.getInstance().hasUser()){
             Database.getInstance().user(new RequestListener<DBDocument>(){
@@ -169,14 +161,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
-
-        //fakeMeetUpCoordinates = new LatLng(fakeMeetUp.getLatitude(), fakeMeetUp.getLongitude());
-
-        /*MarkerData markerData = new MarkerData(fakeMeetUp.getName(), fakeMeetUp.getCategory().primaryColor, fakeMeetUp.getDescription(), fakeMeetUp.getCategory().primaryColor);
-        Gson markerDataGson = new Gson();
-        String markerDataString = markerDataGson.toJson(markerData);
-        MarkerOptions markerOptions = new MarkerOptions().position(fakeMeetUpCoordinates).snippet(markerDataString).icon(BitmapDescriptorFactory.fromBitmap(fakeMeetUp.getIconBitmap(this))).anchor(0.5f, 0.5f).alpha(0.6f);
-        Marker fakeMeetUpMarker = this.map.addMarker(markerOptions);*/
 
         showUserLocationOnMapWithRegularMarkerAndMoveMapToIt();
 
@@ -210,7 +194,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.map.setOnCameraIdleListener(() -> {
             System.out.println("camera idle - meetups update");
 
-            if (currentlyOpenMarker == null) requestNewMapItemsAndUpdate(getCurrentMapBounds());
+            if (currentlyOpenMarker == null) {
+                refreshMapItems(getCurrentMapBounds());
+            }
         });
     }
 
@@ -236,7 +222,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 //fake friend :/
                 fakeFriend = new User("Dein", "Freund", "phone");
-                MarkerData markerData = new MarkerData(false, ""+fakeFriend.getFirstName() +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
+                MarkerData markerData = new MarkerData(false, ""+fakeFriend.getFirstName()
+                        +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
                 Gson markerDataGson = new Gson();
                 String markerDataString = markerDataGson.toJson(markerData);
                 Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
@@ -267,6 +254,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MeetUp resultMeetup = (MeetUp) data.getSerializableExtra("MeetUpReturn");
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultMeetup.getCoordinates().lat, resultMeetup.getCoordinates().lon), DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
+        } else if (requestCode == CREATE_NEW_EVENT_CODE) {
+            if (resultCode == RESULT_OK) {
+                refreshMapItems(getCurrentMapBounds());
+            }
         }
     }
 
@@ -276,73 +267,188 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new MapBounds(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude);
     }
 
-    private void requestNewMapItemsAndUpdate(MapBounds bounds) {
-        System.out.println("creating request");
+    private void refreshMapItems(MapBounds bounds) {
+        System.out.println("removing meetups outside view...");
 
-        DBCollection allMeetupsCollection = Database.getInstance().meetups();
+        main.removeOldMeetUps(bounds);
+        removeOldMeetUpMarkers();
 
-        if (allMeetupsCollection == null) return;
+        System.out.println("removed meetups outside view");
+
+        System.out.println("creating request...");
+
+        DBCollection allMeetUpsCollection = Database.getInstance().meetups();
+
+        if (allMeetUpsCollection == null) return;
 
         System.out.println("reference to all meetups worked");
 
-        /*DBDocument user = null;
+        QueryFilter latitudeFilter = new QueryFilter("coord_lat");
+        latitudeFilter.addFilter(">", bounds.getBottomLeft().lat);
+        latitudeFilter.addFilter("<", bounds.getTopRight().lat);
 
-        if (user == null) return;
-
-        System.out.println("my database exists");
-
-        DBCollection myMeetupsDatabase = user.subCollection("meetups");
-
-        if (myMeetupsDatabase == null) return;
-
-        System.out.println("my meetups database exists");*/
-
-        List<QueryFilter> latitudeFilter = new LinkedList<>();
-        latitudeFilter.add(new QueryFilter("coord_lat", ">", bounds.getBottomLeft().lat));
-        latitudeFilter.add(new QueryFilter("coord_lat", "<", bounds.getTopRight().lat));
-
-        List<QueryFilter> longitudeFilter = new LinkedList<>();
-        longitudeFilter.add(new QueryFilter("coord_lon", ">", bounds.getBottomLeft().lon));
-        longitudeFilter.add(new QueryFilter("coord_lon", "<", bounds.getTopRight().lon));
+        QueryFilter longitudeFilter = new QueryFilter("coord_lon");
+        longitudeFilter.addFilter(">", bounds.getBottomLeft().lon);
+        longitudeFilter.addFilter("<", bounds.getTopRight().lon);
 
         System.out.println("filters created");
 
-        search(allMeetupsCollection, latitudeFilter, longitudeFilter);
+        searchLatLon(allMeetUpsCollection, latitudeFilter, longitudeFilter);
     }
 
-    private void search(DBCollection collection, List<QueryFilter> latFilter, List<QueryFilter> lonFilter) {
-        System.out.println("searching with query 1");
+    private void searchLatLon(DBCollection allMeetUpsCollection, QueryFilter latFilter, QueryFilter lonFilter) {
+        System.out.println("searching with query 1: latitude...");
 
-        collection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
+        allMeetUpsCollection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
             public void onSuccess(List<? extends DBDocument> latFilteredDocs) {
-                myMeetUpsDocsLat = latFilteredDocs;
+                super.onSuccess(latFilteredDocs);
 
-                System.out.println(myMeetUpsDocsLat);
+                System.out.println("latitude query result: " + latFilteredDocs);
 
-                System.out.println("success 1: searching with query 2");
+                System.out.println("success 1: searching with query 2...");
 
-                collection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
+                allMeetUpsCollection.search(lonFilter, new RequestListener<List<? extends DBDocument>>() {
                     @Override
                     public void onSuccess(List<? extends DBDocument> lonFilteredDocs) {
-                        myMeetUpsDocsLon = lonFilteredDocs;
+                        super.onSuccess(lonFilteredDocs);
 
-                        System.out.println(myMeetUpsDocsLon);
+                        System.out.println("longitude query result: " + lonFilteredDocs);
 
                         System.out.println("successful search queries 1 & 2");
 
-                        myMeetUpsDocs = intersection((List<DBDocument>) myMeetUpsDocsLat, (List<DBDocument>) myMeetUpsDocsLon);
+                        List<DBDocument> docsWithinView = intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
 
-                        main.updateMapMeetUps(convertDocsToMeetUps(myMeetUpsDocs));
-
-                        showUpdatedMeetUps();
+                        searchVisibilityPublic(allMeetUpsCollection, docsWithinView);
+                        searchVisibilityFriends(allMeetUpsCollection, docsWithinView);
                     }
                 });
             }
         });
     }
 
-    private void showUpdatedMeetUps() {
+    private void searchVisibilityPublic(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
+        QueryFilter publicFilter = new QueryFilter("visibility");
+        publicFilter.addFilter("=", "PUBLIC");
+
+        allMeetUpsCollection.search(publicFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> publicDocs) {
+                super.onSuccess(publicDocs);
+
+                searchCurrentUserDocs(allMeetUpsCollection, docsWithinView, (List<DBDocument>) publicDocs);
+            }
+        });
+    }
+
+    private void searchCurrentUserDocs(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView, List<DBDocument> publicDocs) {
+        QueryFilter currentUserFilter = new QueryFilter("creator");
+        currentUserFilter.addFilter("=", Main.TEMP_CURRENT_USER_ID); //TODO replace this with current user ID
+
+        allMeetUpsCollection.search(currentUserFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> currentUserDocs) {
+                super.onSuccess(currentUserDocs);
+
+                List<DBDocument> accessibleDocs = union(publicDocs, (List<DBDocument>) currentUserDocs);
+
+                finishUpdatingMapMeetUps(intersection(accessibleDocs, docsWithinView));
+            }
+        });
+    }
+
+    public void finishUpdatingMapMeetUps(List<DBDocument> documents) {
+        System.out.println("valid results (intersection): " + documents);
+
+        System.out.println("requesting full individual valid results...");
+
+        for (DBDocument doc : documents) {
+            doc.init(new RequestListener<DBDocument>() {
+                @Override
+                public void onSuccess(DBDocument document) {
+                    super.onSuccess(document);
+                    System.out.println("document received with id " + document.id());
+
+                    System.out.println("converting to meetup and updating in model...");
+
+                    MeetUp newMeetUp = convertDocToMeetUp(document);
+
+                    main.updateMapMeetUp(newMeetUp);
+
+                    System.out.println("model updated. updating view...");
+
+                    showUpdatedMeetUp(newMeetUp);
+
+                    System.out.println("view updated");
+                }
+            });
+        }
+    }
+
+    public void searchFriendsMeetUps(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView, List<DBDocument> friendsVisibleDocs) {
+        DBCollection usersCollection = Database.getInstance().users();
+
+        if (usersCollection == null) return;
+
+        usersCollection.get(Main.TEMP_CURRENT_USER_ID, new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        List<String> friendIDStrings = (List<String>) document.get("friends");
+
+                        for (String s : friendIDStrings) {
+                            QueryFilter friendFilter = new QueryFilter("creator");
+                            friendFilter.addFilter("=", s);
+
+                            allMeetUpsCollection.search(friendFilter, new RequestListener<List<? extends DBDocument>>() {
+                                @Override
+                                public void onSuccess(List<? extends DBDocument> docsOfFriends) {
+                                    super.onSuccess(docsOfFriends);
+
+                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, docsWithinView);
+                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, friendsVisibleDocs);
+
+                                    finishUpdatingMapMeetUps((List<DBDocument>) docsOfFriends);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void searchVisibilityFriends(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
+        QueryFilter friendsVisibilityFilter = new QueryFilter("visibility");
+        friendsVisibilityFilter.addFilter("=", "FRIENDS");
+
+        allMeetUpsCollection.search(friendsVisibilityFilter, new RequestListener<List<? extends DBDocument>>() {
+            @Override
+            public void onSuccess(List<? extends DBDocument> friendsVisibleDocs) {
+                super.onSuccess(friendsVisibleDocs);
+
+                searchFriendsMeetUps(allMeetUpsCollection, docsWithinView, (List<DBDocument>) friendsVisibleDocs);
+            }
+        });
+    }
+
+    private void showUpdatedMeetUp(MeetUp meetUp) {
+        if (!meetUpMarkerMap.values().contains(meetUp)) {
+            Marker marker = map.addMarker(createMarkerOptions(meetUp));
+
+            meetUpMarkerMap.put(marker, meetUp);
+
+            System.out.println("one marker added");
+        }
+    }
+
+    private void removeOldMeetUpMarkers() {
         Iterator<Marker> markerIterator = meetUpMarkerMap.keySet().iterator();
         while (markerIterator.hasNext()) {
             Marker m = markerIterator.next();
@@ -351,22 +457,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 m.remove();
                 markerIterator.remove();
 
-                System.out.println("one removed");
+                System.out.println("one marker removed");
             }
-        }
-
-        for (MeetUp m : main.getMeetUpsWithinMapView()) {
-            if (!meetUpMarkerMap.values().contains(m)) {
-                Marker marker = map.addMarker(createMarkerOptions(m));
-
-                meetUpMarkerMap.put(marker, m);
-
-                System.out.println("one added");
-            }
-        }
-
-        for (MeetUp m : meetUpMarkerMap.values()) {
-            System.out.println(m.getName());
         }
     }
 
@@ -380,6 +472,16 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private List<DBDocument> intersection(List<DBDocument> first, List<DBDocument> second) {
+        for (int i = first.size() - 1; i >= 0; i--) {
+            if (!second.contains(first.get(i))) {
+                first.remove(i);
+            }
+        }
+
+        return first;
+    }
+
+    private List<DBDocument> union(List<DBDocument> first, List<DBDocument> second) {
         for (DBDocument s : second) {
             if (!first.contains(s)) {
                 first.add(s);
@@ -389,20 +491,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         return first;
     }
 
-    private List<MeetUp> convertDocsToMeetUps(List<? extends DBDocument> meetUpDocs) {
-        List<MeetUp> meetUps = new ArrayList<>();
-
-        for (DBDocument doc : meetUpDocs) {
-            MeetUp meetUp = convertDocToMeetUp(doc);
-            if (meetUp == null) continue;
-            meetUps.add(meetUp);
-        }
-
-        return meetUps;
-    }
-
     private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
+        String creatorID = (String) meetUpDoc.get("creator");
         String name = (String) meetUpDoc.get("name");
         Double coord_lat = (Double) meetUpDoc.get("coord_lat");
         Double coord_lon = (Double) meetUpDoc.get("coord_lon");
@@ -411,28 +502,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
         /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
         Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
-
+        Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
                 || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
             return null;
         }
 
-        return new MeetUp(id, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, null, null);
-    }
-
-    class MeetUpsRequestListener extends RequestListener<List<? extends DBDocument>> {
-
-        @Override
-        public void onSuccess(List<? extends DBDocument> object) {
-            super.onSuccess(object);
-
-            System.out.println("this was a success");
-
-            System.out.println(object.get(0).get("name"));
-            //System.out.println("test" + object.get(0).get("name").toString());
-        }
+        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
+                maxAttendees, null, null, visibility);
     }
 
 
@@ -455,4 +533,34 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         return bitmap;
     }
 
+    /*
+
+        DBCollection usersCollection = Database.getInstance().users();
+
+        if (usersCollection == null) return null;
+
+        DBDocument currentUserDoc = usersCollection.get("8snVW8GZQzV8QYibZzRW", new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        List<String> friendIDStrings = (List<String>) document.get("friends");
+
+
+                        for (String s : friendIDStrings) {
+                            meetUpCollection.get(s, new RequestListener<>())
+                        }
+                    }
+                });
+            }
+        });
+
+
+        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
+     */
 }

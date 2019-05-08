@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Main {
 
+    public static String TEMP_CURRENT_USER_ID = "ERvd4vk6kchlrvvauceXd2DnnLB3";
+
     private User currentUser;
 
     private List<MeetUp> meetUpsWithinMapView;
@@ -19,37 +21,23 @@ public class Main {
         currentUser = loggedInUser;
     }
 
-    public void updateMap(List<MeetUp> meetUps, List<User> friends) {
-        updateMapGeneric(meetUpsWithinMapView, meetUps);
-        updateMapGeneric(friendsWithinMapView, friends);
-    }
+    public void updateMapMeetUp(MeetUp meetUp) {
+        if (!meetUpsWithinMapView.contains(meetUp)) {
+            meetUpsWithinMapView.add(meetUp);
 
-    public void updateMapMeetUps(List<MeetUp> meetUps) {
-        updateMapGeneric(meetUpsWithinMapView, meetUps);
-
-        System.out.println("updating map meetups");
-
-        for (MeetUp m : meetUpsWithinMapView) {
-            System.out.println(m.getId() + " " + m.getName());
+            System.out.println("MeetUp Added to Map: " + meetUp.getId() + " " + meetUp.getName());
         }
     }
 
-    public void updateMapFriends(List<User> friends) {
-        updateMapGeneric(friendsWithinMapView, friends);
-    }
+    public void removeOldMeetUps(MapBounds bounds) {
+        for (int i = meetUpsWithinMapView.size() - 1; i >= 0; i--) {
+            MeetUp m = meetUpsWithinMapView.get(i);
 
-    public <T> void updateMapGeneric(List<T> into, List<T> from) {
-        for (int i = into.size() - 1; i >= 0; i--) {
-            T existingItem = into.get(i);
-            if (!from.contains(existingItem)) {
-                into.remove(existingItem);
-            }
-        }
-
-        for (int i = from.size() - 1; i >= 0; i--) {
-            T newItem = from.get(i);
-            if (!into.contains(newItem)) {
-                into.add(newItem);
+            if (m.getCoordinates().lat < bounds.getBottomLeft().lat
+                    || m.getCoordinates().lat > bounds.getTopRight().lat
+                    || m.getCoordinates().lon < bounds.getBottomLeft().lon
+                    || m.getCoordinates().lon > bounds.getTopRight().lon) {
+                meetUpsWithinMapView.remove(i);
             }
         }
     }
