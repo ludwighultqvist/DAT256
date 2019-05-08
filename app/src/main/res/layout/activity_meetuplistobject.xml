@@ -6,39 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible" >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="100">
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+        <TextView
+            android:id="@+id/meetupName"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="5"
+            android:gravity="left"
+            android:text="TextView"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/meetupDate"
-        android:layout_width="194dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="201dp"
+        android:gravity="left"
+        android:id="@+id/meetupDesc"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="127dp" />
-
-    <TextView
-        android:id="@+id/meetupAttending"
-        android:layout_width="198dp"
-        android:layout_height="143dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="486dp"
-        tools:layout_editor_absoluteY="146dp" />
-
-    <TextView
-        android:id="@+id/meetupName"
-        android:layout_width="343dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="214dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginBottom="15dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/meetupDate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.407" />
+        android:layout_weight="5"
+        android:layout_marginLeft="10dp"
+        />
+        </LinearLayout>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

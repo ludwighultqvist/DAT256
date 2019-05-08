@@ -120,6 +120,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_login_logout:
                     startActivity(new Intent(this, RegisterActivity.class));
                     break;
+                case R.id.nav_MeetUpList:
+                    startActivity(new Intent(this, ListActivity.class));
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
