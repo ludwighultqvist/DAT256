@@ -25,15 +25,15 @@ import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
     private ListView meetupList;
-    private ArrayList<MeetUp> meetUps;
-    private List<DBDocument> tempDocument;
+    private List<MeetUp> meetUps = new ArrayList<MeetUp>();
+    private List<? extends DBDocument> tempDocument;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meetup_list);
         meetupList = (ListView) findViewById(R.id.listView);
-        meetUps = new ArrayList<>();
+        //meetUps = new ArrayList<>();
         init();
 
     }
@@ -60,24 +60,29 @@ public class ListActivity extends AppCompatActivity {
 
 
 
-    private void updateList(){
+    private void updateList() {
         tempDocument = new ArrayList<DBDocument>();
         DBCollection allMeetUps = Database.getInstance().meetups();
         allMeetUps.all(new RequestListener<List<? extends DBDocument>>() {
             @Override
-            public void onSuccess(List<? extends DBDocument> tempDocument) {
-                super.onSuccess(tempDocument);
+            public void onComplete(List<? extends DBDocument> object) {
+                super.onComplete(object);
+                tempDocument = object;
+                init2(object);
             }
         });
-
+    }
+    private void init2(List<? extends DBDocument> document){
         for (DBDocument doc : tempDocument) {
             doc.init(new RequestListener<DBDocument>() {
                 @Override
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
+
                     System.out.println("FUNKA DÅÅÅÅ" + document.id());
 
                     MeetUp newMeetUp = convertDocToMeetUp(document);
+
                     meetUps.add(newMeetUp);
 
                     System.out.println("ADDED MEETUP: " + newMeetUp);

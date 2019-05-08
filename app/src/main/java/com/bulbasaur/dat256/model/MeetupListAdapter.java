@@ -11,13 +11,14 @@ import android.widget.TextView;
 import com.bulbasaur.dat256.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MeetupListAdapter extends ArrayAdapter<MeetUp> {
     private Context mContext;
     int mResource;
 
-    public MeetupListAdapter(Context context, int resource, ArrayList<MeetUp> objects) {
+    public MeetupListAdapter(Context context, int resource, List<MeetUp> objects) {
         super(context, resource, objects);
         this.mContext = context;
         mResource= resource;
