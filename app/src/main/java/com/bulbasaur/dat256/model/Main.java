@@ -8,6 +8,7 @@ public class Main {
     public static String TEMP_CURRENT_USER_ID = "ERvd4vk6kchlrvvauceXd2DnnLB3";
 
     private User currentUser;
+    private static Main instance;
 
     private List<MeetUp> meetUpsWithinMapView;
     private List<User> friendsWithinMapView;
@@ -44,5 +45,12 @@ public class Main {
 
     public List<MeetUp> getMeetUpsWithinMapView() {
         return meetUpsWithinMapView;
+    }
+
+    public static Main getInstance(){
+        if (instance == null){
+            instance = new Main();
+        }
+        return instance;
     }
 }
