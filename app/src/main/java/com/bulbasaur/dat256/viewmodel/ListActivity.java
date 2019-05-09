@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
+import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.MeetupListAdapter;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
@@ -31,6 +32,7 @@ public class ListActivity extends AppCompatActivity {
     private ListView meetupList;
     private List<MeetUp> meetUps = new ArrayList<MeetUp>();
     private List<? extends DBDocument> tempDocument;
+
     MeetupListAdapter adapter;
 
     @Override
@@ -42,14 +44,16 @@ public class ListActivity extends AppCompatActivity {
                                               @Override
                                               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                   Intent meetUpIntent = new Intent(ListActivity.this, MeetUpActivity.class);
-                                                  startActivity(meetUpIntent.putExtra("MeetUp", getMeetUp(position)));
-                                                  setResult(Activity.RESULT_OK, meetUpIntent);
+                                                  meetUpIntent.putExtra("MeetUp", getMeetUp(position));
+                                                  startActivityForResult(meetUpIntent, MenuActivity.SHOW_EVENT_ON_MAP_CODE);
                                               }
                                           }
         );
         init();
 
     }
+
+
 
     private MeetUp getMeetUp(int pos){
         return meetUps.get(pos);
@@ -64,9 +68,11 @@ public class ListActivity extends AppCompatActivity {
 
 
     private void updateList() {
-        tempDocument = new ArrayList<DBDocument>();
-        DBCollection allMeetUps = Database.getInstance().meetups();
+        //tempDocument = new ArrayList<DBDocument>();
+        meetUps = Main.getInstance().getMeetUpsWithinMapView();
+        /*
         allMeetUps.all(new RequestListener<List<? extends DBDocument>>(true) {
+
             @Override
             public void onSuccess(List<? extends DBDocument> object) {
                 super.onComplete(object);
@@ -105,6 +111,7 @@ public class ListActivity extends AppCompatActivity {
         Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
         /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
         Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
+        /*
         MeetUp.Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
@@ -115,6 +122,8 @@ public class ListActivity extends AppCompatActivity {
         return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
                 maxAttendees, null, null, visibility);
     }
+    */
+}
 }
 
 /* Todo: Create two dummy meetup objects and fill with the information we want. (Name and Date/time)
