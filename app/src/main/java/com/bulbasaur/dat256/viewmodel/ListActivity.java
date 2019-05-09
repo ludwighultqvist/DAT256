@@ -40,20 +40,6 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void init() {
-/*
-        meetUps.add(new MeetUp("100","Baum", "Fest Hos Baum", new Coordinates(57.704330, 11.963180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("101","Nils", "Fest Hos Nils", new Coordinates(57.704330, 11.973180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("102","Mejborn", "Fest Hos Mejborn", new Coordinates(57.704330, 11.983180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("103","Baum", "Fest Hos Baum", new Coordinates(57.704330, 11.963180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("104","Nils", "Fest Hos Nils", new Coordinates(57.704330, 11.973180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("105","Mejborn", "Fest Hos Mejborn", new Coordinates(57.704330, 11.983180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("106","Baum", "Fest Hos Baum", new Coordinates(57.704330, 11.963180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("107","Nils", "Fest Hos Nils", new Coordinates(57.704330, 11.973180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("108","Mejborn", "Fest Hos Mejborn", new Coordinates(57.704330, 11.983180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("109","Baum", "Fest Hos Baum", new Coordinates(57.704330, 11.963180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("110","Nils", "Fest Hos Nils", new Coordinates(57.704330, 11.973180), "fet fest BYOB"));
-        meetUps.add(new MeetUp("111","Mejborn", "Fest Hos Mejborn", new Coordinates(57.704330, 11.983180), "fet fest BYOB"));
-*/
         updateList();
         adapter = new MeetupListAdapter(this, R.layout.activity_meetuplistobject, meetUps);
         meetupList.setAdapter(adapter);
@@ -80,13 +66,10 @@ public class ListActivity extends AppCompatActivity {
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
 
-                    System.out.println("FUNKA DÅÅÅÅ" + document.id());
-
                     MeetUp newMeetUp = convertDocToMeetUp(document);
 
                     meetUps.add(newMeetUp);
 
-                    System.out.println("ADDED MEETUP: " + newMeetUp);
                     if (meetUps.size() == documents.size()) {
                         adapter.notifyDataSetChanged();
                     }
