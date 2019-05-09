@@ -7,7 +7,7 @@
     tools:context=".viewmodel.MeetUpActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/meetUpPicture"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="450dp"
@@ -27,12 +27,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="@font/coming_soon"
-        android:text="Hassans Party"
+        android:text="@string/loading_name"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/DescriptionView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/meetUpPicture" />
 
     <TextView
         android:id="@+id/DescriptionView"
@@ -42,7 +42,8 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="310dp"
-        android:text="Detta party ska bli fett"
+        android:singleLine="false"
+        android:text="@string/loading_description"
         app:layout_constraintBottom_toTopOf="@+id/show_in_map_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,5 +77,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/meetUpPicture" />
+
+    <TextView
+        android:id="@+id/createdByTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/created_by_loading"
+        app:layout_constraintBottom_toTopOf="@+id/show_in_map_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/join_meetup_button" />
 </android.support.constraint.ConstraintLayout>

@@ -1,12 +1,9 @@
 package com.bulbasaur.dat256.services.firebase;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author ludwighultqvist

@@ -1,13 +1,8 @@
 package com.bulbasaur.dat256.viewmodel;
 
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
@@ -16,7 +11,6 @@ import com.bulbasaur.dat256.model.MeetupListAdapter;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
-import com.bulbasaur.dat256.services.firebase.QueryFilter;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 
 import java.util.ArrayList;

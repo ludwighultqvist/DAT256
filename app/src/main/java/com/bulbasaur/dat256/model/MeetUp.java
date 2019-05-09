@@ -2,17 +2,12 @@ package com.bulbasaur.dat256.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 
 import com.bulbasaur.dat256.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
 
 import static com.bulbasaur.dat256.viewmodel.MenuActivity.getBitmapFromVectorDrawable;
 
