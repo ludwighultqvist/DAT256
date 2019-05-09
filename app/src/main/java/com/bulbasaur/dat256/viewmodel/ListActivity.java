@@ -27,6 +27,7 @@ public class ListActivity extends AppCompatActivity {
     private ListView meetupList;
     private List<MeetUp> meetUps = new ArrayList<MeetUp>();
     private List<? extends DBDocument> tempDocument;
+    MeetupListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class ListActivity extends AppCompatActivity {
         meetUps.add(new MeetUp("111","Mejborn", "Fest Hos Mejborn", new Coordinates(57.704330, 11.983180), "fet fest BYOB"));
 */
         updateList();
-        MeetupListAdapter adapter = new MeetupListAdapter(this, R.layout.activity_meetuplistobject, meetUps);
+        adapter = new MeetupListAdapter(this, R.layout.activity_meetuplistobject, meetUps);
         meetupList.setAdapter(adapter);
     }
 
@@ -63,18 +64,18 @@ public class ListActivity extends AppCompatActivity {
     private void updateList() {
         tempDocument = new ArrayList<DBDocument>();
         DBCollection allMeetUps = Database.getInstance().meetups();
-        allMeetUps.all(new RequestListener<List<? extends DBDocument>>() {
+        allMeetUps.all(new RequestListener<List<? extends DBDocument>>(true) {
             @Override
-            public void onComplete(List<? extends DBDocument> object) {
+            public void onSuccess(List<? extends DBDocument> object) {
                 super.onComplete(object);
                 tempDocument = object;
                 init2(object);
             }
         });
     }
-    private void init2(List<? extends DBDocument> document){
-        for (DBDocument doc : tempDocument) {
-            doc.init(new RequestListener<DBDocument>() {
+    private void init2(List<? extends DBDocument> documents) {
+        for (DBDocument doc : documents) {
+            doc.init(new RequestListener<DBDocument>(true) {
                 @Override
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
@@ -86,6 +87,9 @@ public class ListActivity extends AppCompatActivity {
                     meetUps.add(newMeetUp);
 
                     System.out.println("ADDED MEETUP: " + newMeetUp);
+                    if (meetUps.size() == documents.size()) {
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             });
         }
