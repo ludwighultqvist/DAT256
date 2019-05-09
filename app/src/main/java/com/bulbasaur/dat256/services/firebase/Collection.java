@@ -3,7 +3,6 @@ package com.bulbasaur.dat256.services.firebase;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;

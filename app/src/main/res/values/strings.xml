@@ -48,8 +48,8 @@
     <string name="create_meetup_title">Create a MeetUp</string>
     <string name="party_at_hassan_s_place">Title - e.g. Party at Hassan\'s place</string>
     <string name="very_fun_party_bring_your_friends">Description - e.g. Very fun party - bring your friends</string>
-    <string name="choose_location">Choose Location...</string>
-    <string name="title_activity_location_picker">Pick a location for your MeetUp...</string>
+    <string name="choose_location">Choose Location…</string>
+    <string name="title_activity_location_picker">Pick a location for your MeetUp…</string>
     <string name="create_account_log_in">Create account/log in</string>
     <string name="pick_this_location">Pick this location</string>
     <string name="coordinates">Coordinates: %1$s %2$s</string>
@@ -75,4 +75,10 @@
     <string name="end_date">End date</string>
     <string name="enter_the_verification_code_that_you_should_have_received_via_sms_below">Enter the verification code that you should have received via SMS below:</string>
     <string name="open_to">Open to:</string>
+    <string name="loading">Loading…</string>
+    <string name="loading_name">Loading name…</string>
+    <string name="loading_description">Loading description…</string>
+    <string name="created_by_loading">Created by: Loading…</string>
+    <string name="created_by">Created by: %1$s</string>
+    <string name="user_not_found">User not found…</string>
 </resources>

@@ -1,24 +1,19 @@
 package com.bulbasaur.dat256.viewmodel;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Button;
 
 import com.bulbasaur.dat256.R;
-import com.bulbasaur.dat256.model.Validator;
 import com.bulbasaur.dat256.services.firebase.Authenticator;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
-import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
-
-import java.util.Objects;
 
 public class VerificationView extends AppCompatActivity {
     private EditText first, second, third, fourth, fifth, sixth;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -50,7 +49,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -188,7 +186,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.map.setOnCameraMoveStartedListener(reason -> {
             if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                 if (currentlyOpenMarker != null) {
-                    currentlyOpenMarker.hideInfoWindow();//TODO hide the currently open marker, not just the fake one
+                    currentlyOpenMarker.hideInfoWindow();
                     currentlyOpenMarker = null;
                 }
             }
