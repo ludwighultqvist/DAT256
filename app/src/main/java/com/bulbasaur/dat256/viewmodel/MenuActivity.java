@@ -64,7 +64,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private User fakeFriend;
 
     private static final int CREATE_NEW_EVENT_CODE = 32;
-    private static final int SHOW_EVENT_ON_MAP_CODE = 1;
+    public static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
     private boolean markerInMiddle = false;
@@ -84,7 +84,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        main = new Main();
+        main = Main.getInstance();
 
         meetUpMarkerMap = new HashMap<>();
 
