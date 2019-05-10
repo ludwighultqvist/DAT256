@@ -1,18 +1,13 @@
 package com.bulbasaur.dat256.viewmodel;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,12 +17,9 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
-import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MapBounds;
 import com.bulbasaur.dat256.model.MeetUp;
-import com.bulbasaur.dat256.model.MeetUp.Categories;
-import com.bulbasaur.dat256.model.MeetUp.Visibility;
 import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
@@ -36,6 +28,7 @@ import com.bulbasaur.dat256.services.firebase.QueryFilter;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CustomInfoWindowAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.MarkerData;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -226,7 +219,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
                 Gson markerDataGson = new Gson();
                 String markerDataString = markerDataGson.toJson(markerData);
-                Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
+                Bitmap icon = Helpers.getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.getLatitude()+1, location.getLongitude()+2)).snippet(markerDataString).
                         icon(BitmapDescriptorFactory.fromBitmap(icon));
                 Marker fakeFriendMarker = this.map.addMarker(markerOptions);
@@ -305,7 +298,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         //get the intersection of the set of latitude- and set of longitude-filtered events, since
                         // the map boundaries are of course within a rectangle
-                        List<DBDocument> docsWithinView = intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
+                        List<DBDocument> docsWithinView = Helpers.intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
 
                         //search for public events and the current user's events
                         searchVisibilityPublic(allMeetUpsCollection, docsWithinView);
@@ -347,10 +340,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 super.onSuccess(currentUserDocs);
 
                 //get the union between the set of public events and current user events as both should be visible to the current user
-                List<DBDocument> accessibleDocs = union(publicDocs, (List<DBDocument>) currentUserDocs);
+                List<DBDocument> accessibleDocs = Helpers.union(publicDocs, (List<DBDocument>) currentUserDocs);
 
                 //place the new public and private events on the map
-                finishUpdatingMapMeetUps(intersection(accessibleDocs, docsWithinView));
+                finishUpdatingMapMeetUps(Helpers.intersection(accessibleDocs, docsWithinView));
             }
         });
     }
@@ -409,8 +402,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     // view, the events that this current friend owns, and the events
                                     // marked "for friends", as these are the ones that the current
                                     // user should be able to see
-                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, docsWithinView);
-                                    docsOfFriends = intersection((List<DBDocument>) docsOfFriends, friendsVisibleDocs);
+                                    docsOfFriends = Helpers.intersection((List<DBDocument>) docsOfFriends, docsWithinView);
+                                    docsOfFriends = Helpers.intersection((List<DBDocument>) docsOfFriends, friendsVisibleDocs);
 
                                     //place the new friend events on the map
                                     finishUpdatingMapMeetUps((List<DBDocument>) docsOfFriends);
@@ -430,7 +423,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
 
-                    MeetUp newMeetUp = convertDocToMeetUp(document);
+                    MeetUp newMeetUp = Helpers.convertDocToMeetUp(document);
 
                     main.updateMapMeetUp(newMeetUp);
 
@@ -467,65 +460,5 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .icon(BitmapDescriptorFactory.fromBitmap(m.getIconBitmap(this)))
                 .anchor(0.5f, 0.5f)
                 .alpha(0.6f);
-    }
-
-    private List<DBDocument> intersection(List<DBDocument> first, List<DBDocument> second) {
-        for (int i = first.size() - 1; i >= 0; i--) {
-            if (!second.contains(first.get(i))) {
-                first.remove(i);
-            }
-        }
-
-        return first;
-    }
-
-    private List<DBDocument> union(List<DBDocument> first, List<DBDocument> second) {
-        for (DBDocument s : second) {
-            if (!first.contains(s)) {
-                first.add(s);
-            }
-        }
-
-        return first;
-    }
-
-    private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
-        String id = meetUpDoc.id();
-        String creatorID = (String) meetUpDoc.get("creator");
-        String name = (String) meetUpDoc.get("name");
-        Double coord_lat = (Double) meetUpDoc.get("coord_lat");
-        Double coord_lon = (Double) meetUpDoc.get("coord_lon");
-        String description = (String) meetUpDoc.get("description");
-        Categories category = MeetUp.getCategoryFromString((String) meetUpDoc.get("category"));
-        Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
-        /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
-        Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
-        Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
-
-        if (id == null || name == null || coord_lat == null || coord_lon == null
-                || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
-            return null;
-        }
-
-        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, null, null, visibility);
-    }
-
-    /**
-     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
-     * @param context the bitmap's context
-     * @param drawableId the id of the vector resource
-     * @return a bitmap image of the vector resource
-     */
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
-        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
     }
 }

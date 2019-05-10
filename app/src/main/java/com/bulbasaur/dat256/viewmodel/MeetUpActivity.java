@@ -15,6 +15,9 @@ import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class MeetUpActivity extends AppCompatActivity {
 
     private MeetUp meetUp;
@@ -42,6 +45,12 @@ public class MeetUpActivity extends AppCompatActivity {
 
         ImageView meetUpPicture = findViewById(R.id.meetUpPicture);
         meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
+
+        TextView startDateTextView = findViewById(R.id.startDateTextView);
+        startDateTextView.setText(getString(R.string.starts, meetUp.getStart().getTime()));
+
+        TextView endDateTextView = findViewById(R.id.endDateTextView);
+        endDateTextView.setText(getString(R.string.ends, meetUp.getEnd().getTime()));
 
         TextView createdByTextView = findViewById(R.id.createdByTextView);
 
