@@ -96,29 +96,6 @@ public class ListActivity extends AppCompatActivity {
             });
         }
     }
-
-    private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
-        String id = meetUpDoc.id();
-        String creatorID = (String) meetUpDoc.get("creator");
-        String name = (String) meetUpDoc.get("name");
-        Double coord_lat = (Double) meetUpDoc.get("coord_lat");
-        Double coord_lon = (Double) meetUpDoc.get("coord_lon");
-        String description = (String) meetUpDoc.get("description");
-        MeetUp.Categories category = MeetUp.getCategoryFromString((String) meetUpDoc.get("category"));
-        Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
-        /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
-        Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
-        /*
-        MeetUp.Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
-
-        if (id == null || name == null || coord_lat == null || coord_lon == null
-                || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
-            return null;
-        }
-
-        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, null, null, visibility);
-    }
     */
 }
 }

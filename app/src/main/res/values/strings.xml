@@ -81,4 +81,7 @@
     <string name="created_by_loading">Created by: Loading…</string>
     <string name="created_by">Created by: %1$s</string>
     <string name="user_not_found">User not found…</string>
+    <string name="ends">Ends: %1$s</string>
+    <string name="starts">Starts: %1$s</string>
+    <string name="picture_not_loaded">Picture not loaded…</string>
 </resources>

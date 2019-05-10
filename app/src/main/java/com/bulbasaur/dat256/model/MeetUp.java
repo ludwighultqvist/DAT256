@@ -4,12 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import static com.bulbasaur.dat256.viewmodel.MenuActivity.getBitmapFromVectorDrawable;
+import java.util.HashMap;
 
 public class MeetUp implements Serializable {
 
@@ -237,8 +237,13 @@ public class MeetUp implements Serializable {
     }
 
     public Bitmap getIconBitmap(Context context) {
-        return getBitmapFromVectorDrawable(context, category.icon, category.primaryColor);
+        return Helpers.getBitmapFromVectorDrawable(context, category.icon, category.primaryColor);
     }
 
+    public static Calendar getDateFromHashMap(HashMap<String, Object> dateHashMap) {
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis((long) dateHashMap.get("timeInMillis"));
 
+        return date;
+    }
 }
