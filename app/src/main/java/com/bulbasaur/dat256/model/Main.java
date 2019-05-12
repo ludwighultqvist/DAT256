@@ -10,6 +10,7 @@ public class Main {
     private User currentUser;
 
     private List<MeetUp> meetUpsWithinMapView;
+
     private List<User> friendsWithinMapView;
 
     public Main() {
@@ -44,5 +45,9 @@ public class Main {
 
     public List<MeetUp> getMeetUpsWithinMapView() {
         return meetUpsWithinMapView;
+    }
+
+    public List<User> getFriendsWithinMapView() {
+        return friendsWithinMapView;
     }
 }

@@ -2,9 +2,10 @@ package com.bulbasaur.dat256.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     private String id;
     private String firstName;
     private String lastName;
@@ -14,7 +15,7 @@ public class User {
     private ArrayList<String> friends = new ArrayList<>();
     private ArrayList<String> createdMeetUps = new ArrayList<>();
     private ArrayList<String> joinedMeetUps = new ArrayList<>();
-    private LatLng coordinates;
+    private transient LatLng coordinates;
 
     public User(String firstName, String lastName, String phoneNumber){
         this.firstName = firstName;
@@ -57,6 +58,10 @@ public class User {
 
     public String getScore() {
         return String.valueOf(score);
+    }
+
+    public LatLng getCoordinates() {
+        return coordinates;
     }
 
     public void addFriend(String newFriendID){
