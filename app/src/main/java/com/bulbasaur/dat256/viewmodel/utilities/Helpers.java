@@ -9,8 +9,11 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 
 import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.MeetUp;
+import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +62,31 @@ public class Helpers {
         return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
                 maxAttendees, startDate, endDate, visibility);
     }
+
+
+    private User convertDocToUser(DBDocument userDoc){
+        String id = userDoc.id();
+        String firstName = (String)userDoc.get("firstname");
+        String lastName = (String)userDoc.get("lastname");
+        String phoneNmbr = (String)userDoc.get("phone");
+        int score = (int)userDoc.get("score");
+        List<String> friends = Arrays.asList((String[])userDoc.get("friends"));
+        List<String> createdMeetUps =  Arrays.asList((String[])userDoc.get("created meetups"));
+        List<String> joinedMeetUps =  Arrays.asList((String[])userDoc.get("joined meetups"));
+        LatLng coord = (LatLng)userDoc.get("coordinates");
+
+        if(id == null || firstName == null || lastName == null || phoneNmbr == null || friends == null
+                || createdMeetUps == null || joinedMeetUps == null || coord == null){
+            return  null;
+        }
+
+        User friend = new User(firstName, lastName, phoneNmbr);
+        friend.setCoordinates(coord);
+        //TODO create an entire user
+
+        return friend;
+    }
+
 
     /**
      * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
