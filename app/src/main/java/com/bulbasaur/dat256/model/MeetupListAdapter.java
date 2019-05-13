@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

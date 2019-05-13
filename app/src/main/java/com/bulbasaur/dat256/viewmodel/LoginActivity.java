@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,7 +22,6 @@ import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

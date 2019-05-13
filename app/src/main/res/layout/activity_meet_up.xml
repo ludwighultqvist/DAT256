@@ -7,7 +7,7 @@
     tools:context=".viewmodel.MeetUpActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/meetUpPicture"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="450dp"
@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:contentDescription="@string/picture_not_loaded" />
 
     <TextView
         android:id="@+id/titleView"
@@ -27,12 +27,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="@font/coming_soon"
-        android:text="Hassans Party"
+        android:text="@string/loading_name"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/DescriptionView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/meetUpPicture" />
 
     <TextView
         android:id="@+id/DescriptionView"
@@ -42,7 +42,8 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="310dp"
-        android:text="Detta party ska bli fett"
+        android:singleLine="false"
+        android:text="@string/loading_description"
         app:layout_constraintBottom_toTopOf="@+id/show_in_map_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,27 +55,64 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="147dp"
-        android:layout_marginTop="78dp"
-        android:layout_marginEnd="147dp"
-        android:layout_marginBottom="43dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="40dp"
         android:text="@string/show_in_map_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/join_meetup_button" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/join_meetup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginTop="232dp"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="78dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="40dp"
         android:text="@string/join_meetup_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/show_in_map_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/createdByTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/created_by_loading"
         app:layout_constraintBottom_toTopOf="@+id/show_in_map_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/endDateTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/ends"
+        app:layout_constraintBottom_toTopOf="@+id/createdByTextView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/startDateTextView" />
+
+    <TextView
+        android:id="@+id/startDateTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/starts"
+        app:layout_constraintBottom_toTopOf="@+id/endDateTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DescriptionView" />
 </android.support.constraint.ConstraintLayout>
