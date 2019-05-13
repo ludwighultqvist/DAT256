@@ -14,7 +14,7 @@ public class MarkerData {
         this.descriptionColor = descriptionColor;
     }
 
-    public boolean isMeetUpOrNah() {
+    public boolean isMeetUp() {
         return meetUpOrNah;
     }
 

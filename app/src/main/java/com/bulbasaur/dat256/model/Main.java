@@ -11,6 +11,7 @@ public class Main {
     private static Main instance;
 
     private List<MeetUp> meetUpsWithinMapView;
+
     private List<User> friendsWithinMapView;
 
     public Main() {
@@ -46,6 +47,10 @@ public class Main {
     public List<MeetUp> getMeetUpsWithinMapView() {
         return meetUpsWithinMapView;
     }
+
+
+    public List<User> getFriendsWithinMapView() {
+        return friendsWithinMapView;
 
     public static Main getInstance(){
         if (instance == null){

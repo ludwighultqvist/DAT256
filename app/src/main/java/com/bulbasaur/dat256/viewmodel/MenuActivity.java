@@ -42,6 +42,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +59,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private User fakeFriend;
 
     private static final int CREATE_NEW_EVENT_CODE = 32;
-    public static final int SHOW_EVENT_ON_MAP_CODE = 1;
+
+    private static final int SHOW_EVENT_ON_MAP_CODE = 1;
+    private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
     private boolean markerInMiddle = false;
@@ -65,6 +69,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Main main;
 
     private HashMap<Marker, MeetUp> meetUpMarkerMap;
+    private HashMap<Marker, User> friendMarkerMap;
 
     private Marker meMarker;
 
@@ -80,6 +85,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         main = Main.getInstance();
 
         meetUpMarkerMap = new HashMap<>();
+        friendMarkerMap = new HashMap<>();
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -154,28 +160,32 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
-
+        refreshMapItems(getCurrentMapBounds());
         showUserLocationOnMapWithRegularMarkerAndMoveMapToIt();
 
         this.map.setOnMarkerClickListener(marker -> {
             if (!marker.equals(meMarker)) {
-                marker.showInfoWindow();
-
                 currentlyOpenMarker = marker;
+                marker.showInfoWindow();
             } else if (marker.equals(meMarker)) {
                 Toast.makeText(this, "Your location", Toast.LENGTH_SHORT).show();
             }
 
+            refreshMapItems(getCurrentMapBounds());
+
             map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));//TODO ideally lerp to this location
+
+            if(meetUpMarkerMap.containsKey(currentlyOpenMarker)){
+                this.map.setOnInfoWindowClickListener(m -> { onMeetUpMarkerClick(m);});
+                this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
+            } else if(friendMarkerMap.containsKey(currentlyOpenMarker)){
+                this.map.setOnInfoWindowClickListener(m -> {onFriendMarkerCLick(m);});
+            }
 
             return true;
         });
 
         this.map.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        this.map.setOnInfoWindowClickListener(m -> {
-            onMeetUpMarkerClick(m);
-        });
-        this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
         this.map.setOnCameraMoveStartedListener(reason -> {
             if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                 if (currentlyOpenMarker != null) {
@@ -185,13 +195,14 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         this.map.setOnCameraIdleListener(() -> {
-            System.out.println("camera idle - meetups update");
+            System.out.println("camera idle - markers update");
 
             if (currentlyOpenMarker == null) {
                 refreshMapItems(getCurrentMapBounds());
             }
         });
     }
+
 
     private void showUserLocationOnMapWithRegularMarkerAndMoveMapToIt() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -223,6 +234,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.getLatitude()+1, location.getLongitude()+2)).snippet(markerDataString).
                         icon(BitmapDescriptorFactory.fromBitmap(icon));
                 Marker fakeFriendMarker = this.map.addMarker(markerOptions);
+                fakeFriend.setCoordinates(new LatLng(location.getLatitude()+1, location.getLongitude()+1));
+                friendMarkerMap.put(fakeFriendMarker, fakeFriend);
+                //end
+
             } else {
                 Toast.makeText(this, "Your location is not found", Toast.LENGTH_LONG).show();
             }
@@ -239,6 +254,12 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent meetUpIntent = new Intent(this, MeetUpActivity.class);
         meetUpIntent.putExtra("MeetUp", meetUpMarkerMap.get(m));
         startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP_CODE);
+    }
+
+    private void onFriendMarkerCLick(Marker m){
+        Intent friendIntent = new Intent(this, UserActivity.class);
+        friendIntent.putExtra("User", friendMarkerMap.get(m));
+        startActivityForResult(friendIntent, SHOW_FRIEND_ON_MAP_CODE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -441,6 +462,16 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void showUpdatedFriend(User friend) {
+        if (!friendMarkerMap.values().contains(friend)) {
+            Marker marker = map.addMarker(createMarkerOptions(friend));
+
+            friendMarkerMap.put(marker, friend);
+
+            System.out.println("one marker added");
+        }
+    }
+
     private void removeOldMeetUpMarkers() {
         Iterator<Marker> markerIterator = meetUpMarkerMap.keySet().iterator();
         while (markerIterator.hasNext()) {
@@ -453,6 +484,20 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void removeOldFriendMarkers(){
+        Iterator<Marker> markerIterator = friendMarkerMap.keySet().iterator();
+        while (markerIterator.hasNext()) {
+            Marker m = markerIterator.next();
+
+            if (!main.getFriendsWithinMapView().contains(friendMarkerMap.get(m))) {
+                m.remove();
+                markerIterator.remove();
+
+                System.out.println("one marker removed");
+            }
+        }
+    }
+
     private MarkerOptions createMarkerOptions(MeetUp m) {
         return new MarkerOptions()
                 .position(new LatLng(m.getCoordinates().lat, m.getCoordinates().lon))
@@ -461,4 +506,131 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .anchor(0.5f, 0.5f)
                 .alpha(0.6f);
     }
+
+    private MarkerOptions createMarkerOptions(User u) {
+        Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
+        return new MarkerOptions()
+                .position(u.getCoordinates())
+                .snippet(new Gson().toJson(new MarkerData(false, "" + u.getFirstName() + u.getLastName(), R.color.mainColor, "", R.color.mainColor)))
+                .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                .anchor(0.5f, 0.5f)
+                .alpha(0.6f);
+    }
+
+    private List<DBDocument> intersection(List<DBDocument> first, List<DBDocument> second) {
+        for (int i = first.size() - 1; i >= 0; i--) {
+            if (!second.contains(first.get(i))) {
+                first.remove(i);
+            }
+        }
+
+        return first;
+    }
+
+    private List<DBDocument> union(List<DBDocument> first, List<DBDocument> second) {
+        for (DBDocument s : second) {
+            if (!first.contains(s)) {
+                first.add(s);
+            }
+        }
+
+        return first;
+    }
+
+    private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
+        String id = meetUpDoc.id();
+        String creatorID = (String) meetUpDoc.get("creator");
+        String name = (String) meetUpDoc.get("name");
+        Double coord_lat = (Double) meetUpDoc.get("coord_lat");
+        Double coord_lon = (Double) meetUpDoc.get("coord_lon");
+        String description = (String) meetUpDoc.get("description");
+        Categories category = MeetUp.getCategoryFromString((String) meetUpDoc.get("category"));
+        Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
+        /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
+        Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
+        Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
+
+        if (id == null || name == null || coord_lat == null || coord_lon == null
+                || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
+            return null;
+        }
+
+        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
+                maxAttendees, null, null, visibility);
+    }
+
+    private User convertDocToUser(DBDocument userDoc){
+        String id = userDoc.id();
+        String firstName = (String)userDoc.get("firstname");
+        String lastName = (String)userDoc.get("lastname");
+        String phoneNmbr = (String)userDoc.get("phone");
+        int score = (int)userDoc.get("score");
+        List<String> friends = Arrays.asList((String[])userDoc.get("friends"));
+        List<String> createdMeetUps =  Arrays.asList((String[])userDoc.get("created meetups"));
+        List<String> joinedMeetUps =  Arrays.asList((String[])userDoc.get("joined meetups"));
+        LatLng coord = (LatLng)userDoc.get("coordinates");
+
+        if(id == null || firstName == null || lastName == null || phoneNmbr == null || friends == null
+                || createdMeetUps == null || joinedMeetUps == null || coord == null){
+            return  null;
+        }
+
+        User friend = new User(firstName, lastName, phoneNmbr);
+        friend.setCoordinates(coord);
+        //TODO create an entire user
+
+        return friend;
+    }
+
+
+
+    /**
+     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
+     * @param context the bitmap's context
+     * @param drawableId the id of the vector resource
+     * @return a bitmap image of the vector resource
+     */
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
+        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    /*
+
+        DBCollection usersCollection = Database.getInstance().users();
+
+        if (usersCollection == null) return null;
+
+        DBDocument currentUserDoc = usersCollection.get("8snVW8GZQzV8QYibZzRW", new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        List<String> friendIDStrings = (List<String>) document.get("friends");
+
+
+                        for (String s : friendIDStrings) {
+                            meetUpCollection.get(s, new RequestListener<>())
+                        }
+                    }
+                });
+            }
+        });
+
+
+        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
+     */
+
 }

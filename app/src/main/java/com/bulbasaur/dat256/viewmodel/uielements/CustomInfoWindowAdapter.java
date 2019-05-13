@@ -67,7 +67,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             badge = 0;
         }
         ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);*/
-        if(markerData.isMeetUpOrNah()) {
+        if(markerData.isMeetUp()) {
             String title = markerData.getTitle();
             TextView titleUi = view.findViewById(R.id.title);
             if (title != null) {
