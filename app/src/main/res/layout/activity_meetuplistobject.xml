@@ -1,40 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/meetupObject"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible">
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="100">
-    <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
 
-        <TextView
-            android:id="@+id/meetupName"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
+        <ImageView
+            android:id="@+id/meetupPicture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_weight="5"
-            android:gravity="left"
-            android:text="TextView"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            app:srcCompat="@mipmap/ic_glasseslogo_round"
+            tools:layout_editor_absoluteX="217dp"
+            tools:layout_editor_absoluteY="6dp" />
 
-    <TextView
-        android:gravity="left"
-        android:id="@+id/meetupDesc"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text="TextView"
-        android:layout_weight="5"
-        android:layout_marginLeft="10dp"
-        />
-        </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <TextView
+                    android:id="@+id/meetupName"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    tools:layout_editor_absoluteX="33dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+                <TextView
+                    android:id="@+id/meetupDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_toRightOf="@id/meetupName"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="TextView"
+                    tools:layout_editor_absoluteX="31dp"
+                    tools:layout_editor_absoluteY="86dp" />
+
+                <TextView
+                    android:id="@+id/meetupDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/meetupDate"
+                    android:gravity="center"
+
+                    android:layout_marginTop="@dimen/text_margin"/>
+
+            </RelativeLayout>
+
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
