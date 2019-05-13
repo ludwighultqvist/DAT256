@@ -51,6 +51,7 @@ public class Main {
 
     public List<User> getFriendsWithinMapView() {
         return friendsWithinMapView;
+    }
 
     public static Main getInstance(){
         if (instance == null){

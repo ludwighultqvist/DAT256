@@ -49,6 +49,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVectorDrawable;
+
 public class MenuActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private DrawerLayout drawer;
@@ -60,7 +62,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final int CREATE_NEW_EVENT_CODE = 32;
 
-    private static final int SHOW_EVENT_ON_MAP_CODE = 1;
+    static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 
@@ -230,7 +232,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         +" "+ fakeFriend.getLastName(),R.color.mainColor,fakeFriend.getScore(),R.color.mainColor);
                 Gson markerDataGson = new Gson();
                 String markerDataString = markerDataGson.toJson(markerData);
-                Bitmap icon = Helpers.getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
+                Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(location.getLatitude()+1, location.getLongitude()+2)).snippet(markerDataString).
                         icon(BitmapDescriptorFactory.fromBitmap(icon));
                 Marker fakeFriendMarker = this.map.addMarker(markerOptions);
@@ -516,121 +518,5 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .anchor(0.5f, 0.5f)
                 .alpha(0.6f);
     }
-
-    private List<DBDocument> intersection(List<DBDocument> first, List<DBDocument> second) {
-        for (int i = first.size() - 1; i >= 0; i--) {
-            if (!second.contains(first.get(i))) {
-                first.remove(i);
-            }
-        }
-
-        return first;
-    }
-
-    private List<DBDocument> union(List<DBDocument> first, List<DBDocument> second) {
-        for (DBDocument s : second) {
-            if (!first.contains(s)) {
-                first.add(s);
-            }
-        }
-
-        return first;
-    }
-
-    private MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
-        String id = meetUpDoc.id();
-        String creatorID = (String) meetUpDoc.get("creator");
-        String name = (String) meetUpDoc.get("name");
-        Double coord_lat = (Double) meetUpDoc.get("coord_lat");
-        Double coord_lon = (Double) meetUpDoc.get("coord_lon");
-        String description = (String) meetUpDoc.get("description");
-        Categories category = MeetUp.getCategoryFromString((String) meetUpDoc.get("category"));
-        Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
-        /*Calendar startDate = (Calendar) meetUpDoc.get("startdate");
-        Calendar endDate = (Calendar) meetUpDoc.get("enddate");*/
-        Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
-
-        if (id == null || name == null || coord_lat == null || coord_lon == null
-                || description == null || category == null || maxAttendees == null) {//|| startDate == null || endDate == null) {//TODO put this back
-            return null;
-        }
-
-        return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, null, null, visibility);
-    }
-
-    private User convertDocToUser(DBDocument userDoc){
-        String id = userDoc.id();
-        String firstName = (String)userDoc.get("firstname");
-        String lastName = (String)userDoc.get("lastname");
-        String phoneNmbr = (String)userDoc.get("phone");
-        int score = (int)userDoc.get("score");
-        List<String> friends = Arrays.asList((String[])userDoc.get("friends"));
-        List<String> createdMeetUps =  Arrays.asList((String[])userDoc.get("created meetups"));
-        List<String> joinedMeetUps =  Arrays.asList((String[])userDoc.get("joined meetups"));
-        LatLng coord = (LatLng)userDoc.get("coordinates");
-
-        if(id == null || firstName == null || lastName == null || phoneNmbr == null || friends == null
-                || createdMeetUps == null || joinedMeetUps == null || coord == null){
-            return  null;
-        }
-
-        User friend = new User(firstName, lastName, phoneNmbr);
-        friend.setCoordinates(coord);
-        //TODO create an entire user
-
-        return friend;
-    }
-
-
-
-    /**
-     * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
-     * @param context the bitmap's context
-     * @param drawableId the id of the vector resource
-     * @return a bitmap image of the vector resource
-     */
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int color) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        DrawableCompat.setTint(Objects.requireNonNull(drawable), ContextCompat.getColor(context, color));
-        Bitmap bitmap = Bitmap.createBitmap(Objects.requireNonNull(drawable).getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
-    }
-
-    /*
-
-        DBCollection usersCollection = Database.getInstance().users();
-
-        if (usersCollection == null) return null;
-
-        DBDocument currentUserDoc = usersCollection.get("8snVW8GZQzV8QYibZzRW", new RequestListener<DBDocument>() {
-            @Override
-            public void onSuccess(DBDocument emptyDoc) {
-                super.onSuccess(emptyDoc);
-
-                emptyDoc.init(new RequestListener<DBDocument>() {
-                    @Override
-                    public void onSuccess(DBDocument document) {
-                        super.onSuccess(document);
-
-                        List<String> friendIDStrings = (List<String>) document.get("friends");
-
-
-                        for (String s : friendIDStrings) {
-                            meetUpCollection.get(s, new RequestListener<>())
-                        }
-                    }
-                });
-            }
-        });
-
-
-        return new ArrayList<>(); //TODO in this method, get the list of documents of all user-created meetups in user object
-     */
 
 }
