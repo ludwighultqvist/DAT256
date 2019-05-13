@@ -59,13 +59,16 @@ public class MeetUp implements Serializable {
 
     private Visibility visibility;
 
+    private String date;
+
     public MeetUp() {
         this.coords = new Coordinates();
     }
 
-    public MeetUp(String name, String description) {
+    public MeetUp(String name, String date, String description) {
         this.name = name;
-        this.description = description;
+        this.date = date;
+        this.description=description;
     }
 
     public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description) {

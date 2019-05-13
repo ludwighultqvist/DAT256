@@ -38,11 +38,11 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meetup_list);
         meetupList = (ListView) findViewById(R.id.listView);
         meetupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                              @Override
-                                              public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                  Intent meetUpIntent = new Intent(ListActivity.this, MeetUpActivity.class);
-                                                  meetUpIntent.putExtra("MeetUp", getMeetUp(position));
-                                                  startActivityForResult(meetUpIntent, MenuActivity.SHOW_EVENT_ON_MAP_CODE);
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent meetUpIntent = new Intent(ListActivity.this, MeetUpActivity.class);
+                meetUpIntent.putExtra("MeetUp", getMeetUp(position));
+                startActivityForResult(meetUpIntent, MenuActivity.SHOW_EVENT_ON_MAP_CODE);
                                               }
                                           }
         );
@@ -100,13 +100,8 @@ public class ListActivity extends AppCompatActivity {
 }
 }
 
-/* Todo: Create two dummy meetup objects and fill with the information we want. (Name and Date/time)
-    Create ArrayList with Meetup-objects
-    Create class ArrayListAdapter
-   */
 
 
 
 
-    //To-do: connect meetup-list to meetup-objects.
 
