@@ -178,13 +178,14 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this, "Your location", Toast.LENGTH_SHORT).show();
             }
 
+            refreshMapItems(getCurrentMapBounds());
+
             map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));//TODO ideally lerp to this location
-            Gson gson = new Gson();
-            MarkerData markerData = gson.fromJson(marker.getSnippet(), MarkerData.class);
-            if(markerData.isMeetUp()){
+
+            if(meetUpMarkerMap.containsKey(currentlyOpenMarker)){
                 this.map.setOnInfoWindowClickListener(m -> { onMeetUpMarkerClick(m);});
                 this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
-            } else {
+            } else if(friendMarkerMap.containsKey(currentlyOpenMarker)){
                 this.map.setOnInfoWindowClickListener(m -> {onFriendMarkerCLick(m);});
             }
 
@@ -201,37 +202,12 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         this.map.setOnCameraIdleListener(() -> {
-            System.out.println("camera idle - meetups update");
+            System.out.println("camera idle - markers update");
 
             if (currentlyOpenMarker == null) {
                 refreshMapItems(getCurrentMapBounds());
             }
         });
-        /*
-        if(meetUpMarkerMap.containsKey(currentlyOpenMarker)){
-            this.map.setOnInfoWindowClickListener(m -> { onMeetUpMarkerClick(m);});
-            this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
-        }else if(friendMarkerMap.containsKey(currentlyOpenMarker)){
-            this.map.setOnInfoWindowClickListener(m -> {onFriendMarkerCLick(m);});
-        }
-         else if(friendMarkerMap.containsKey(currentlyOpenMarker)) {
-            this.map.setOnInfoWindowClickListener(m -> {onFriendMarkerCLick(m);});
-            this.map.setOnCameraMoveStartedListener(reason -> {
-                if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                    if (currentlyOpenMarker != null) {
-                        currentlyOpenMarker.hideInfoWindow();//TODO hide the currently open marker, not just the fake one
-                        currentlyOpenMarker = null;
-                    }
-                }
-            });
-            this.map.setOnCameraIdleListener(() -> {
-                System.out.println("camera idle - friends update");
-
-                if (currentlyOpenMarker == null) {
-                    refreshMapItems(getCurrentMapBounds());
-                }
-            });
-        }*/
     }
 
 
