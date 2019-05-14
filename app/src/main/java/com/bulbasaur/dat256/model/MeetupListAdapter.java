@@ -1,14 +1,22 @@
 package com.bulbasaur.dat256.model;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.MeetUp.Categories;
+import com.bulbasaur.dat256.viewmodel.ListActivity;
+import com.bulbasaur.dat256.viewmodel.MeetUpActivity;
+import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +38,7 @@ public class MeetupListAdapter extends ArrayAdapter<MeetUp> {
         this.mContext = context;
         mResource= resource;
 
+
     }
 
     @NonNull
@@ -41,6 +50,8 @@ public class MeetupListAdapter extends ArrayAdapter<MeetUp> {
         DateFormat format = new SimpleDateFormat("MM-dd HH:mm");
         String strDate = format.format(date);
 
+
+
         MeetUp meetup = new MeetUp(name,strDate,desc);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -50,11 +61,14 @@ public class MeetupListAdapter extends ArrayAdapter<MeetUp> {
         TextView tvDate =(TextView) convertView.findViewById(R.id.meetupDate);
         TextView tvDesc = (TextView) convertView.findViewById(R.id.meetupDesc);
 
+
+
         tvName.setText(name);
         tvDate.setText(strDate);
         tvDesc.setText(desc);
 
         return convertView;
     }
+
 }
 
