@@ -17,6 +17,7 @@ import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
+import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
@@ -114,8 +115,14 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setEnd(endDateTime.getCalendar());
             meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
             meetUp.setVisibility(MeetUp.getVisibilityFromString(meetUpVisibility));
-            meetUp.setCreatorID(Main.TEMP_CURRENT_USER_ID);//TODO replace with real user id
+            Database.getInstance().user(new RequestListener<DBDocument>() {
+                @Override
+                public void onSuccess(DBDocument object) {
+                    super.onSuccess(object);
+                    meetUp.setCreatorID(object.id());
 
+                }
+            });
             System.out.println("created meetup object, trying to save...");
 
             if (isMeetUpValid(meetUp)) {
@@ -123,10 +130,6 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             } else {
                 Snackbar.make(findViewById(R.id.createMeetUpLinearLayout), "You must specify a name, location, start & end times, and a category", Snackbar.LENGTH_LONG).show();
             }
-
-            /*
-             currentUser.createdMeetUps.add(meetUp);
-             */
 
         });
     }
