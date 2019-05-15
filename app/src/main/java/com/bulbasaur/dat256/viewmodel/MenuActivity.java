@@ -580,7 +580,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bitmap icon = getBitmapFromVectorDrawable(this, R.drawable.ic_friend_icon_24dp, R.color.mainColor);
         return new MarkerOptions()
                 .position(new LatLng(u.getCoordinates().lat, u.getCoordinates().lon))
-                .snippet(new Gson().toJson(new MarkerData(false, "" + u.getFirstName() + u.getLastName(), R.color.mainColor, "", R.color.mainColor)))
+                .snippet(new Gson().toJson(new MarkerData(false, "" + u.getFirstName() + " " + u.getLastName(), R.color.mainColor, "", R.color.mainColor)))
                 .icon(BitmapDescriptorFactory.fromBitmap(icon))
                 .anchor(0.5f, 0.5f)
                 .alpha(0.6f);
