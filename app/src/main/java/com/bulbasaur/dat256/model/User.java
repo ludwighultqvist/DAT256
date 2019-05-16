@@ -1,7 +1,5 @@
 package com.bulbasaur.dat256.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

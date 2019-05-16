@@ -7,8 +7,6 @@ import android.widget.TextView;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.User;
 
-import org.w3c.dom.Text;
-
 public class UserActivity extends AppCompatActivity {
 
     private User user;

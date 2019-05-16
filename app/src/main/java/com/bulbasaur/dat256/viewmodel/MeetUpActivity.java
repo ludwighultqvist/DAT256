@@ -15,9 +15,6 @@ import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class MeetUpActivity extends AppCompatActivity {
 
     private MeetUp meetUp;
