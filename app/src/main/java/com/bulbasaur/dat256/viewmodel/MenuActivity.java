@@ -62,7 +62,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final int CREATE_NEW_EVENT_CODE = 32;
 
-    static final int SHOW_EVENT_ON_MAP_CODE = 1;
+    public static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
 

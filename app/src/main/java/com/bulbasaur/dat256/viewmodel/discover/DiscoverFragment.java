@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.MeetUp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class DiscoverFragment extends Fragment {
         TabFragment recommended = new TabFragment();
         fragments.add(recommended);
 
-        tabs.addTab(tabs.newTab().setText("Users"));
+        tabs.addTab(tabs.newTab().setText("Upcoming"));
         TabFragment users = new TabFragment();
         fragments.add(users);
 
