@@ -1,7 +1,5 @@
 package com.bulbasaur.dat256.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -15,7 +13,7 @@ public class User implements Serializable {
     private ArrayList<String> friends = new ArrayList<>();
     private ArrayList<String> createdMeetUps = new ArrayList<>();
     private ArrayList<String> joinedMeetUps = new ArrayList<>();
-    private transient Coordinates coordinates;
+    private Coordinates coordinates;
 
     public User(String firstName, String lastName, String phoneNumber){
         this.firstName = firstName;
