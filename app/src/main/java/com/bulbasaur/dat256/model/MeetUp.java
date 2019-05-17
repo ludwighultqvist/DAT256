@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 public class MeetUp implements Serializable {
 
@@ -55,7 +56,7 @@ public class MeetUp implements Serializable {
 
     private Categories category;
 
-    private ArrayList<User> usersJoined = new ArrayList<>();
+    private List<String> joinedUsers = new ArrayList<>();
 
     private Visibility visibility;
 
@@ -66,6 +67,7 @@ public class MeetUp implements Serializable {
     }
 
     public MeetUp(String name, String date, String description) {
+        this();
         this.name = name;
         this.date = date;
         this.description=description;
@@ -79,7 +81,7 @@ public class MeetUp implements Serializable {
         this.description = description;
     }
 
-    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end, Visibility visibility) {
+    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end, Visibility visibility, List<String> joinedUsers) {
         this.id = id;
         this.creatorID = creatorID;
         this.name = name;
@@ -90,6 +92,7 @@ public class MeetUp implements Serializable {
         this.start = start;
         this.end = end;
         this.visibility = visibility;
+        this.joinedUsers = joinedUsers;
     }
 
     public MeetUp(String id, String creatorID, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
@@ -223,8 +226,8 @@ public class MeetUp implements Serializable {
         this.category = category;
     }
 
-    public void joinMeetup(User user){
-        usersJoined.add(user);
+    public void joinMeetup(String userID){
+        joinedUsers.add(userID);
     }
 
     public int getIconDrawable() {
@@ -248,5 +251,13 @@ public class MeetUp implements Serializable {
         date.setTimeInMillis((long) dateHashMap.get("timeInMillis"));
 
         return date;
+    }
+
+    public List<String> getJoinedUsers() {
+        return joinedUsers;
+    }
+
+    public boolean alreadyJoined(String userID) {
+        return joinedUsers.contains(userID);
     }
 }
