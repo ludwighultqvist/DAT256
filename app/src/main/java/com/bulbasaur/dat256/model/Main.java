@@ -62,12 +62,9 @@ public class Main {
         }
     }
 
-
-
     public List<MeetUp> getMeetUpsWithinMapView() {
         return meetUpsWithinMapView;
     }
-
 
     public List<User> getFriendsWithinMapView() {
         return friendsWithinMapView;
@@ -78,5 +75,13 @@ public class Main {
             instance = new Main();
         }
         return instance;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void logOutCurrentUser() {
+        currentUser = null;
     }
 }

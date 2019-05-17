@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Main;
@@ -42,7 +43,11 @@ public class MeetUpActivity extends AppCompatActivity {
 
         Button joinMeetupButton = findViewById(R.id.join_meetup_button);
         joinMeetupButton.setOnClickListener(v -> {
-            Helpers.joinMeetUp(this, meetUp, Main.TEMP_CURRENT_USER_ID, this::updateJoinedUsers);
+            if (Helpers.isLoggedIn()) {
+                Helpers.joinMeetUp(this, meetUp, Main.getInstance().getCurrentUser().getId(), this::updateJoinedUsers);
+            } else {
+                Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
+            }
         });
 
         ImageView meetUpPicture = findViewById(R.id.meetUpPicture);
