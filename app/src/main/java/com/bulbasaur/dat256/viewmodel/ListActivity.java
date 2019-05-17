@@ -1,6 +1,5 @@
 package com.bulbasaur.dat256.viewmodel;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,21 +7,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.bulbasaur.dat256.R;
-import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.MeetupListAdapter;
-import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
-import com.bulbasaur.dat256.services.firebase.Database;
-import com.bulbasaur.dat256.services.firebase.RequestListener;
-
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

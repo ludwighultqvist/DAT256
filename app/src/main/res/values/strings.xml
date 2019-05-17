@@ -83,5 +83,9 @@
     <string name="user_not_found">User not found…</string>
     <string name="ends">Ends: %1$s</string>
     <string name="starts">Starts: %1$s</string>
+    <string name="joinedOne">%1$s person wants to go</string>
+    <string name="maxOne">%1$s spot available</string>
+    <string name="joinedMany">%1$s people want to go</string>
+    <string name="maxMany">%1$s spots available</string>
     <string name="picture_not_loaded">Picture not loaded…</string>
 </resources>

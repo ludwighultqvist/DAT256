@@ -115,4 +115,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DescriptionView" />
+
+    <TextView
+        android:id="@+id/numJoinedUsersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/joinedMany"
+        app:layout_constraintBottom_toTopOf="@+id/createdByTextView"
+        app:layout_constraintEnd_toStartOf="@+id/maxAttendeesMeetUpView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endDateTextView" />
+
+    <TextView
+        android:id="@+id/maxAttendeesMeetUpView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/maxMany"
+        app:layout_constraintStart_toEndOf="@+id/numJoinedUsersTextView"
+        app:layout_constraintBottom_toTopOf="@+id/createdByTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endDateTextView" />
 </android.support.constraint.ConstraintLayout>

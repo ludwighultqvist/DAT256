@@ -254,13 +254,16 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void joinMarkedMeetUp(Marker m) {
-        //TODO make the user join the marked event here
-        Toast.makeText(this, "Joined " + meetUpMarkerMap.get(m).getName(), Toast.LENGTH_LONG).show();
+        MeetUp meetUp = meetUpMarkerMap.get(m);
+
+        if (meetUp == null) return;
+
+        Helpers.joinMeetUp(this, meetUp, Main.TEMP_CURRENT_USER_ID, Helpers::emptyFunction);
     }
 
     private void onMeetUpMarkerClick(Marker m) {
         Intent meetUpIntent = new Intent(this, MeetUpActivity.class);
-        meetUpIntent.putExtra("MeetUp", meetUpMarkerMap.get(m));
+        meetUpIntent.putExtra("MeetUpIndex", Main.getInstance().getMeetUpsWithinMapView().indexOf(meetUpMarkerMap.get(m)));
         startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP_CODE);
     }
 

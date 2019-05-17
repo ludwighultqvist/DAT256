@@ -6,13 +6,18 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.widget.Toast;
 
 import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.User;
+import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
+import com.bulbasaur.dat256.services.firebase.Database;
+import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -52,6 +57,8 @@ public class Helpers {
         Long maxAttendees = (Long) meetUpDoc.get("maxattendees");
         Calendar startDate = MeetUp.getDateFromHashMap((HashMap<String, Object>) meetUpDoc.get("startdate"));
         Calendar endDate = MeetUp.getDateFromHashMap((HashMap<String, Object>) meetUpDoc.get("enddate"));
+        List<String> joinedUsers = (List<String>) meetUpDoc.get("joinedusers");
+        if (joinedUsers == null) joinedUsers = new ArrayList<>();
         MeetUp.Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
@@ -60,7 +67,7 @@ public class Helpers {
         }
 
         return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, startDate, endDate, visibility);
+                maxAttendees, startDate, endDate, visibility, joinedUsers);
     }
 
 
@@ -106,7 +113,6 @@ public class Helpers {
         return friend;
     }
 
-
     /**
      * Credit to Alexey and Hugo Gresse on Stack Overflow: https://stackoverflow.com/a/38244327/3380955
      * @param context the bitmap's context
@@ -123,5 +129,70 @@ public class Helpers {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+
+    public static void retrieveDocumentAndPerformAction(DBCollection collection, String id, DocumentAction action) {
+        if (collection == null) return;
+
+        collection.get(id, new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.init(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        action.perform(document);
+                    }
+                });
+            }
+        });
+    }
+
+    public static void saveField(DBCollection collection, String id, String field, Object toSave, DocumentAction action) {
+        if (collection == null) return;
+
+        collection.get(id, new RequestListener<DBDocument>() {
+            @Override
+            public void onSuccess(DBDocument emptyDoc) {
+                super.onSuccess(emptyDoc);
+
+                emptyDoc.set(field, toSave);
+
+                emptyDoc.save(new RequestListener<DBDocument>() {
+                    @Override
+                    public void onSuccess(DBDocument document) {
+                        super.onSuccess(document);
+
+                        action.perform(document);
+                    }
+                });
+            }
+        });
+    }
+
+    public interface DocumentAction {
+        void perform(DBDocument document);
+    }
+
+    public interface SimpleAction {
+        void perform();
+    }
+
+    public static void emptyFunction() {}
+
+    public static void joinMeetUp(Context context, MeetUp meetUp, String userID, SimpleAction successCallback) {
+        if (!meetUp.alreadyJoined(userID)) {
+            meetUp.joinMeetup(userID);
+            Helpers.saveField(Database.getInstance().meetups(), meetUp.getId(), "joinedusers", meetUp.getJoinedUsers(), document -> {
+                Toast.makeText(context, "Joined " + meetUp.getName(), Toast.LENGTH_LONG).show();
+                successCallback.perform();
+            });
+        } else {
+            Toast.makeText(context, "Already joined " + meetUp.getName(), Toast.LENGTH_LONG).show();
+        }
     }
 }

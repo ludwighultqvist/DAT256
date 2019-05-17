@@ -1,28 +1,17 @@
 package com.bulbasaur.dat256.model;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
-import com.bulbasaur.dat256.model.MeetUp.Categories;
-import com.bulbasaur.dat256.viewmodel.ListActivity;
-import com.bulbasaur.dat256.viewmodel.MeetUpActivity;
-import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
