@@ -76,8 +76,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker meMarker;
 
-    private User currentUser;
-
     private Marker currentlyOpenMarker;
 
     @Override
@@ -110,7 +108,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_profile:
                     break;
                 case R.id.nav_qr:
-                    if(Database.getInstance().hasUser()) {
+                    if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ScanQRActivity.class));
                     }else {
                         Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
@@ -119,17 +117,21 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_settings:
                     break;
                 case R.id.nav_connect_bitmoji:
-                    if(Database.getInstance().hasUser()) {
+                    if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ConnectSnapchatActivity.class));
                     }else {
                         Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_login_logout:
-                    startActivity(new Intent(this, RegisterActivity.class));
+                    if (Helpers.isLoggedIn()) {
+                        Helpers.logOut(MenuActivity.this);
+                    } else {
+                        startActivity(new Intent(this, RegisterActivity.class));
+                    }
                     break;
                 case R.id.nav_MeetUpList:
-                    if(Database.getInstance().hasUser()) {
+                    if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ListActivity.class));
                     }else {
                         Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
@@ -147,24 +149,30 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(DBDocument object) {
                     super.onSuccess(object);
-                    currentUser = new User(object.id());
 
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
-                    Objects.requireNonNull(mapFragment).getMapAsync(MenuActivity.this);
+                    Helpers.logIn(MenuActivity.this, object);
+                }
+
+                @Override
+                public void onFailure(DBDocument document) {
+                    super.onFailure(document);
+
+                    Toast.makeText(MenuActivity.this, "Failed to log in", Toast.LENGTH_LONG).show();
                 }
             });
-        } else {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
-            Objects.requireNonNull(mapFragment).getMapAsync(this);
         }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         FloatingActionButton addButton = findViewById(R.id.addButton);
-        if(Database.getInstance().hasUser()) {
-            addButton.setOnClickListener(view -> startActivityForResult(new Intent(this, CreateMeetUpActivity.class), CREATE_NEW_EVENT_CODE));
-        }else {
-            addButton.setOnClickListener(view -> Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show());
-        }
-
+        addButton.setOnClickListener(view -> {
+            if (Helpers.isLoggedIn()) {
+                startActivityForResult(new Intent(this, CreateMeetUpActivity.class), CREATE_NEW_EVENT_CODE);
+            } else {
+                Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -195,14 +203,14 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));//TODO ideally lerp to this location
 
             if(meetUpMarkerMap.containsKey(currentlyOpenMarker)){
-                this.map.setOnInfoWindowClickListener(m -> { onMeetUpMarkerClick(m);});
-                if(Database.getInstance().hasUser()) {
-                    this.map.setOnInfoWindowLongClickListener(m -> joinMarkedMeetUp(m));
+                this.map.setOnInfoWindowClickListener(this::onMeetUpMarkerClick);
+                if (Helpers.isLoggedIn()) {
+                    this.map.setOnInfoWindowLongClickListener(this::joinMarkedMeetUp);
                 }else{
                     this.map.setOnInfoWindowLongClickListener(m -> Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show());
                 }
             } else if(friendMarkerMap.containsKey(currentlyOpenMarker)){
-                this.map.setOnInfoWindowClickListener(m -> {onFriendMarkerCLick(m);});
+                this.map.setOnInfoWindowClickListener(this::onFriendMarkerCLick);
             }
 
             return true;
@@ -243,10 +251,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon),DEFAULT_MEET_UP_ZOOM_LEVEL));
                 meMarker = map.addMarker(new MarkerOptions().position(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon)).title("Your location"));
 
-                if(Database.getInstance().hasUser()) {
-                    currentUser.setCoordinates(lastLocationCoords);
+                if (Helpers.isLoggedIn()) {
+                    Main.getInstance().getCurrentUser().setCoordinates(lastLocationCoords);
                 }
-
             } else {
                 Toast.makeText(this, "Your location is not found", Toast.LENGTH_LONG).show();
             }
@@ -258,7 +265,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (meetUp == null) return;
 
-        Helpers.joinMeetUp(this, meetUp, Main.TEMP_CURRENT_USER_ID, Helpers::emptyFunction);
+        Helpers.joinMeetUp(this, meetUp, Main.getInstance().getCurrentUser().getId(), Helpers::emptyFunction);
     }
 
     private void onMeetUpMarkerClick(Marker m) {
@@ -316,9 +323,11 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         //search the database for meetups that lie within the view boundaries
         searchLatLon(allMeetUpsCollection, latitudeFilter, longitudeFilter);
 
-        //search the database for users that lie within the view boundries
-        DBCollection usersCollection = Database.getInstance().users();
-        searchLatLonUsers(usersCollection, latitudeFilter, longitudeFilter);
+        //search the database for friends that lie within the view boundaries
+        if (Helpers.isLoggedIn()) {
+            DBCollection usersCollection = Database.getInstance().users();
+            searchLatLonUsers(usersCollection, latitudeFilter, longitudeFilter);
+        }
 
     }
 
@@ -342,7 +351,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //search for public events and the current user's events
                         searchVisibilityPublic(allMeetUpsCollection, docsWithinView);
 
-                        if(Database.getInstance().hasUser()) {
+                        if (Helpers.isLoggedIn()) {
                             //search for events that are available for friends
                             searchVisibilityFriends(allMeetUpsCollection, docsWithinView);
                         }
@@ -363,7 +372,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(List<? extends DBDocument> lonFilteredDocs) {
                         super.onSuccess(lonFilteredDocs);
 
-                        //get the intersection of the set of latitude- and set of longitude-filtered events, since
+                        //get the intersection of the set of latitude- and set of longitude-filtered users, since
                         // the map boundaries are of course within a rectangle
                         List<DBDocument> docsWithinView = Helpers.intersection((List<DBDocument>) latFilteredDocs, (List<DBDocument>) lonFilteredDocs);
                         showFriendsOnMap(docsWithinView);
@@ -374,34 +383,33 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void showFriendsOnMap(List<DBDocument> friendDocsWithinView){
-            Database.getInstance().user(new RequestListener<DBDocument>(){
-                @Override
-                public void onSuccess(DBDocument object) {
-                    super.onSuccess(object);
-                    currentUser = new User(object.id());
-                    //List<String> friends = Arrays.asList((String[])object.get("friends"));
-                    List<String> friends = (List<String>)object.get("friends");
+        Database.getInstance().user(new RequestListener<DBDocument>(){
+            @Override
+            public void onSuccess(DBDocument object) {
+                super.onSuccess(object);
 
+                //List<String> friends = Arrays.asList((String[])object.get("friends"));
+                List<String> friends = (List<String>)object.get("friends");
 
-                    DBCollection usersCollection = Database.getInstance().users();
-                    for (String friendID : friends){
-                        //hämta varje user i listan från databasen, gör sedan om dessa till User
-                        usersCollection.get(friendID, new RequestListener<DBDocument>(){
-                            @Override
-                            public void onSuccess(DBDocument object) {
-                                super.onSuccess(object);
+                DBCollection usersCollection = Database.getInstance().users();
+                for (String friendID : friends){
+                    //hämta varje user i listan från databasen, gör sedan om dessa till User
+                    usersCollection.get(friendID, new RequestListener<DBDocument>(){
+                        @Override
+                        public void onSuccess(DBDocument object) {
+                            super.onSuccess(object);
 
-                                if(friendDocsWithinView.contains(object)){
-                                    User friend = Helpers.convertDocToUser(object);
-                                    main.updateMapFriends(friend);
-                                    showUpdatedFriend(friend);
-                                }
+                            if(friendDocsWithinView.contains(object)){
+                                User friend = Helpers.convertDocToUser(object);
+                                main.updateMapFriends(friend);
+                                showUpdatedFriend(friend);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
+    }
 
     private void searchVisibilityPublic(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView) {
         //create a filter for public events
@@ -415,7 +423,11 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 super.onSuccess(publicDocs);
 
                 //search for the current user's events
-                searchCurrentUserDocs(allMeetUpsCollection, docsWithinView, (List<DBDocument>) publicDocs);
+                if (Helpers.isLoggedIn()) {
+                    searchCurrentUserDocs(allMeetUpsCollection, docsWithinView, (List<DBDocument>) publicDocs);
+                } else {
+                    finishUpdatingMapMeetUps(Helpers.intersection((List<DBDocument>) publicDocs, docsWithinView));
+                }
             }
         });
     }
@@ -423,9 +435,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void searchCurrentUserDocs(DBCollection allMeetUpsCollection, List<DBDocument> docsWithinView, List<DBDocument> publicDocs) {
         //create a filter for the current user's events
         QueryFilter currentUserFilter = new QueryFilter("creator");
-        if(Database.getInstance().hasUser()) {
-            currentUserFilter.addFilter("=", currentUser.getId());
-        }
+        currentUserFilter.addFilter("=", Main.getInstance().getCurrentUser().getId());
+
         //search for the current user's events
         allMeetUpsCollection.search(currentUserFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
@@ -465,7 +476,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (usersCollection == null) return;
 
         //get the current user's document
-        usersCollection.get(currentUser.getId(), new RequestListener<DBDocument>() {
+        usersCollection.get(Main.getInstance().getCurrentUser().getId(), new RequestListener<DBDocument>() {
             @Override
             public void onSuccess(DBDocument emptyDoc) {
                 super.onSuccess(emptyDoc);

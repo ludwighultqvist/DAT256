@@ -21,6 +21,7 @@ import com.bulbasaur.dat256.services.firebase.QueryFilter;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
 import java.util.List;
 import java.util.Objects;
@@ -123,7 +124,8 @@ public class  LoginActivity extends AppCompatActivity {
                                 public void onSuccess(Object object) {
                                     super.onSuccess(object);
                                     System.out.println("success");
-                                    startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                    finish();
+                                    logInUser();
                                 }
 
                                  @Override
@@ -149,8 +151,21 @@ public class  LoginActivity extends AppCompatActivity {
         if (requestCode == LOGIN_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-                Database.getInstance().user(new RequestListener<>(true));
+                logInUser();
             }
         }
+    }
+
+    private void logInUser() {
+        Database.getInstance().user(new RequestListener<DBDocument>(true) {
+            @Override
+            public void onSuccess(DBDocument document) {
+                super.onSuccess(document);
+
+                if (document != null) {
+                    Helpers.logIn(null, document);
+                }
+            }
+        });
     }
 }

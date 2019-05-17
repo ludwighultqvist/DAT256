@@ -21,6 +21,7 @@ import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
 import java.util.Objects;
 
@@ -150,7 +151,8 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object object) {
                     super.onSuccess(object);
-                    startActivity(new Intent(RegisterActivity.this, MenuActivity.class));
+                    finish();
+                    createUser();
                     Log.d("VER", "success");
                 }
 
@@ -167,8 +169,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("VER", "fail: " + user.getPhoneNumber());
                 }
             });
-
-
         });
 
         //If the user already has an account, they can go to the log-in view
@@ -178,8 +178,6 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         });
     }
-
-
 
     private void updateCreateAccountButton() {
         if (firstNameValid && lastNameValid && phoneNumberValid && checkBox.isChecked() && ageCheck.isChecked()) {
@@ -194,19 +192,30 @@ public class RegisterActivity extends AppCompatActivity {
         if (requestCode == REGISTER_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
                 finish();
-                Database.getInstance().user(new RequestListener<DBDocument>(true) {
-                    @Override
-                    public void onSuccess(DBDocument document) {
-                        super.onSuccess(document);
-                        if (document != null) {
-                            document.set("firstname", user.getFirstName());
-                            document.set("lastname", user.getLastName());
-                            document.set("phone", user.getPhoneNumber());
-                            document.save(new RequestListener<>(true));
-                        }
-                    }
-                });
+                createUser();
             }
         }
+    }
+
+    private void createUser() {
+        Database.getInstance().user(new RequestListener<DBDocument>(true) {
+            @Override
+            public void onSuccess(DBDocument document) {
+                super.onSuccess(document);
+                if (document != null) {
+                    document.set("firstname", user.getFirstName());
+                    document.set("lastname", user.getLastName());
+                    document.set("phone", user.getPhoneNumber());
+                    document.save(new RequestListener<DBDocument>(true) {
+                        @Override
+                        public void onSuccess(DBDocument savedDocument) {
+                            super.onSuccess(savedDocument);
+
+                            Helpers.logIn(null, savedDocument);
+                        }
+                    });
+                }
+            }
+        });
     }
 }

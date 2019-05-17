@@ -1,14 +1,19 @@
 package com.bulbasaur.dat256.viewmodel.utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
+import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
@@ -174,6 +179,22 @@ public class Helpers {
         });
     }
 
+    public static void logIn(Activity activity, DBDocument document) {
+        Main.getInstance().logIn(new User(document.id()));//todo set other user attributes from database here
+
+        if (activity != null) {//TODO change this so that the navigation menu items are always set correctly
+            MenuItem loginLogout = ((NavigationView) activity.findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
+            loginLogout.setTitle(R.string.log_out);
+        }
+    }
+
+    public static void logOut(Activity activity) {
+        Main.getInstance().logOutCurrentUser();
+
+        MenuItem loginLogout = ((NavigationView) activity.findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
+        loginLogout.setTitle(R.string.create_account_log_in);
+    }
+
     public interface DocumentAction {
         void perform(DBDocument document);
     }
@@ -194,5 +215,9 @@ public class Helpers {
         } else {
             Toast.makeText(context, "Already joined " + meetUp.getName(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean isLoggedIn() {
+        return Database.getInstance().hasUser() && Main.getInstance().getCurrentUser() != null;
     }
 }

@@ -88,4 +88,6 @@
     <string name="joinedMany">%1$s people want to go</string>
     <string name="maxMany">%1$s spots available</string>
     <string name="picture_not_loaded">Picture not loaded…</string>
+    <string name="meetuplist">MeetUpList</string>
+    <string name="log_out">Log out</string>
 </resources>
