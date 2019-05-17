@@ -1,11 +1,8 @@
 package com.bulbasaur.dat256.model;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-
-    public static String TEMP_CURRENT_USER_ID = "ERvd4vk6kchlrvvauceXd2DnnLB3";
 
     private User currentUser;
     private static Main instance;
@@ -31,6 +28,14 @@ public class Main {
         }
     }
 
+    public void updateMapFriends(User user){
+        if(!friendsWithinMapView.contains(user)){
+            friendsWithinMapView.add(user);
+
+            System.out.println("User added to map:" + user.getId() + " " + user.getFirstName() + user.getLastName());
+        }
+    }
+
     public void removeOldMeetUps(MapBounds bounds) {
         for (int i = meetUpsWithinMapView.size() - 1; i >= 0; i--) {
             MeetUp m = meetUpsWithinMapView.get(i);
@@ -43,6 +48,21 @@ public class Main {
             }
         }
     }
+
+    public void removeFriends(MapBounds bounds){
+        for (int i = friendsWithinMapView.size() - 1; i >= 0; i--) {
+            User user = friendsWithinMapView.get(i);
+
+            if (user.getCoordinates().lat < bounds.getBottomLeft().lat
+                    || user.getCoordinates().lat > bounds.getTopRight().lat
+                    || user.getCoordinates().lon < bounds.getBottomLeft().lon
+                    || user.getCoordinates().lon > bounds.getTopRight().lon) {
+                friendsWithinMapView.remove(i);
+            }
+        }
+    }
+
+
 
     public List<MeetUp> getMeetUpsWithinMapView() {
         return meetUpsWithinMapView;

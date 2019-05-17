@@ -71,26 +71,45 @@ public class Helpers {
     }
 
 
-    private User convertDocToUser(DBDocument userDoc){
+    public static User convertDocToUser(DBDocument userDoc){
         String id = userDoc.id();
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        int score = (int)userDoc.get("score");
-        List<String> friends = Arrays.asList((String[])userDoc.get("friends"));
-        List<String> createdMeetUps =  Arrays.asList((String[])userDoc.get("created meetups"));
-        List<String> joinedMeetUps =  Arrays.asList((String[])userDoc.get("joined meetups"));
-        LatLng coord = (LatLng)userDoc.get("coordinates");
-
-        if(id == null || firstName == null || lastName == null || phoneNmbr == null || friends == null
-                || createdMeetUps == null || joinedMeetUps == null || coord == null){
+        Integer score = (Integer) userDoc.get("score");
+        List<String> friends = (List<String>) userDoc.get("friends");
+        List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
+        List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
+        Double coord_lat = (Double) userDoc.get("coord_lat");
+        Double coord_lon = (Double) userDoc.get("coord_lon");
+        Coordinates coord = new Coordinates(coord_lon, coord_lat);
+        if(id == null || firstName == null || lastName == null || phoneNmbr == null || coord == null){
             return  null;
         }
 
-        User friend = new User(firstName, lastName, phoneNmbr);
+        User friend = new User(id);
+        friend.setFirstName(firstName);
+        friend.setLastName(lastName);
+        friend.setPhoneNumber(phoneNmbr);
         friend.setCoordinates(coord);
-        //TODO create an entire user
+        if(score == null) {
+            friend.setScore(0);
+        } else {
+            friend.setScore(score);
+        }
+/*
+        for(String joinedMUID : joinedMeetUps){
+            if(joinedMUID != null){
+                friend.addJoinedMeetUp(joinedMUID);
+            }
+        }
 
+        for(String createdMUID : createdMeetUps){
+            if(createdMUID != null){
+                friend.addCreatedMeetUp(createdMUID);
+            }
+        }
+*/
         return friend;
     }
 

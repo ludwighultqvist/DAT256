@@ -17,10 +17,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="TextView"
+            android:text=""
+            android:textSize="32sp"
+            android:textColor="@color/mainColor"
             android:layout_centerHorizontal="true"/>
 
         <TextView
@@ -28,10 +30,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="TextView"
+            android:text=""
+            android:textSize="24sp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/firstAndLastName"/>
 
@@ -40,14 +43,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="TextView"
+            android:text=""
+            android:textSize="24sp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/phoneNumberTextView"/>
 
         <android.support.design.widget.TabLayout
+            android:id="@+id/profileTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/meetAppScore"
@@ -56,23 +61,24 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Monday" />
+                android:text="MeetUps Joined" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tuesday" />
+                android:text="Created MeetUps" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tuesday" />
+                android:text="Groups" />
 
         </android.support.design.widget.TabLayout>
 
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profileTabs">
 
         </android.support.v4.view.ViewPager>
 
