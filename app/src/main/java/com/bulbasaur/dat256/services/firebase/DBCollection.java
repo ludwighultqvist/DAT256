@@ -40,8 +40,6 @@ public interface DBCollection {
      */
     List<? extends DBDocument> all(@NonNull RequestListener<List<? extends DBDocument>> listener);
 
-    @Deprecated
-    List<? extends DBDocument> search(List<QueryFilter> filters, @NonNull RequestListener<List<? extends DBDocument>> listener);
 
     /**
      * searches the documents of the collection according to given filter and returns the documents
