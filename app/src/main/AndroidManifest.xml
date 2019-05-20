@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/ic_glasseslogo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".viewmodel.UserActivity"></activity>
+        <activity android:name=".viewmodel.discover.DiscoverTestActivity"/>
+        <activity android:name=".viewmodel.UserActivity" />
         <activity android:name=".viewmodel.ScanQRActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -50,7 +51,8 @@
         <meta-data
             android:name="com.snapchat.kit.sdk.scopes"
             android:resource="@array/snap_kit_scopes" /> <!-- This should be a string array of scopes ! -->
-        <activity android:name=".viewmodel.ConnectSnapchatActivity"
+        <activity
+            android:name=".viewmodel.ConnectSnapchatActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -60,8 +62,8 @@
 
                 <data
                     android:host="meet_app"
-                    android:scheme="connect"
-                    android:path="/oauth2"/>
+                    android:path="/oauth2"
+                    android:scheme="connect" />
             </intent-filter>
         </activity>
         <activity
@@ -70,12 +72,12 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".viewmodel.MeetUpActivity" />
 

@@ -28,6 +28,7 @@ import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.QueryFilter;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
+import com.bulbasaur.dat256.viewmodel.discover.DiscoverTestActivity;
 import com.bulbasaur.dat256.viewmodel.uielements.CustomInfoWindowAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.MarkerData;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
@@ -136,6 +137,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }else {
                         Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
+                    break;
+                case R.id.discover:
+                    startActivity(new Intent(this, DiscoverTestActivity.class));
                     break;
             }
 
