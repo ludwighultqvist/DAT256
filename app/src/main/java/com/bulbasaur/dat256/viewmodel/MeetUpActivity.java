@@ -2,8 +2,11 @@ package com.bulbasaur.dat256.viewmodel;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,11 +17,19 @@ import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
-import com.bulbasaur.dat256.services.firebase.RequestListener;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 public class MeetUpActivity extends AppCompatActivity {
 
     private MeetUp meetUp;
+
+    private ImageView meetUpPicture;
+    private Bitmap qrCodeBitmap;
+
+    private boolean showingQRCode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +61,7 @@ public class MeetUpActivity extends AppCompatActivity {
             }
         });
 
-        ImageView meetUpPicture = findViewById(R.id.meetUpPicture);
+        meetUpPicture = findViewById(R.id.meetUpPicture);
         meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
 
         TextView startDateTextView = findViewById(R.id.startDateTextView);
@@ -82,6 +93,25 @@ public class MeetUpActivity extends AppCompatActivity {
         long maxSize = meetUp.getMaxAttendees();
         if (maxSize != 1) maxAttendees.setText(getString(R.string.maxMany, String.valueOf(maxSize)));
         else maxAttendees.setText(getString(R.string.maxOne, String.valueOf(maxSize)));
+
+        generateQRCode();
+
+        Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
+        if (qrCodeBitmap == null) {
+            showQRCodeButton.setVisibility(View.INVISIBLE);
+        } else {
+            showQRCodeButton.setOnClickListener(v -> {
+                if (!showingQRCode) {
+                    meetUpPicture.setImageBitmap(qrCodeBitmap);
+                    showQRCodeButton.setText(R.string.showMeetUpPicture);
+                    showingQRCode = true;
+                } else {
+                    meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
+                    showQRCodeButton.setText(R.string.showQRCode);
+                    showingQRCode = false;
+                }
+            });
+        }
     }
 
     private void updateJoinedUsers() {
@@ -89,5 +119,22 @@ public class MeetUpActivity extends AppCompatActivity {
         int joinedMeetUpSize = meetUp.getJoinedUsers().size();
         if (joinedMeetUpSize != 1) numJoinedUsers.setText(getString(R.string.joinedMany, String.valueOf(joinedMeetUpSize)));
         else numJoinedUsers.setText(getString(R.string.joinedOne, String.valueOf(joinedMeetUpSize)));
+    }
+
+    private void generateQRCode() {
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode("MEETUP" + meetUp.getId(), BarcodeFormat.QR_CODE, 512, 512);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            qrCodeBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    qrCodeBitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 }

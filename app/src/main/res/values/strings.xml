@@ -90,4 +90,6 @@
     <string name="picture_not_loaded">Picture not loaded…</string>
     <string name="meetuplist">MeetUpList</string>
     <string name="log_out">Log out</string>
+    <string name="showMeetUpPicture">Show MeetUp picture</string>
+    <string name="showQRCode">Show QR Code</string>
 </resources>
