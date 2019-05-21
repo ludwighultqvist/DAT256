@@ -72,8 +72,11 @@ public class  LoginActivity extends AppCompatActivity {
         });
 
         registerButton.setOnClickListener(v -> {
+            Intent registerIntent = new Intent(this, RegisterActivity.class);
+            registerIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(registerIntent);
+
             finish();
-            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         phoneNumberEditText.addTextChangedListener(new TextWatcher() {
@@ -124,7 +127,6 @@ public class  LoginActivity extends AppCompatActivity {
                                 public void onSuccess(Object object) {
                                     super.onSuccess(object);
                                     System.out.println("success");
-                                    finish();
                                     logInUser();
                                 }
 
@@ -150,7 +152,6 @@ public class  LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOGIN_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
-                finish();
                 logInUser();
             }
         }
@@ -164,6 +165,9 @@ public class  LoginActivity extends AppCompatActivity {
 
                 if (document != null) {
                     Helpers.logIn(null, document);
+
+                    setResult(RESULT_OK);
+                    finish();
                 }
             }
         });
