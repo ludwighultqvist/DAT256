@@ -3,12 +3,13 @@ package com.bulbasaur.dat256.viewmodel;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,10 +18,6 @@ import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -33,6 +30,8 @@ public class MeetUpActivity extends AppCompatActivity {
     private Bitmap qrCodeBitmap;
 
     private boolean showingQRCode = false;
+
+    private int friendsGoingCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +123,31 @@ public class MeetUpActivity extends AppCompatActivity {
             }
         } else {
             showQRCodeButton.setVisibility(View.GONE);
+        }
+
+        TextView friendsGoingLabel = findViewById(R.id.friendsGoingLabel);
+        LinearLayout meetUpLinearLayout = findViewById(R.id.meetuplinearlayout);
+        ConstraintLayout meetUpConstraintLayout = findViewById(R.id.meetUpConstraintLayout);
+
+        if (Helpers.isLoggedIn()) {
+            for (String friendID : Main.getInstance().getCurrentUser().getFriends()) {
+                if (meetUp.getJoinedUsers().contains(friendID)) {
+                    friendsGoingLabel.setText(getString(R.string.of_your_friends_are_going, String.valueOf(++friendsGoingCounter)));
+
+                    Helpers.retrieveDocumentAndPerformAction(Database.getInstance().users(), friendID, document -> {
+                        String name = document.get("firstname") + " " + document.get("lastname");
+
+                        View friendView = getLayoutInflater().inflate(R.layout.friends_list_item, null);
+                        ((TextView) friendView.findViewById(R.id.friendLabel)).setText(name);
+                        meetUpLinearLayout.addView(friendView);
+                    });
+                }
+            }
+        }
+
+        if (friendsGoingCounter == 0) {
+            friendsGoingLabel.setVisibility(View.GONE);
+            meetUpConstraintLayout.getLayoutParams().height = ConstraintLayout.LayoutParams.MATCH_PARENT;
         }
     }
 
