@@ -57,6 +57,7 @@ public class Helpers {
     public static MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
         String creatorID = (String) meetUpDoc.get("creator");
+        if (creatorID == null) creatorID = "null";
         String name = (String) meetUpDoc.get("name");
         Double coord_lat = (Double) meetUpDoc.get("coord_lat");
         Double coord_lon = (Double) meetUpDoc.get("coord_lon");
@@ -67,6 +68,10 @@ public class Helpers {
         Calendar endDate = MeetUp.getDateFromHashMap((HashMap<String, Object>) meetUpDoc.get("enddate"));
         List<String> joinedUsers = (List<String>) meetUpDoc.get("joinedusers");
         if (joinedUsers == null) joinedUsers = new ArrayList<>();
+
+        List<String> attendingUsers = (List<String>) meetUpDoc.get("attendingusers");
+        if (attendingUsers == null) attendingUsers = new ArrayList<>();
+
         MeetUp.Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
@@ -75,7 +80,7 @@ public class Helpers {
         }
 
         return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, startDate, endDate, visibility, joinedUsers);
+                maxAttendees, startDate, endDate, visibility, joinedUsers, attendingUsers);
     }
 
 
@@ -220,6 +225,36 @@ public class Helpers {
         } else {
             Toast.makeText(context, "Already joined " + meetUp.getName(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static void tryAttendMeetUp(Context context, User user, String meetUpID) {
+        retrieveDocumentAndPerformAction(Database.getInstance().meetups(), meetUpID, document -> {
+            MeetUp meetUp = convertDocToMeetUp(document);
+            if (meetUp != null) {
+                if (meetUp.alreadyAttendedBy(user.getId())) {
+                    Toast.makeText(context, "You have already registered attendance at this MeetUp!", Toast.LENGTH_LONG).show();
+                } else {
+                    attendMeetUp(context, meetUp, user);
+                }
+            } else {
+                Toast.makeText(context, "MeetUp is corrupt or can't be found!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private static void attendMeetUp(Context context, MeetUp meetUp, User user) {
+        if (!meetUp.alreadyAttendedBy(user.getId())) {
+            List<String> tempAttending = new ArrayList<>(meetUp.getAttendingUsers());
+            tempAttending.add(user.getId());
+            Helpers.saveField(Database.getInstance().meetups(), meetUp.getId(), "attendingusers", tempAttending, document -> {
+                Toast.makeText(context, "You are now on the attendance list for " + meetUp.getName(), Toast.LENGTH_LONG).show();
+                int meetUpIndexInMain = Main.getInstance().getMeetUpsWithinMapView().indexOf(meetUp);
+                if (meetUpIndexInMain != -1) {
+                    Main.getInstance().getMeetUpsWithinMapView().get(meetUpIndexInMain).attendMeetUp(user.getId());
+                }
+            });
+        }
+
     }
 
     public static void addFriend(Context context, User currentUser, String friendToAddID, SimpleAction callback) {

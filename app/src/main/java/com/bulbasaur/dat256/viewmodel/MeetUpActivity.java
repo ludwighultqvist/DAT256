@@ -94,24 +94,29 @@ public class MeetUpActivity extends AppCompatActivity {
         if (maxSize != 1) maxAttendees.setText(getString(R.string.maxMany, String.valueOf(maxSize)));
         else maxAttendees.setText(getString(R.string.maxOne, String.valueOf(maxSize)));
 
-        qrCodeBitmap = Helpers.generateQRCode("MEETUP" + meetUp.getId(), 512);
-
         Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
-        if (qrCodeBitmap == null) {
-            showQRCodeButton.setVisibility(View.INVISIBLE);
+
+        if (Helpers.isLoggedIn() && meetUp.alreadyAttendedBy(Main.getInstance().getCurrentUser().getId())) {
+            qrCodeBitmap = Helpers.generateQRCode("MEETUP" + meetUp.getId(), 512);
+
+            if (qrCodeBitmap == null) {
+                showQRCodeButton.setVisibility(View.GONE);
+            } else {
+                showQRCodeButton.setVisibility(View.VISIBLE);
+                showQRCodeButton.setOnClickListener(v -> {
+                    if (!showingQRCode) {
+                        meetUpPicture.setImageBitmap(qrCodeBitmap);
+                        showQRCodeButton.setText(R.string.showMeetUpPicture);
+                        showingQRCode = true;
+                    } else {
+                        meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
+                        showQRCodeButton.setText(R.string.showQRCode);
+                        showingQRCode = false;
+                    }
+                });
+            }
         } else {
-            showQRCodeButton.setVisibility(View.VISIBLE);
-            showQRCodeButton.setOnClickListener(v -> {
-                if (!showingQRCode) {
-                    meetUpPicture.setImageBitmap(qrCodeBitmap);
-                    showQRCodeButton.setText(R.string.showMeetUpPicture);
-                    showingQRCode = true;
-                } else {
-                    meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
-                    showQRCodeButton.setText(R.string.showQRCode);
-                    showingQRCode = false;
-                }
-            });
+            showQRCodeButton.setVisibility(View.GONE);
         }
     }
 
