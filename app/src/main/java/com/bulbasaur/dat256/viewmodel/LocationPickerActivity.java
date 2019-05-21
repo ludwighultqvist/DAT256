@@ -61,6 +61,8 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        map.getUiSettings().setRotateGesturesEnabled(false);
+
         map.setOnMarkerClickListener(marker -> true);
 
         //set map position to lat 0 lon 0 just in case we can't get the user location
