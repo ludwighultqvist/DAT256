@@ -23,6 +23,7 @@ import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.uielements.CustomDateTimePickerHelper;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
 public class CreateMeetUpActivity extends AppCompatActivity {
 
@@ -115,16 +116,14 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setEnd(endDateTime.getCalendar());
             meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
             meetUp.setVisibility(MeetUp.getVisibilityFromString(meetUpVisibility));
-            meetUp.attendMeetUp(meetUp.getCreatorID());
 
-            Database.getInstance().user(new RequestListener<DBDocument>() {
-                @Override
-                public void onSuccess(DBDocument object) {
-                    super.onSuccess(object);
-                    meetUp.setCreatorID(object.id());
+            if (Helpers.isLoggedIn()) {
+                meetUp.setCreatorID(Main.getInstance().getCurrentUser().getId());
+                meetUp.attendMeetUp(meetUp.getCreatorID());
+            } else {
+                meetUp.setCreatorID("null");
+            }
 
-                }
-            });
             System.out.println("created meetup object, trying to save...");
 
             if (isMeetUpValid(meetUp)) {

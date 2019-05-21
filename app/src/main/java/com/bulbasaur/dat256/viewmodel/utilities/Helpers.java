@@ -57,6 +57,7 @@ public class Helpers {
     public static MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
         String creatorID = (String) meetUpDoc.get("creator");
+        if (creatorID == null) creatorID = "null";
         String name = (String) meetUpDoc.get("name");
         Double coord_lat = (Double) meetUpDoc.get("coord_lat");
         Double coord_lon = (Double) meetUpDoc.get("coord_lon");
