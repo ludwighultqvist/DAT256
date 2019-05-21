@@ -7,6 +7,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Main;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
 public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
@@ -43,8 +45,17 @@ public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderVie
     // "points" : points where QR control points are placed in View
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        //resultTextView.setText(text);
-        Toast.makeText(getApplicationContext(), "good job bich", Toast.LENGTH_SHORT).show();
+        if (Helpers.isLoggedIn()) {
+            if (text.startsWith("MEETUP")) {
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+            } else if (text.startsWith("USER")) {
+                Helpers.addFriend(this, Main.getInstance().getCurrentUser(), text.substring("USER".length()));
+            } else {
+                Toast.makeText(this, "Couldn't read QR code...", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "You need to be logged in to scan QR codes!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

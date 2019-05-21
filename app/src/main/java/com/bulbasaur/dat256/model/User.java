@@ -2,6 +2,7 @@ package com.bulbasaur.dat256.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
     private String id;
@@ -10,7 +11,7 @@ public class User implements Serializable {
     private String phoneNumber;
     Country country;
     private int score;
-    private ArrayList<String> friends = new ArrayList<>();
+    private List<String> friends = new ArrayList<>();
     private ArrayList<String> createdMeetUps = new ArrayList<>();
     private ArrayList<String> joinedMeetUps = new ArrayList<>();
     private Coordinates coordinates;
@@ -72,6 +73,14 @@ public class User implements Serializable {
 
     public void addFriend(String newFriendID){
         friends.add(newFriendID);
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public boolean hasFriend(String possibleFriendID) {
+        return friends.contains(possibleFriendID);
     }
 
     public void addCreatedMeetUp(String MeetUpID){

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -20,10 +21,12 @@ import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
 import com.bulbasaur.dat256.services.firebase.RequestListener;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +100,9 @@ public class Helpers {
         friend.setLastName(lastName);
         friend.setPhoneNumber(phoneNmbr);
         friend.setCoordinates(coord);
+        for (String f : friends) {
+            friend.addFriend(f);
+        }
         if(score == null) {
             friend.setScore(0);
         } else {
@@ -135,7 +141,6 @@ public class Helpers {
 
         return bitmap;
     }
-
 
     public static void retrieveDocumentAndPerformAction(DBCollection collection, String id, DocumentAction action) {
         if (collection == null) return;
@@ -180,7 +185,7 @@ public class Helpers {
     }
 
     public static void logIn(Activity activity, DBDocument document) {
-        Main.getInstance().logIn(new User(document.id()));//todo set other user attributes from database here
+        Main.getInstance().logIn(convertDocToUser(document));//todo set other user attributes from database here
 
         if (activity != null) {//TODO change this so that the navigation menu items are always set correctly
             MenuItem loginLogout = ((NavigationView) activity.findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
@@ -217,7 +222,37 @@ public class Helpers {
         }
     }
 
+    public static void addFriend(Context context, User currentUser, String friendToAddID) {
+        if (!currentUser.hasFriend(friendToAddID)) {
+            currentUser.addFriend(friendToAddID);
+            Helpers.saveField(Database.getInstance().users(), currentUser.getId(), "friends", currentUser.getFriends(),
+                    document -> Toast.makeText(context, "Added friend with ID " + friendToAddID, Toast.LENGTH_LONG).show());
+        } else {
+            Toast.makeText(context, "This person is already your friend!", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public static boolean isLoggedIn() {
         return Database.getInstance().hasUser() && Main.getInstance().getCurrentUser() != null;
+    }
+
+    public static Bitmap generateQRCode(String content, int size) {
+        QRCodeWriter writer = new QRCodeWriter();
+        Bitmap qrCodeBitmap = null;
+        try {
+            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, size);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            qrCodeBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    qrCodeBitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        return qrCodeBitmap;
     }
 }

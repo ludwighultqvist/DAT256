@@ -94,7 +94,7 @@ public class MeetUpActivity extends AppCompatActivity {
         if (maxSize != 1) maxAttendees.setText(getString(R.string.maxMany, String.valueOf(maxSize)));
         else maxAttendees.setText(getString(R.string.maxOne, String.valueOf(maxSize)));
 
-        generateQRCode();
+        qrCodeBitmap = Helpers.generateQRCode("MEETUP" + meetUp.getId(), 512);
 
         Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
         if (qrCodeBitmap == null) {
@@ -119,22 +119,5 @@ public class MeetUpActivity extends AppCompatActivity {
         int joinedMeetUpSize = meetUp.getJoinedUsers().size();
         if (joinedMeetUpSize != 1) numJoinedUsers.setText(getString(R.string.joinedMany, String.valueOf(joinedMeetUpSize)));
         else numJoinedUsers.setText(getString(R.string.joinedOne, String.valueOf(joinedMeetUpSize)));
-    }
-
-    private void generateQRCode() {
-        QRCodeWriter writer = new QRCodeWriter();
-        try {
-            BitMatrix bitMatrix = writer.encode("MEETUP" + meetUp.getId(), BarcodeFormat.QR_CODE, 512, 512);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            qrCodeBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    qrCodeBitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-                }
-            }
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
     }
 }
