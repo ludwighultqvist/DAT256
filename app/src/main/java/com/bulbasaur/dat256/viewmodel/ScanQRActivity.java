@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Main;
+import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
@@ -49,7 +50,14 @@ public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderVie
             if (text.startsWith("MEETUP")) {
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             } else if (text.startsWith("USER")) {
-                Helpers.addFriend(this, Main.getInstance().getCurrentUser(), text.substring("USER".length()));
+                User user = Main.getInstance().getCurrentUser();
+                String friend = text.substring("USER".length());
+                if (!user.hasFriend(friend)) {
+                    Helpers.addFriend(this, user, friend, Helpers::emptyFunction);
+                } else {
+                    Toast.makeText(this, "This person is already your friend!", Toast.LENGTH_LONG).show();
+                }
+                finish();
             } else {
                 Toast.makeText(this, "Couldn't read QR code...", Toast.LENGTH_LONG).show();
             }
