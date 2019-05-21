@@ -222,14 +222,29 @@ public class Helpers {
         }
     }
 
-    public static void addFriend(Context context, User currentUser, String friendToAddID) {
+    public static void addFriend(Context context, User currentUser, String friendToAddID, SimpleAction callback) {
         if (!currentUser.hasFriend(friendToAddID)) {
-            currentUser.addFriend(friendToAddID);
-            Helpers.saveField(Database.getInstance().users(), currentUser.getId(), "friends", currentUser.getFriends(),
-                    document -> Toast.makeText(context, "Added friend with ID " + friendToAddID, Toast.LENGTH_LONG).show());
-        } else {
-            Toast.makeText(context, "This person is already your friend!", Toast.LENGTH_LONG).show();
+            List<String> tempFriends = new ArrayList<>(currentUser.getFriends());
+            tempFriends.add(friendToAddID);
+            Helpers.saveField(Database.getInstance().users(), currentUser.getId(), "friends", tempFriends, document -> {
+                addBack(context, currentUser, friendToAddID, callback);
+            });
         }
+    }
+
+    private static void addBack(Context context, User currentUser, String friendToAddID, SimpleAction callback) {
+        retrieveDocumentAndPerformAction(Database.getInstance().users(), friendToAddID, document -> {
+            List<String> newFriendFriends = (List<String>) document.get("friends");
+
+            if (newFriendFriends != null) {
+                newFriendFriends.add(currentUser.getId());
+                Helpers.saveField(Database.getInstance().users(), friendToAddID, "friends", newFriendFriends, document1 -> {
+                    Toast.makeText(context, "Added friend with ID " + friendToAddID, Toast.LENGTH_LONG).show();
+                    currentUser.addFriend(friendToAddID);
+                    callback.perform();
+                });
+            }
+        });
     }
 
     public static boolean isLoggedIn() {
