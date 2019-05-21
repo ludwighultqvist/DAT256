@@ -23,6 +23,7 @@ import com.bulbasaur.dat256.viewmodel.uielements.CountrySpinnerAdapter;
 import com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -206,6 +207,10 @@ public class RegisterActivity extends AppCompatActivity {
                     document.set("firstname", user.getFirstName());
                     document.set("lastname", user.getLastName());
                     document.set("phone", user.getPhoneNumber());
+                    document.set("coord_lat", 0.1D);
+                    document.set("coord_lon", 0.1D);
+                    document.set("score", 10);
+                    document.set("friends", new ArrayList<String>());
                     document.save(new RequestListener<DBDocument>(true) {
                         @Override
                         public void onSuccess(DBDocument savedDocument) {

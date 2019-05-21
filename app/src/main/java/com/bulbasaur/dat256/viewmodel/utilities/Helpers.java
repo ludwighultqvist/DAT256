@@ -84,10 +84,10 @@ public class Helpers {
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        Integer score = (Integer) userDoc.get("score");
+        Long score = (Long) userDoc.get("score");
         List<String> friends = (List<String>) userDoc.get("friends");
-        List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
-        List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
+        //List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
+        //List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
         Double coord_lat = (Double) userDoc.get("coord_lat");
         Double coord_lon = (Double) userDoc.get("coord_lon");
         Coordinates coord = new Coordinates(coord_lon, coord_lat);
@@ -106,7 +106,7 @@ public class Helpers {
         if(score == null) {
             friend.setScore(0);
         } else {
-            friend.setScore(score);
+            friend.setScore(score.intValue());
         }
 /*
         for(String joinedMUID : joinedMeetUps){
