@@ -115,6 +115,8 @@ public class CreateMeetUpActivity extends AppCompatActivity {
             meetUp.setEnd(endDateTime.getCalendar());
             meetUp.setCategory(MeetUp.getCategoryFromString(meetUpCategory));
             meetUp.setVisibility(MeetUp.getVisibilityFromString(meetUpVisibility));
+            meetUp.attendMeetUp(meetUp.getCreatorID());
+
             Database.getInstance().user(new RequestListener<DBDocument>() {
                 @Override
                 public void onSuccess(DBDocument object) {
@@ -178,6 +180,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         document.set("endDate", meetUp.getEnd());
         document.set("category", meetUp.getCategory());
         document.set("visibility", meetUp.getVisibility());
+        document.set("attendingusers", meetUp.getAttendingUsers());
 
         System.out.println("set fields");
 

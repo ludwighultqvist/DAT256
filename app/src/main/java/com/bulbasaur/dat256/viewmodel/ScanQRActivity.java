@@ -47,10 +47,13 @@ public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderVie
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         if (Helpers.isLoggedIn()) {
+            User user = Main.getInstance().getCurrentUser();
+
             if (text.startsWith("MEETUP")) {
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                String meetUpID = text.substring("MEETUP".length());
+                Helpers.tryAttendMeetUp(this, user, meetUpID);
+                finish();
             } else if (text.startsWith("USER")) {
-                User user = Main.getInstance().getCurrentUser();
                 String friend = text.substring("USER".length());
                 if (!user.hasFriend(friend)) {
                     Helpers.addFriend(this, user, friend, Helpers::emptyFunction);
