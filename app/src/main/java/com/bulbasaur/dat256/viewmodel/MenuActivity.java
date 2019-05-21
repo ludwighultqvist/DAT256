@@ -144,6 +144,10 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.discover:
                     startActivity(new Intent(this, DiscoverTestActivity.class));
                     break;
+
+                case R.id.filter:
+                    startActivity(new Intent(this, MapfilterActivity.class));
+                    break;
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -533,11 +537,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
-
                     MeetUp newMeetUp = Helpers.convertDocToMeetUp(document);
-
                     main.updateMapMeetUp(newMeetUp);
-
                     showUpdatedMeetUp(newMeetUp);
                 }
             });
