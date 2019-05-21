@@ -90,4 +90,11 @@ public class User implements Serializable {
     public void addJoinedMeetUp(String MeetUpID){
         joinedMeetUps.add(MeetUpID);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) return false;
+
+        return this.id.equals(((User) obj).id);
+    }
 }
