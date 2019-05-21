@@ -89,13 +89,13 @@ public class Helpers {
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        Long score = (Long) userDoc.get("score");
+        Number score = (Number) userDoc.get("score");
         List<String> friends = (List<String>) userDoc.get("friends");
         //List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
         //List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
-        Double coord_lat = (Double) userDoc.get("coord_lat");
-        Double coord_lon = (Double) userDoc.get("coord_lon");
-        Coordinates coord = new Coordinates(coord_lon, coord_lat);
+        Number coord_lat = (Number) userDoc.get("coord_lat");
+        Number coord_lon = (Number) userDoc.get("coord_lon");
+        Coordinates coord = new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
         if(id == null || firstName == null || lastName == null || phoneNmbr == null || coord == null){
             return  null;
         }

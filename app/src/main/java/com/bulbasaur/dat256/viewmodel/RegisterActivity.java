@@ -152,7 +152,6 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object object) {
                     super.onSuccess(object);
-                    finish();
                     createUser();
                     Log.d("VER", "success");
                 }
@@ -174,9 +173,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         //If the user already has an account, they can go to the log-in view
         goToLoginViewButton.setOnClickListener(v -> {
-            finish();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(loginIntent);
 
-            startActivity(new Intent(this, LoginActivity.class));
+            finish();
         });
     }
 
@@ -192,7 +193,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REGISTER_VERIFIED_CODE) {
             if (resultCode == RESULT_OK) {
-                finish();
                 createUser();
             }
         }
@@ -217,6 +217,9 @@ public class RegisterActivity extends AppCompatActivity {
                             super.onSuccess(savedDocument);
 
                             Helpers.logIn(null, savedDocument);
+
+                            setResult(RESULT_OK);
+                            finish();
                         }
                     });
                 }
