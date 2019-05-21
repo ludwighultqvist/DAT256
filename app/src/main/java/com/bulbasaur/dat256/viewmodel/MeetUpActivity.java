@@ -100,6 +100,7 @@ public class MeetUpActivity extends AppCompatActivity {
         if (qrCodeBitmap == null) {
             showQRCodeButton.setVisibility(View.INVISIBLE);
         } else {
+            showQRCodeButton.setVisibility(View.VISIBLE);
             showQRCodeButton.setOnClickListener(v -> {
                 if (!showingQRCode) {
                     meetUpPicture.setImageBitmap(qrCodeBitmap);

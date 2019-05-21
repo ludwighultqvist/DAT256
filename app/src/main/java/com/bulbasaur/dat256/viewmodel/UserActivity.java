@@ -3,10 +3,12 @@ package com.bulbasaur.dat256.viewmodel;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
@@ -36,10 +38,16 @@ public class UserActivity extends AppCompatActivity {
             meetAppScore.setText(""+user.getScore());
         }
 
-        qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 600);
-
         ImageView profilePicture = findViewById(R.id.profilePicture);
-        profilePicture.setImageBitmap(qrCodeBitmap);
+
+        if (Main.getInstance().getCurrentUser().equals(user)) {
+            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 600);
+
+            profilePicture.setImageBitmap(qrCodeBitmap);
+            profilePicture.setVisibility(View.VISIBLE);
+        } else {
+            profilePicture.setVisibility(View.GONE);
+        }
 
         /*Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
         if (qrCodeBitmap == null) {

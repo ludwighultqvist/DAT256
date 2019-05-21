@@ -107,6 +107,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         navView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.nav_profile:
+                    Intent profileIntent = new Intent(this, UserActivity.class);
+                    profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
+                    startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
                     break;
                 case R.id.nav_qr:
                     if (Helpers.isLoggedIn()) {
