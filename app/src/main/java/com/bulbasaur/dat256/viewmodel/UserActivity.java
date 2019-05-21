@@ -41,7 +41,7 @@ public class UserActivity extends AppCompatActivity {
         ImageView profilePicture = findViewById(R.id.profilePicture);
 
         if (Main.getInstance().getCurrentUser().equals(user)) {
-            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 600);
+            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 800);
 
             profilePicture.setImageBitmap(qrCodeBitmap);
             profilePicture.setVisibility(View.VISIBLE);

@@ -290,7 +290,7 @@ public class Helpers {
         QRCodeWriter writer = new QRCodeWriter();
         Bitmap qrCodeBitmap = null;
         try {
-            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, size);
+            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, (size / 3) * 2);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             qrCodeBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);

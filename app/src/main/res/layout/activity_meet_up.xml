@@ -9,10 +9,10 @@
     <ImageView
         android:id="@+id/meetUpPicture"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/picture_not_loaded"
-        android:src="@drawable/partyhassan"
-        app:layout_constraintBottom_toTopOf="@+id/showQRCodeButton"
+        android:src="@drawable/party_example"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

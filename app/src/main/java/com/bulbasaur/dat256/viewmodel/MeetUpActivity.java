@@ -22,6 +22,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class MeetUpActivity extends AppCompatActivity {
 
     private MeetUp meetUp;
@@ -64,11 +67,15 @@ public class MeetUpActivity extends AppCompatActivity {
         meetUpPicture = findViewById(R.id.meetUpPicture);
         meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
 
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm EEE MMMM dd, yyyy", Locale.US);
+
         TextView startDateTextView = findViewById(R.id.startDateTextView);
-        startDateTextView.setText(getString(R.string.starts, meetUp.getStart().getTime()));
+        String startDateString = format.format(meetUp.getStart().getTime());
+        startDateTextView.setText(getString(R.string.starts, startDateString));
 
         TextView endDateTextView = findViewById(R.id.endDateTextView);
-        endDateTextView.setText(getString(R.string.ends, meetUp.getEnd().getTime()));
+        String endDateString = format.format(meetUp.getEnd().getTime());
+        endDateTextView.setText(getString(R.string.ends, endDateString));
 
         TextView createdByTextView = findViewById(R.id.createdByTextView);
 
