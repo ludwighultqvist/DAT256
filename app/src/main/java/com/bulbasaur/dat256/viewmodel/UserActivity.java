@@ -1,15 +1,20 @@
 package com.bulbasaur.dat256.viewmodel;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.User;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 
 public class UserActivity extends AppCompatActivity {
 
     private User user;
+
+    private Bitmap qrCodeBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +35,27 @@ public class UserActivity extends AppCompatActivity {
         }else{
             meetAppScore.setText(""+user.getScore());
         }
+
+        qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 600);
+
+        ImageView profilePicture = findViewById(R.id.profilePicture);
+        profilePicture.setImageBitmap(qrCodeBitmap);
+
+        /*Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
+        if (qrCodeBitmap == null) {
+            showQRCodeButton.setVisibility(View.INVISIBLE);
+        } else {
+            showQRCodeButton.setOnClickListener(v -> {
+                if (!showingQRCode) {
+                    meetUpPicture.setImageBitmap(qrCodeBitmap);
+                    showQRCodeButton.setText(R.string.showMeetUpPicture);
+                    showingQRCode = true;
+                } else {
+                    meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
+                    showQRCodeButton.setText(R.string.showQRCode);
+                    showingQRCode = false;
+                }
+            });
+        }*/
     }
 }
