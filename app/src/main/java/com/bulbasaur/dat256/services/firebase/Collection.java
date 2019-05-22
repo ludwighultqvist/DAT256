@@ -127,50 +127,6 @@ class Collection implements DBCollection {
     }
 
 
-    @Override
-    public List<? extends DBDocument> search(List<QueryFilter> filters, @NonNull RequestListener<List<? extends DBDocument>> listener) {
-        Query query = collection;
-        List<Document> documents = new ArrayList<>();
-
-        for (QueryFilter filter : filters) {
-            switch (filter.getComparison()) {
-                case "=":
-                    query = query.whereEqualTo(filter.getField(), filter.getValue());
-                    break;
-                case "<":
-                    query = query.whereLessThan(filter.getField(), filter.getValue());
-                    break;
-                case ">":
-                    query = query.whereGreaterThan(filter.getField(), filter.getValue());
-                    break;
-                default:
-            }
-        }
-
-        query.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-
-                        if (snapshot != null) {
-                            for (DocumentSnapshot document : snapshot.getDocuments()) {
-                                documents.add(new Document(document.getReference()));
-                            }
-                            listener.onSuccess(documents);
-                        }
-                        else {
-                            listener.onComplete(documents);
-                        }
-                    }
-                    else {
-                        listener.onComplete(documents);
-                    }
-                })
-                .addOnFailureListener(e -> listener.onFailure(documents));
-
-        return listener.getObject();
-    }
-
     /**
      * searches the documents of the collection according to given filter and returns the documents
      * that matches

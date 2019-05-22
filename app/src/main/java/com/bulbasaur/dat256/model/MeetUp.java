@@ -57,6 +57,7 @@ public class MeetUp implements Serializable {
     private Categories category;
 
     private List<String> joinedUsers = new ArrayList<>();
+    private List<String> attendingUsers = new ArrayList<>();
 
     private Visibility visibility;
 
@@ -81,7 +82,7 @@ public class MeetUp implements Serializable {
         this.description = description;
     }
 
-    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end, Visibility visibility, List<String> joinedUsers) {
+    public MeetUp(String id, String creatorID, String name, Coordinates coordinates, String description, Categories category, long maxAttendees, Calendar start, Calendar end, Visibility visibility, List<String> joinedUsers, List<String> attendingUsers) {
         this.id = id;
         this.creatorID = creatorID;
         this.name = name;
@@ -93,6 +94,7 @@ public class MeetUp implements Serializable {
         this.end = end;
         this.visibility = visibility;
         this.joinedUsers = joinedUsers;
+        this.attendingUsers = attendingUsers;
     }
 
     public MeetUp(String id, String creatorID, String name, double latitude, double longitude, String description, Categories category, int maxAttendees, Calendar start, Calendar end) {
@@ -259,5 +261,17 @@ public class MeetUp implements Serializable {
 
     public boolean alreadyJoined(String userID) {
         return joinedUsers.contains(userID);
+    }
+
+    public void attendMeetUp(String userID) {
+        attendingUsers.add(userID);
+    }
+
+    public List<String> getAttendingUsers() {
+        return attendingUsers;
+    }
+
+    public boolean alreadyAttendedBy(String userID) {
+        return attendingUsers.contains(userID);
     }
 }

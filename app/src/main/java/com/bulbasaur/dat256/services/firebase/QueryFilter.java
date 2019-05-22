@@ -6,8 +6,6 @@ import java.util.Map;
 public class QueryFilter {
 
     private String field;
-    private String comparison;
-    private Object value;
     private Map<String, Object> filters = new HashMap<>();
 
     public QueryFilter(String field) {
@@ -15,9 +13,8 @@ public class QueryFilter {
     }
 
     public QueryFilter(String field, String comparison, Object value) {
-        this.field = field.toLowerCase();
-        this.comparison = comparison;
-        this.value = value;
+        this(field);
+        filters.put(comparison, value);
     }
 
     public void addFilter(String comparison, Object value) {
@@ -32,11 +29,4 @@ public class QueryFilter {
         return filters;
     }
 
-    String getComparison() {
-        return comparison;
-    }
-
-    Object getValue() {
-        return value;
-    }
 }

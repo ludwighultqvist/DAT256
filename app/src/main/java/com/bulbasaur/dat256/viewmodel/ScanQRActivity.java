@@ -7,6 +7,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Main;
+import com.bulbasaur.dat256.model.User;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
 public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
@@ -43,8 +46,27 @@ public class ScanQRActivity extends AppCompatActivity implements QRCodeReaderVie
     // "points" : points where QR control points are placed in View
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        //resultTextView.setText(text);
-        Toast.makeText(getApplicationContext(), "good job bich", Toast.LENGTH_SHORT).show();
+        if (Helpers.isLoggedIn()) {
+            User user = Main.getInstance().getCurrentUser();
+
+            if (text.startsWith("MEETUP")) {
+                String meetUpID = text.substring("MEETUP".length());
+                Helpers.tryAttendMeetUp(this, user, meetUpID);
+                finish();
+            } else if (text.startsWith("USER")) {
+                String friend = text.substring("USER".length());
+                if (!user.hasFriend(friend)) {
+                    Helpers.addFriend(this, user, friend, Helpers::emptyFunction);
+                } else {
+                    Toast.makeText(this, "This person is already your friend!", Toast.LENGTH_LONG).show();
+                }
+                finish();
+            } else {
+                Toast.makeText(this, "Couldn't read QR code...", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "You need to be logged in to scan QR codes!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bulbasaur.dat256.viewmodel;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -8,18 +9,26 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bulbasaur.dat256.R;
+import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.User;
+
 import com.bulbasaur.dat256.viewmodel.profileTabs.ProfileTabFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
+
 
 public class UserActivity extends AppCompatActivity {
 
     private User user;
+
+    private Bitmap qrCodeBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,5 +108,33 @@ public class UserActivity extends AppCompatActivity {
         public int getCount() {
             return fragments.size();
         }
+
+        ImageView profilePicture = findViewById(R.id.profilePicture);
+
+        if (Main.getInstance().getCurrentUser().equals(user)) {
+            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 800);
+
+            profilePicture.setImageBitmap(qrCodeBitmap);
+            profilePicture.setVisibility(View.VISIBLE);
+        } else {
+            profilePicture.setVisibility(View.GONE);
+        }
+
+        /*Button showQRCodeButton = findViewById(R.id.showQRCodeButton);
+        if (qrCodeBitmap == null) {
+            showQRCodeButton.setVisibility(View.INVISIBLE);
+        } else {
+            showQRCodeButton.setOnClickListener(v -> {
+                if (!showingQRCode) {
+                    meetUpPicture.setImageBitmap(qrCodeBitmap);
+                    showQRCodeButton.setText(R.string.showMeetUpPicture);
+                    showingQRCode = true;
+                } else {
+                    meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
+                    showQRCodeButton.setText(R.string.showQRCode);
+                    showingQRCode = false;
+                }
+            });
+        }*/
     }
 }
