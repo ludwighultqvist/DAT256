@@ -89,6 +89,17 @@ public class UserActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        ImageView profilePicture = findViewById(R.id.profilePicture);
+
+        if (Main.getInstance().getCurrentUser().equals(user)) {
+            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 800);
+
+            profilePicture.setImageBitmap(qrCodeBitmap);
+            profilePicture.setVisibility(View.VISIBLE);
+        } else {
+            profilePicture.setVisibility(View.GONE);
+        }
     }
 
     private class TabsAdapter extends FragmentPagerAdapter {
@@ -107,17 +118,6 @@ public class UserActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return fragments.size();
-        }
-
-        ImageView profilePicture = findViewById(R.id.profilePicture);
-
-        if (Main.getInstance().getCurrentUser().equals(user)) {
-            qrCodeBitmap = Helpers.generateQRCode("USER" + user.getId(), 800);
-
-            profilePicture.setImageBitmap(qrCodeBitmap);
-            profilePicture.setVisibility(View.VISIBLE);
-        } else {
-            profilePicture.setVisibility(View.GONE);
         }
 
         /*Button showQRCodeButton = findViewById(R.id.showQRCodeButton);

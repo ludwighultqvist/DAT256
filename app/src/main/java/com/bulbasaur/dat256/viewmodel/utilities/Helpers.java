@@ -89,10 +89,10 @@ public class Helpers {
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        Long score = (Long) userDoc.get("score");
+        Number score = (Number) userDoc.get("score");
         List<String> friends = (List<String>) userDoc.get("friends");
-        //List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
-        //List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
+        List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
+        List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
         Number coord_lat = (Number) userDoc.get("coord_lat");
         Number coord_lon = (Number) userDoc.get("coord_lon");
         Coordinates coord = new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
@@ -111,7 +111,7 @@ public class Helpers {
         if(score == null) {
             friend.setScore(0);
         } else {
-            friend.setScore(Math.toIntExact(score));
+            friend.setScore(score.intValue());
         }
 
         if(joinedMeetUps != null) {
