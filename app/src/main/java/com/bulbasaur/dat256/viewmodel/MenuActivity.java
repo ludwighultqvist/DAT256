@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVectorDrawable;
 
@@ -404,17 +405,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(DBDocument object) {
                 super.onSuccess(object);
 
-                //List<String> friends = Arrays.asList((String[])object.get("friends"));
                 List<String> friends = (List<String>)object.get("friends");
 
                 DBCollection usersCollection = Database.getInstance().users();
                 for (String friendID : friends){
                     //hämta varje user i listan från databasen, gör sedan om dessa till User
-                    usersCollection.get(friendID, new RequestListener<DBDocument>(){
+                    usersCollection.get(friendID, new RequestListener<DBDocument>(true){
                         @Override
                         public void onSuccess(DBDocument object) {
                             super.onSuccess(object);
-
                             if(friendDocsWithinView.contains(object)){
                                 User friend = Helpers.convertDocToUser(object);
                                 main.updateMapFriends(friend);

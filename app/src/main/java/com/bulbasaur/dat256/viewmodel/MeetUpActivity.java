@@ -78,17 +78,19 @@ public class MeetUpActivity extends AppCompatActivity {
 
         TextView createdByTextView = findViewById(R.id.createdByTextView);
 
-        if (!meetUp.getCreatorID().equals("null")) {
-            createdByTextView.setText(getString(R.string.created_by, meetUp.getCreatorID()));
+        if (meetUp.getCreatorID() != null) {
+            if(!meetUp.getCreatorID().equals("null")) {
+                createdByTextView.setText(getString(R.string.created_by, meetUp.getCreatorID()));
 
-            //sets the text view to the name of the person who created the event
-            Helpers.retrieveDocumentAndPerformAction(Database.getInstance().users(), meetUp.getCreatorID(), document -> {
-                String firstName = (String) document.get("firstname");
-                String lastName = (String) document.get("lastname");
-                String name = firstName + " " + lastName;
+                //sets the text view to the name of the person who created the event
+                Helpers.retrieveDocumentAndPerformAction(Database.getInstance().users(), meetUp.getCreatorID(), document -> {
+                    String firstName = (String) document.get("firstname");
+                    String lastName = (String) document.get("lastname");
+                    String name = firstName + " " + lastName;
 
-                createdByTextView.setText(getString(R.string.created_by, name));
-            });
+                    createdByTextView.setText(getString(R.string.created_by, name));
+                });
+            }
         } else {
             createdByTextView.setText(getString(R.string.created_by, getString(R.string.user_not_found)));
         }

@@ -71,6 +71,16 @@ public class User implements Serializable {
         return coordinates;
     }
 
+
+    public ArrayList<String> getCreatedMeetUps() {
+        return createdMeetUps;
+    }
+
+    public ArrayList<String> getJoinedMeetUps() {
+        return joinedMeetUps;
+    }
+
+
     public void addFriend(String newFriendID){
         friends.add(newFriendID);
     }

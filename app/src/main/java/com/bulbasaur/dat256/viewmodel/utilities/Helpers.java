@@ -89,7 +89,7 @@ public class Helpers {
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        Number score = (Number) userDoc.get("score");
+        Long score = (Long) userDoc.get("score");
         List<String> friends = (List<String>) userDoc.get("friends");
         //List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
         //List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
@@ -111,21 +111,28 @@ public class Helpers {
         if(score == null) {
             friend.setScore(0);
         } else {
-            friend.setScore(score.intValue());
+            friend.setScore(Math.toIntExact(score));
         }
-/*
-        for(String joinedMUID : joinedMeetUps){
-            if(joinedMUID != null){
-                friend.addJoinedMeetUp(joinedMUID);
+
+        if(joinedMeetUps != null) {
+            if (!joinedMeetUps.isEmpty()) {
+                for (String joinedMUID : joinedMeetUps) {
+                    if (!joinedMUID.equals(null)) {
+                        friend.addJoinedMeetUp(joinedMUID);
+                    }
+                }
             }
         }
 
-        for(String createdMUID : createdMeetUps){
-            if(createdMUID != null){
-                friend.addCreatedMeetUp(createdMUID);
+        if(createdMeetUps != null){
+            if(!createdMeetUps.isEmpty()) {
+                for (String createdMUID : createdMeetUps) {
+                    if (!createdMUID.equals(null)) {
+                        friend.addCreatedMeetUp(createdMUID);
+                    }
+                }
             }
         }
-*/
         return friend;
     }
 
