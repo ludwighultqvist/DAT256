@@ -187,6 +187,8 @@ public class CreateMeetUpActivity extends AppCompatActivity {
                 super.onSuccess(meetUpDoc);
 
                 Toast.makeText(CreateMeetUpActivity.this, "Created MeetUp!", Toast.LENGTH_SHORT).show();
+                Main.getInstance().getCurrentUser().addCreatedMeetUp(meetUpDoc.id());
+                //TODO update user in db
 
                 setResult(RESULT_OK);
                 finish();
