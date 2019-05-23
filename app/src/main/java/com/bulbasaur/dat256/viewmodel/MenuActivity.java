@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -143,10 +145,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivityForResult(registerIntent, UPDATE_LOGIN_LOGOUT_BUTTON_CODE);
                     }
                     break;
-                case R.id.discover:
-                    startActivity(new Intent(this, DiscoverTestActivity.class));
-                    break;
-
                 case R.id.filter:
                     startActivity(new Intent(this, MapfilterActivity.class));
                     break;
@@ -185,6 +183,12 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
             }
+        });
+
+        ImageView discover = findViewById(R.id.discover);
+
+        discover.setOnClickListener(v -> {
+            startActivity(new Intent(this, DiscoverTestActivity.class));
         });
     }
 
