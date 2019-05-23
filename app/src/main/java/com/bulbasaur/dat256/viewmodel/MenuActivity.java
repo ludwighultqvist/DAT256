@@ -605,7 +605,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .snippet(new Gson().toJson(new MarkerData(true, m.getName(), m.getCategory().primaryColor, m.getDescription(), m.getCategory().secondaryColor)))
                 .icon(BitmapDescriptorFactory.fromBitmap(m.getIconBitmap(this)))
                 .anchor(0.5f, 0.5f)
-                .alpha(0.6f);
+                .alpha(1f);
     }
 
     private MarkerOptions createMarkerOptions(User u) {
