@@ -93,9 +93,13 @@ public class Helpers {
         List<String> friends = (List<String>) userDoc.get("friends");
         List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
         List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
+
         Number coord_lat = (Number) userDoc.get("coord_lat");
         Number coord_lon = (Number) userDoc.get("coord_lon");
-        Coordinates coord = new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
+
+        Coordinates coord = (coord_lat == null || coord_lon == null) ? null : new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
+
+        //Coordinates coord = new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
         if(id == null || firstName == null || lastName == null || phoneNmbr == null || coord == null){
             return  null;
         }
