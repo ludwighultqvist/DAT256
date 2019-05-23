@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVectorDrawable;
 
@@ -67,6 +69,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int SHOW_EVENT_ON_MAP_CODE = 1;
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
+    public static final int UPDATE_LOGIN_LOGOUT_BUTTON_CODE = 107;
 
     private boolean markerInMiddle = false;
 
@@ -131,7 +134,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (Helpers.isLoggedIn()) {
                         Helpers.logOut(MenuActivity.this);
                     } else {
-                        startActivity(new Intent(this, RegisterActivity.class));
+                        Intent registerIntent = new Intent(this, RegisterActivity.class);
+                        startActivityForResult(registerIntent, UPDATE_LOGIN_LOGOUT_BUTTON_CODE);
                     }
                     break;
                 case R.id.nav_MeetUpList:
@@ -243,8 +247,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 refreshMapItems(getCurrentMapBounds());
             }
         });
-    }
 
+        this.map.getUiSettings().setRotateGesturesEnabled(false);
+    }
 
     private void showUserLocationOnMapWithRegularMarkerAndMoveMapToIt() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -300,6 +305,11 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else if (requestCode == CREATE_NEW_EVENT_CODE) {
             if (resultCode == RESULT_OK) {
                 refreshMapItems(getCurrentMapBounds());
+            }
+        } else if (requestCode == UPDATE_LOGIN_LOGOUT_BUTTON_CODE) {
+            if (resultCode == RESULT_OK) {
+                MenuItem loginLogout = ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
+                loginLogout.setTitle(R.string.log_out);
             }
         }
     }
@@ -399,17 +409,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(DBDocument object) {
                 super.onSuccess(object);
 
-                //List<String> friends = Arrays.asList((String[])object.get("friends"));
                 List<String> friends = (List<String>)object.get("friends");
 
                 DBCollection usersCollection = Database.getInstance().users();
                 for (String friendID : friends){
                     //hämta varje user i listan från databasen, gör sedan om dessa till User
-                    usersCollection.get(friendID, new RequestListener<DBDocument>(){
+                    usersCollection.get(friendID, new RequestListener<DBDocument>(true){
                         @Override
                         public void onSuccess(DBDocument object) {
                             super.onSuccess(object);
-
                             if(friendDocsWithinView.contains(object)){
                                 User friend = Helpers.convertDocToUser(object);
                                 main.updateMapFriends(friend);

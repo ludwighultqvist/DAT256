@@ -57,6 +57,7 @@ public class Helpers {
     public static MeetUp convertDocToMeetUp(DBDocument meetUpDoc) {
         String id = meetUpDoc.id();
         String creatorID = (String) meetUpDoc.get("creator");
+        if (creatorID == null) creatorID = "null";
         String name = (String) meetUpDoc.get("name");
         Double coord_lat = (Double) meetUpDoc.get("coord_lat");
         Double coord_lon = (Double) meetUpDoc.get("coord_lon");
@@ -67,6 +68,10 @@ public class Helpers {
         Calendar endDate = MeetUp.getDateFromHashMap((HashMap<String, Object>) meetUpDoc.get("enddate"));
         List<String> joinedUsers = (List<String>) meetUpDoc.get("joinedusers");
         if (joinedUsers == null) joinedUsers = new ArrayList<>();
+
+        List<String> attendingUsers = (List<String>) meetUpDoc.get("attendingusers");
+        if (attendingUsers == null) attendingUsers = new ArrayList<>();
+
         MeetUp.Visibility visibility = MeetUp.getVisibilityFromString((String) meetUpDoc.get("visibility"));
 
         if (id == null || name == null || coord_lat == null || coord_lon == null
@@ -75,7 +80,7 @@ public class Helpers {
         }
 
         return new MeetUp(id, creatorID, name, new Coordinates(coord_lat, coord_lon), description, category,
-                maxAttendees, startDate, endDate, visibility, joinedUsers);
+                maxAttendees, startDate, endDate, visibility, joinedUsers, attendingUsers);
     }
 
 
@@ -84,13 +89,13 @@ public class Helpers {
         String firstName = (String)userDoc.get("firstname");
         String lastName = (String)userDoc.get("lastname");
         String phoneNmbr = (String)userDoc.get("phone");
-        Long score = (Long) userDoc.get("score");
+        Number score = (Number) userDoc.get("score");
         List<String> friends = (List<String>) userDoc.get("friends");
-        //List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
-        //List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
-        Double coord_lat = (Double) userDoc.get("coord_lat");
-        Double coord_lon = (Double) userDoc.get("coord_lon");
-        Coordinates coord = new Coordinates(coord_lon, coord_lat);
+        List<String> createdMeetUps =  (List<String>)userDoc.get("created meetups");
+        List<String> joinedMeetUps =  (List<String>)userDoc.get("joined meetups");
+        Number coord_lat = (Number) userDoc.get("coord_lat");
+        Number coord_lon = (Number) userDoc.get("coord_lon");
+        Coordinates coord = new Coordinates(coord_lat.doubleValue(), coord_lon.doubleValue());
         if(id == null || firstName == null || lastName == null || phoneNmbr == null || coord == null){
             return  null;
         }
@@ -108,19 +113,26 @@ public class Helpers {
         } else {
             friend.setScore(score.intValue());
         }
-/*
-        for(String joinedMUID : joinedMeetUps){
-            if(joinedMUID != null){
-                friend.addJoinedMeetUp(joinedMUID);
+
+        if(joinedMeetUps != null) {
+            if (!joinedMeetUps.isEmpty()) {
+                for (String joinedMUID : joinedMeetUps) {
+                    if (!joinedMUID.equals(null)) {
+                        friend.addJoinedMeetUp(joinedMUID);
+                    }
+                }
             }
         }
 
-        for(String createdMUID : createdMeetUps){
-            if(createdMUID != null){
-                friend.addCreatedMeetUp(createdMUID);
+        if(createdMeetUps != null){
+            if(!createdMeetUps.isEmpty()) {
+                for (String createdMUID : createdMeetUps) {
+                    if (!createdMUID.equals(null)) {
+                        friend.addCreatedMeetUp(createdMUID);
+                    }
+                }
             }
         }
-*/
         return friend;
     }
 
@@ -222,6 +234,36 @@ public class Helpers {
         }
     }
 
+    public static void tryAttendMeetUp(Context context, User user, String meetUpID) {
+        retrieveDocumentAndPerformAction(Database.getInstance().meetups(), meetUpID, document -> {
+            MeetUp meetUp = convertDocToMeetUp(document);
+            if (meetUp != null) {
+                if (meetUp.alreadyAttendedBy(user.getId())) {
+                    Toast.makeText(context, "You have already registered attendance at this MeetUp!", Toast.LENGTH_LONG).show();
+                } else {
+                    attendMeetUp(context, meetUp, user);
+                }
+            } else {
+                Toast.makeText(context, "MeetUp is corrupt or can't be found!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private static void attendMeetUp(Context context, MeetUp meetUp, User user) {
+        if (!meetUp.alreadyAttendedBy(user.getId())) {
+            List<String> tempAttending = new ArrayList<>(meetUp.getAttendingUsers());
+            tempAttending.add(user.getId());
+            Helpers.saveField(Database.getInstance().meetups(), meetUp.getId(), "attendingusers", tempAttending, document -> {
+                Toast.makeText(context, "You are now on the attendance list for " + meetUp.getName(), Toast.LENGTH_LONG).show();
+                int meetUpIndexInMain = Main.getInstance().getMeetUpsWithinMapView().indexOf(meetUp);
+                if (meetUpIndexInMain != -1) {
+                    Main.getInstance().getMeetUpsWithinMapView().get(meetUpIndexInMain).attendMeetUp(user.getId());
+                }
+            });
+        }
+
+    }
+
     public static void addFriend(Context context, User currentUser, String friendToAddID, SimpleAction callback) {
         if (!currentUser.hasFriend(friendToAddID)) {
             List<String> tempFriends = new ArrayList<>(currentUser.getFriends());
@@ -255,7 +297,7 @@ public class Helpers {
         QRCodeWriter writer = new QRCodeWriter();
         Bitmap qrCodeBitmap = null;
         try {
-            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, size);
+            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, (size / 3) * 2);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             qrCodeBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
