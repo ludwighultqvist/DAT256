@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class MeetUpActivity extends AppCompatActivity {
         TextView descriptionView = findViewById(R.id.DescriptionView);
         descriptionView.setText(meetUp.getDescription());
 
-        Button showOnMap = findViewById(R.id.show_in_map_button);
+        ImageButton showOnMap = findViewById(R.id.show_in_map_button);
         showOnMap.setOnClickListener(v -> {
             Intent meetUpIntent = new Intent();
             meetUpIntent.putExtra("MeetUpReturn", meetUp);

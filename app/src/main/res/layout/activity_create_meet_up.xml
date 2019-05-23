@@ -80,6 +80,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                android:backgroundTint="@android:color/background_light"
+                android:elevation="10dp"
                 android:text="@string/choose_location" />
 
         </RelativeLayout>
@@ -268,6 +270,9 @@
                 android:layout_centerInParent="true"
                 android:text="@string/create_meetup_done"
                 android:layout_centerVertical="true"
+                android:backgroundTint="@color/mainColor"
+                android:elevation="10dp"
+                android:textColor="@android:color/background_light"
                 android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>
