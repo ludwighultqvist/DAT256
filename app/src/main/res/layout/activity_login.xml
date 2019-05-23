@@ -8,16 +8,16 @@
 
     <TextView
         android:id="@+id/phonenumb"
-        android:layout_width="95dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="50dp"
+        android:layout_width="122dp"
+        android:layout_height="17dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="266dp"
         android:layout_marginBottom="2dp"
         android:text="@string/phone_number"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumberEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/phoneNumberSpinner"
         app:layout_constraintTop_toBottomOf="@+id/createAccountTitleTextView" />
 
     <Spinner
@@ -38,22 +38,24 @@
         android:layout_width="245dp"
         android:layout_height="53dp"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="1dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="420dp"
+        android:backgroundTint="@color/mainColor"
+        android:elevation="10dp"
         android:enabled="false"
         android:text="Verify"
+        android:textColor="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
     <TextView
         android:id="@+id/createAccountTitleTextView"
-        android:layout_width="82dp"
-        android:layout_height="41dp"
+        android:layout_width="124dp"
+        android:layout_height="46dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
@@ -74,7 +76,7 @@
         android:layout_marginTop="135dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/bg_edittext"
+        android:background="@android:color/background_light"
         android:ems="10"
         android:hint="@string/example_phone_number"
         android:inputType="number"
@@ -90,30 +92,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
-        android:layout_marginTop="47dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="176dp"
         android:layout_marginBottom="376dp"
         android:text="Your phonenumber is not registered"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Verify" />
+        app:layout_constraintTop_toBottomOf="@+id/Verify"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="1dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="299dp"
+        android:backgroundTint="@android:color/background_light"
+        android:elevation="10dp"
         android:text="Not a user? Register here!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wrongNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/wrongNumber"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>
