@@ -210,6 +210,7 @@ public class Helpers {
     }
 
     public static void logOut(Activity activity) {
+        Database.getInstance().logout();
         Main.getInstance().logOutCurrentUser();
 
         MenuItem loginLogout = ((NavigationView) activity.findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);

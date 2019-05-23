@@ -187,6 +187,13 @@ public class Database {
         return listener.getObject();
     }
 
+    /**
+     * logs out the current user
+     */
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
     public void testIt() {
         System.out.println("\n---------- DATABASE TEST STARTED ----------\n");
 
