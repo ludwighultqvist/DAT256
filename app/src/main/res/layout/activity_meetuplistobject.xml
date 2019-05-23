@@ -11,57 +11,61 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="100">
+        >
 
         <ImageView
             android:id="@+id/meetupPicture"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_weight="5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:padding="5dp"
             app:srcCompat="@mipmap/ic_glasseslogo_round"
             tools:layout_editor_absoluteX="217dp"
             tools:layout_editor_absoluteY="6dp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/meetupDate"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="2dp"
+                android:gravity="center_vertical"
+                android:textSize="12sp"
+                tools:layout_editor_absoluteX="31dp"
+                tools:layout_editor_absoluteY="86dp" />
+
+            <TextView
+                android:id="@+id/meetupName"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/meetupDate"
+                android:paddingTop="2dp"
+                android:gravity="top"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteX="33dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+            <TextView
+                android:id="@+id/meetupDesc"
                 android:layout_height="match_parent"
-                >
+                android:layout_width="match_parent"
+                android:layout_below="@id/meetupName"
+                android:paddingTop="2dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="start"
+                android:textSize="14sp"
+                />
 
-                <TextView
-                    android:id="@+id/meetupName"
-                    android:layout_width="108dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:text="TextView"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    tools:layout_editor_absoluteX="33dp"
-                    tools:layout_editor_absoluteY="16dp" />
-
-                <TextView
-                    android:id="@+id/meetupDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_toRightOf="@id/meetupName"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:text="TextView"
-                    tools:layout_editor_absoluteX="31dp"
-                    tools:layout_editor_absoluteY="86dp" />
-
-                <TextView
-                    android:id="@+id/meetupDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/meetupDate"
-                    android:gravity="center"
-                    android:layout_marginLeft="@dimen/activity_vertical_margin"
-                    android:layout_marginTop="@dimen/text_margin"/>
-
-            </RelativeLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
