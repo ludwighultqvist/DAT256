@@ -295,6 +295,8 @@ public class Helpers {
     }
 
     public static boolean isLoggedIn() {
+        System.out.println("db: " + Database.getInstance().hasUser());
+        System.out.println("main: " + Main.getInstance().getCurrentUser());
         return Database.getInstance().hasUser() && Main.getInstance().getCurrentUser() != null;
     }
 

@@ -165,6 +165,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@android:color/background_light"
+                android:backgroundTint="@android:color/background_light"
                 android:text="@string/showQRCode"
                 app:layout_constraintBottom_toTopOf="@+id/titleView"
                 app:layout_constraintEnd_toEndOf="parent"

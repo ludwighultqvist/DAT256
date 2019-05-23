@@ -50,7 +50,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVectorDrawable;
@@ -81,6 +83,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker meMarker;
 
     private Marker currentlyOpenMarker;
+
+    public MapfilterActivity mapfilterActivity = new MapfilterActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -551,12 +555,29 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void showUpdatedMeetUp(MeetUp meetUp) {
-        if (!meetUpMarkerMap.values().contains(meetUp)) {
-            Marker marker = map.addMarker(createMarkerOptions(meetUp));
-
-            meetUpMarkerMap.put(marker, meetUp);
+    private void showUpdatedMeetUp(MeetUp meetUp) { ;
+    Marker marker;
+    if (!meetUpMarkerMap.values().contains(meetUp)) {
+           MeetUp.Categories category = meetUp.getCategory();
+           Map<MeetUp.Categories,Boolean> temp = mapfilterActivity.getBoolsOfMeetUp();
+           if(temp != null) {
+               System.out.println("is not null");
+               for (Map.Entry<MeetUp.Categories, Boolean> entry : temp.entrySet())
+                   if (entry.getKey() == category) {
+                       marker = map.addMarker(createMarkerOptions(meetUp));
+                       if (entry.getValue()) {
+                           meetUpMarkerMap.put(marker, meetUp);
+                       }
+                       else {
+                           meetUpMarkerMap.remove(marker, meetUp);
+                       }
+                   }
+           } else {
+               marker = map.addMarker(createMarkerOptions(meetUp));
+               meetUpMarkerMap.put(marker, meetUp);
+           }
         }
+
     }
 
     private void showUpdatedFriend(User friend) {

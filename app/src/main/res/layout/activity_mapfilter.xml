@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/filter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".viewmodel.MapfilterActivity">
@@ -12,10 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
         android:layout_marginTop="50dp"
+        android:checked="true"
         android:text="Sport"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:checked="true"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/party"
@@ -23,10 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
         android:layout_marginTop="26dp"
+        android:checked="true"
         android:text="Party"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sports"
-        android:checked="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/sports" />
 
     <Switch
         android:id="@+id/education"
@@ -34,10 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
         android:layout_marginTop="27dp"
+        android:checked="true"
         android:text="Education"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/party"
-        android:checked="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/party" />
 
     <Switch
         android:id="@+id/food"
@@ -45,10 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
         android:layout_marginTop="48dp"
+        android:checked="true"
         android:text="Food"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/education"
-        android:checked="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/education" />
 
     <Switch
         android:id="@+id/game"
@@ -56,9 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="171dp"
         android:layout_marginTop="23dp"
+        android:checked="true"
         android:text="Games"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/food"
-        android:checked="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/food" />
 
 </android.support.constraint.ConstraintLayout>

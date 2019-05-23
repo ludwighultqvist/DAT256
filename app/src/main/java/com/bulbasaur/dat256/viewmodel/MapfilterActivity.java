@@ -40,46 +40,47 @@ public class MapfilterActivity extends AppCompatActivity {
 
         sport.setOnClickListener( v -> {
             if(sport.isChecked()){
-                boolsOfMeetUp.replace(SPORTS, false, true);
+                boolsOfMeetUp.replace(SPORTS,true);
             }
             else{
-                boolsOfMeetUp.replace(SPORTS, true, false);
+                boolsOfMeetUp.replace(SPORTS,false);
             }
+
         });
 
         education.setOnClickListener( v -> {
             if(education.isChecked()){
-                boolsOfMeetUp.replace(EDUCATION, false, true);
+                boolsOfMeetUp.replace(EDUCATION,true);
             }
             else{
-                boolsOfMeetUp.replace(EDUCATION, true, false);
+                boolsOfMeetUp.replace(EDUCATION,false);
             }
         });
 
         food.setOnClickListener( v -> {
             if(food.isChecked()){
-                boolsOfMeetUp.replace(FOOD, false, true);
+                boolsOfMeetUp.replace(FOOD, true);
             }
             else{
-                boolsOfMeetUp.replace(FOOD, true, false);
+                boolsOfMeetUp.replace(FOOD,false);
             }
         });
 
         games.setOnClickListener( v -> {
             if(games.isChecked()){
-                boolsOfMeetUp.replace(GAMES, false, true);
+                boolsOfMeetUp.replace(GAMES, true);
             }
             else{
-                boolsOfMeetUp.replace(GAMES, true, false);
+                boolsOfMeetUp.replace(GAMES, false);
             }
         });
 
         party.setOnClickListener( v -> {
             if(party.isChecked()){
-                boolsOfMeetUp.replace(PARTY, false, true);
+                boolsOfMeetUp.replace(PARTY,true);
             }
             else{
-                boolsOfMeetUp.replace(PARTY, true, false);
+                boolsOfMeetUp.replace(PARTY,false);
             }
         });
     }
