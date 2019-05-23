@@ -39,7 +39,11 @@ public class MeetUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meet_up);
 
-        meetUp = Main.getInstance().getMeetUpsWithinMapView().get(getIntent().getIntExtra("MeetUpIndex", -1));//(MeetUp) getIntent().getSerializableExtra("MeetUp");
+        meetUp = (MeetUp) getIntent().getSerializableExtra("MeetUp");
+        if (meetUp == null) {
+            meetUp = Main.getInstance().getMeetUpsWithinMapView().get(getIntent().getIntExtra("MeetUpIndex", -1));//(MeetUp) getIntent().getSerializableExtra("MeetUp");
+        }
+
 
         TextView titleView = findViewById(R.id.titleView);
         titleView.setText(meetUp.getName());
