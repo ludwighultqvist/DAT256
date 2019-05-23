@@ -16,19 +16,11 @@ import android.widget.TextView;
 import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.MeetUp;
 import com.bulbasaur.dat256.model.User;
-import com.bulbasaur.dat256.services.firebase.DBCollection;
-import com.bulbasaur.dat256.services.firebase.DBDocument;
-import com.bulbasaur.dat256.services.firebase.Database;
-import com.bulbasaur.dat256.services.firebase.RequestListener;
 import com.bulbasaur.dat256.viewmodel.MeetUpActivity;
-import com.bulbasaur.dat256.viewmodel.MenuActivity;
 import com.bulbasaur.dat256.viewmodel.UserActivity;
-import com.bulbasaur.dat256.viewmodel.utilities.Helpers;
-import com.google.rpc.Help;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -55,6 +47,64 @@ public class TabFragment extends Fragment {
 
     void refresh() {
         adapter.notifyDataSetChanged();
+    }
+
+    void meetUpSection(@NonNull String title, @NonNull List<MeetUp> meetUps) {
+        adapter.add(new Section<MeetUp>(title, meetUps) {
+            @Override
+            View inflate(MeetUp item) {
+                View view = getLayoutInflater().inflate(R.layout.activity_meetuplistobject, null);
+                TextView name = view.findViewById(R.id.meetupName);
+                TextView date = view.findViewById(R.id.meetupDate);
+                TextView desc = view.findViewById(R.id.meetupDesc);
+
+                name.setText(item.getName());
+                date.setText(DateFormat.getDateTimeInstance().format(item.getStart().getTime()));
+                desc.setText(item.getDescription());
+
+                view.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), MeetUpActivity.class);
+                    intent.putExtra("MeetUp", item);
+                    startActivity(intent);
+                });
+
+                return view;
+            }
+
+        });
+    }
+
+    void userSection(@NonNull String title, @NonNull List<User> users) {
+        adapter.add(new Section<User>(title, users) {
+            @Override
+            View inflate(User item) {
+                View view = getLayoutInflater().inflate(R.layout.activity_meetuplistobject, null);
+                TextView name = view.findViewById(R.id.meetupName);
+                TextView date = view.findViewById(R.id.meetupDate);
+                TextView desc = view.findViewById(R.id.meetupDesc);
+
+                name.setText(item.getFirstName() + " " + item.getLastName());
+                date.setText("Score: " + item.getScore());
+                desc.setText("");
+
+                view.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), UserActivity.class);
+                    intent.putExtra("User", item);
+                    startActivity(intent);
+                });
+
+                return view;
+            }
+
+        });
+    }
+
+    public void setOnUpdateListener(OnUpdateListener onUpdateListener) {
+        this.onUpdateListener = onUpdateListener;
+    }
+
+    interface OnUpdateListener {
+        void onUpdate();
     }
 
     private class SectionsAdapter extends ArrayAdapter<Section> {
@@ -111,63 +161,5 @@ public class TabFragment extends Fragment {
         }
 
         abstract View inflate(E item);
-    }
-
-    void meetUpSection(@NonNull String title, @NonNull List<MeetUp> meetUps) {
-        adapter.add(new Section<MeetUp>(title, meetUps) {
-            @Override
-            View inflate(MeetUp item) {
-                View view = getLayoutInflater().inflate(R.layout.activity_meetuplistobject, null);
-                TextView name = view.findViewById(R.id.meetupName);
-                TextView date = view.findViewById(R.id.meetupDate);
-                TextView desc = view.findViewById(R.id.meetupDesc);
-
-                name.setText(item.getName());
-                date.setText(DateFormat.getDateTimeInstance().format(item.getStart().getTime()));
-                desc.setText(item.getDescription());
-
-                view.setOnClickListener(v -> {
-                    Intent intent = new Intent(getContext(), MeetUpActivity.class);
-                    intent.putExtra("MeetUp", item);
-                    startActivity(intent);
-                });
-
-                return view;
-            }
-
-        });
-    }
-
-    void userSection(@NonNull String title, @NonNull List<User> users) {
-        adapter.add(new Section<User>(title, users) {
-            @Override
-            View inflate(User item) {
-                View view = getLayoutInflater().inflate(R.layout.activity_meetuplistobject, null);
-                TextView name = view.findViewById(R.id.meetupName);
-                TextView date = view.findViewById(R.id.meetupDate);
-                TextView desc = view.findViewById(R.id.meetupDesc);
-
-                name.setText(item.getFirstName() + " " + item.getLastName());
-                date.setText(item.getId());
-                desc.setText(item.getCoordinates().toString());
-
-                view.setOnClickListener(v -> {
-                    Intent intent = new Intent(getContext(), UserActivity.class);
-                    intent.putExtra("User", item);
-                    startActivity(intent);
-                });
-
-                return view;
-            }
-
-        });
-    }
-
-    interface OnUpdateListener {
-        void onUpdate();
-    }
-
-    public void setOnUpdateListener(OnUpdateListener onUpdateListener) {
-        this.onUpdateListener = onUpdateListener;
     }
 }
