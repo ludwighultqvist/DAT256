@@ -110,15 +110,20 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         navView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.nav_profile:
-                    Intent profileIntent = new Intent(this, UserActivity.class);
-                    profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
-                    startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
+                    if (Helpers.isLoggedIn()) {
+                        Intent profileIntent = new Intent(this, UserActivity.class);
+                        profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
+                        startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
+                    }
+                    else {
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
+                    }
                     break;
                 case R.id.nav_qr:
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ScanQRActivity.class));
                     }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_settings:
@@ -127,7 +132,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ConnectSnapchatActivity.class));
                     }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_login_logout:
@@ -136,13 +141,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else {
                         Intent registerIntent = new Intent(this, RegisterActivity.class);
                         startActivityForResult(registerIntent, UPDATE_LOGIN_LOGOUT_BUTTON_CODE);
-                    }
-                    break;
-                case R.id.nav_MeetUpList:
-                    if (Helpers.isLoggedIn()) {
-                        startActivity(new Intent(this, ListActivity.class));
-                    }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.discover:
