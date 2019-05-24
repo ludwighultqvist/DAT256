@@ -64,6 +64,7 @@
         android:text="@string/log_in"
         android:textAlignment="center"
         android:textSize="30sp"
+        android:textColor="@color/mainColor"
         app:layout_constraintBottom_toTopOf="@+id/phonenumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
