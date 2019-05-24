@@ -81,8 +81,8 @@
     <string name="created_by_loading">Created by: Loading…</string>
     <string name="created_by">Created by: %1$s</string>
     <string name="user_not_found">User not found…</string>
-    <string name="ends">Ends: %1$s</string>
-    <string name="starts">Starts: %1$s</string>
+    <string name="ends">%1$s</string>
+    <string name="starts">%1$s</string>
     <string name="joinedOne">%1$s person wants to go</string>
     <string name="maxOne">%1$s spot available</string>
     <string name="joinedMany">%1$s people want to go</string>
@@ -98,4 +98,8 @@
     <string name="select_the_categories_of_meetups_that_you_would_like_to_see_on_the_map">Select the categories of MeetUps that you would like to see on the map:</string>
     <string name="map_filters">Map Filters</string>
     <string name="filter_map">Filter map…</string>
+    <string name="start_only">Starts</string>
+    <string name="show_in_map_button_string">show in map button</string>
+    <string name="description_only">Description</string>
+    <string name="end_only">Ends</string>
 </resources>

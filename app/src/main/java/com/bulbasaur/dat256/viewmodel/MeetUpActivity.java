@@ -71,7 +71,7 @@ public class MeetUpActivity extends AppCompatActivity {
         meetUpPicture = findViewById(R.id.meetUpPicture);
         meetUpPicture.setImageDrawable(getDrawable(meetUp.getCategory().pic));
 
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm EEE MMMM dd, yyyy", Locale.US);
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm EEE MMMM dd", Locale.US);
 
         TextView startDateTextView = findViewById(R.id.startDateTextView);
         String startDateString = format.format(meetUp.getStart().getTime());

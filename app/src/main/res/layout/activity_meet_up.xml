@@ -8,6 +8,9 @@
     tools:context=".viewmodel.MeetUpActivity"
     android:fillViewport="true">
 
+    <!--
+                android:background="?android:attr/listDivider"-->
+
     <LinearLayout
         android:id="@+id/meetuplinearlayout"
         android:layout_width="match_parent"
@@ -18,6 +21,40 @@
             android:id="@+id/meetUpConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="@id/divider2"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/startDateTextView" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@id/divider2"
+                app:layout_constraintTop_toBottomOf="@id/endDateTextView" />
+
+            <TextView
+                android:id="@+id/startDateTitleMeetUp2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/start_only"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
 
             <ImageView
                 android:id="@+id/meetUpPicture"
@@ -34,14 +71,14 @@
                 android:id="@+id/titleView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/coming_soon"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif"
                 android:text="@string/loading_name"
+                android:textAlignment="center"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/DescriptionView"
+                app:layout_constraintBottom_toTopOf="@id/descriptionTitleMeetUp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/showQRCodeButton" />
@@ -50,16 +87,14 @@
                 android:id="@+id/DescriptionView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:singleLine="false"
                 android:text="@string/loading_description"
-                app:layout_constraintBottom_toTopOf="@+id/startDateTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleView" />
+                app:layout_constraintTop_toBottomOf="@id/descriptionTitleMeetUp" />
 
             <ImageButton
                 android:id="@+id/show_in_map_button"
@@ -76,7 +111,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/show_in_map_button_string" />
 
             <Button
                 android:id="@+id/join_meetup_button"
@@ -107,63 +143,55 @@
                 app:layout_constraintBottom_toTopOf="@+id/show_in_map_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/numJoinedUsersTextView" />
+                app:layout_constraintTop_toBottomOf="@id/divider9" />
 
             <TextView
                 android:id="@+id/endDateTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/ends"
-                app:layout_constraintBottom_toTopOf="@+id/numJoinedUsersTextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startDateTextView" />
+                app:layout_constraintStart_toStartOf="@id/divider2"
+                app:layout_constraintTop_toBottomOf="@id/endDateTitleMeetUp" />
 
             <TextView
                 android:id="@+id/startDateTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:text="@string/starts"
-                app:layout_constraintBottom_toTopOf="@+id/endDateTextView"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/divider2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/DescriptionView" />
+                app:layout_constraintTop_toBottomOf="@id/startDateTitleMeetUp2" />
 
             <TextView
                 android:id="@+id/numJoinedUsersTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:text="@string/joinedMany"
-                app:layout_constraintBottom_toTopOf="@+id/createdByTextView"
-                app:layout_constraintEnd_toStartOf="@+id/maxAttendeesMeetUpView"
+                app:layout_constraintEnd_toStartOf="@id/divider8"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endDateTextView" />
+                app:layout_constraintTop_toBottomOf="@id/divider6" />
 
             <TextView
                 android:id="@+id/maxAttendeesMeetUpView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/maxMany"
-                app:layout_constraintStart_toEndOf="@+id/numJoinedUsersTextView"
-                app:layout_constraintBottom_toTopOf="@+id/createdByTextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endDateTextView" />
+                app:layout_constraintStart_toEndOf="@id/divider8"
+                app:layout_constraintTop_toBottomOf="@id/divider3" />
 
             <Button
                 android:id="@+id/showQRCodeButton"
@@ -179,7 +207,90 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/meetUpPicture" />
+
+            <TextView
+                android:id="@+id/descriptionTitleMeetUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/description_only"
+                app:layout_constraintBottom_toTopOf="@+id/DescriptionView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleView" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toStartOf="@+id/divider5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DescriptionView" />
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/divider1"
+                app:layout_constraintTop_toBottomOf="@+id/DescriptionView" />
+
+            <TextView
+                android:id="@+id/endDateTitleMeetUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/end_only"
+                app:layout_constraintStart_toEndOf="@id/divider2"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="1dp"
+                android:layout_height="80dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toTopOf="@id/divider3"
+                app:layout_constraintEnd_toStartOf="@+id/divider5"
+                app:layout_constraintStart_toEndOf="@id/divider1"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toTopOf="@id/divider9"
+                app:layout_constraintEnd_toStartOf="@id/divider3"
+                app:layout_constraintStart_toEndOf="@id/divider6"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+            <View
+                android:id="@+id/divider9"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/numJoinedUsersTextView" />
         </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/divider10"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/listDivider" />
 
         <TextView
             android:id="@+id/friendsGoingLabel"
@@ -191,5 +302,6 @@
             android:paddingEnd="24dp"
             android:textSize="16sp"
             android:textStyle="italic" />
+
     </LinearLayout>
 </ScrollView>
