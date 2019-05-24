@@ -1,81 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".viewmodel.UserActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/profilePicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/ic_friend_icon_24dp"
-            android:contentDescription="@string/profile_picture_and_qr_code" />
-
-        <TextView
-            android:id="@+id/firstAndLastName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="10dp"
-            android:text=""
-            android:textSize="32sp"
-            android:textColor="@color/mainColor"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/profilePicture"/>
-
-        <TextView
-            android:id="@+id/phoneNumberTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="10dp"
-            android:text=""
-            android:textSize="24sp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/firstAndLastName"/>
-
-        <TextView
-            android:id="@+id/meetAppScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="10dp"
-            android:text=""
-            android:textSize="24sp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/phoneNumberTextView"/>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/profileTabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/meetAppScore"
-            />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/profileTabs">
+            android:orientation="horizontal">
 
-        </android.support.v4.view.ViewPager>
+            <ImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/profile_picture_and_qr_code"
+                app:srcCompat="@drawable/ic_friend_icon_24dp" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/firstAndLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profilePicture"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:text=""
+                android:textColor="@color/mainColor"
+                android:textSize="32sp" />
 
+            <TextView
+                android:id="@+id/phoneNumberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstAndLastName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text=""
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/meetAppScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/phoneNumberTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="15dp"
+                android:text=""
+                android:textSize="24sp" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/profileTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/meetAppScore"
+                android:layout_marginTop="20dp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/profileTabs">
+
+            </android.support.v4.view.ViewPager>
+        </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

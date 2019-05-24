@@ -46,8 +46,10 @@
     <string name="already_a_user_log_in_here">Already a user? Log in here!</string>
 
     <string name="create_meetup_title">Create a MeetUp</string>
-    <string name="party_at_hassan_s_place">Title - e.g. Party at Hassan\'s place</string>
-    <string name="very_fun_party_bring_your_friends">Description - e.g. Very fun party - bring your friends</string>
+    <string name="meetup_title_textview">Title: </string>
+    <string name="party_at_hassan_s_place">e.g. Party at Hassan\'s place</string>
+    <string name="meetup_description_textview">Description: </string>
+    <string name="very_fun_party_bring_your_friends">e.g. Very fun party - bring your friends</string>
     <string name="choose_location">Choose Location…</string>
     <string name="title_activity_location_picker">Pick a location for your MeetUp…</string>
     <string name="create_account_log_in">Create account/log in</string>
@@ -57,6 +59,8 @@
     <string name="max_attendees">Max attendees:</string>
     <string name="max_attendees_hint">Unlimited</string>
     <string name="start_date">Start date:</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
     <string name="category">Category:</string>
     <string-array name="category_array">
         <item>Sports</item>

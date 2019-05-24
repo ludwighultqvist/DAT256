@@ -45,9 +45,9 @@ public class UserActivity extends AppCompatActivity {
 
         TextView meetAppScore = findViewById(R.id.meetAppScore);
         if (user.getScore() == null) {
-            meetAppScore.setText("0");
+            meetAppScore.setText("MeetAppScore: 0");
         } else {
-            meetAppScore.setText("" + user.getScore());
+            meetAppScore.setText("MeetAppScore: " + user.getScore());
         }
 
         TabLayout tabs = findViewById(R.id.profileTabs);

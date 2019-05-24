@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -48,12 +47,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVectorDrawable;
 
@@ -63,8 +60,6 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SearchView searchView;
 
     private GoogleMap map;
-
-    private User fakeFriend;
 
     private static final int CREATE_NEW_EVENT_CODE = 32;
 
@@ -270,6 +265,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon)));
                 this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon),DEFAULT_MEET_UP_ZOOM_LEVEL));
                 meMarker = map.addMarker(new MarkerOptions().position(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon)).title("Your location"));
+
+                meMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_meetapplogo));
 
                 if (Helpers.isLoggedIn()) {
                     Main.getInstance().getCurrentUser().setCoordinates(lastLocationCoords);
