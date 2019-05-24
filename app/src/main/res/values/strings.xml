@@ -37,7 +37,7 @@
     <string name="toolbar_search_hint">Search for users or meet ups</string>
     <string name="log_in">Log in</string>
     <string name="settings">Settings</string>
-    <string name="scan_qr_code">Scan QR code</string>
+    <string name="scan_qr_code">Scan QR code…</string>
     <string name="profile">Profile</string>
     <string name="meetapp">MeetApp</string>
 
@@ -95,4 +95,7 @@
     <string name="profile_picture_and_qr_code">Profile Picture and QR Code</string>
     <string name="of_your_friends_are_going">%1$s of your friends are going:</string>
     <string name="verify">Verify</string>
+    <string name="select_the_categories_of_meetups_that_you_would_like_to_see_on_the_map">Select the categories of MeetUps that you would like to see on the map:</string>
+    <string name="map_filters">Map Filters</string>
+    <string name="filter_map">Filter map…</string>
 </resources>

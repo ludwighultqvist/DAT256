@@ -21,37 +21,32 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="com.snapchat.kit.sdk.clientId"
             android:value="9f2af23f-9628-4d21-bb38-94d38798ca9f" />
-
         <meta-data
             android:name="com.snapchat.kit.sdk.redirectUrl"
             android:value="connect://meet_app/oauth2" />
-
         <meta-data
             android:name="com.snapchat.kit.sdk.scopes"
             android:resource="@array/snap_kit_scopes" /> <!-- This should be a string array of scopes ! -->
-
         <activity
             android:name=".viewmodel.MenuActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".viewmodel.ConnectSnapchatActivity"
             android:launchMode="singleTask"
@@ -68,55 +63,54 @@
                     android:scheme="connect" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".viewmodel.LocationPickerActivity"
+        <activity
+            android:name=".viewmodel.LocationPickerActivity"
             android:label="@string/title_activity_location_picker"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.CreateMeetUpActivity"
+        <activity
+            android:name=".viewmodel.CreateMeetUpActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.LoginActivity"
+        <activity
+            android:name=".viewmodel.LoginActivity"
             android:screenOrientation="portrait" />
-
-
-        <activity android:name=".viewmodel.discover.DiscoverTestActivity"
+        <activity
+            android:name=".viewmodel.discover.DiscoverTestActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.UserActivity"
+        <activity
+            android:name=".viewmodel.UserActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.ScanQRActivity"
+        <activity
+            android:name=".viewmodel.ScanQRActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.MeetUpActivity"
+        <activity
+            android:name=".viewmodel.MeetUpActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".viewmodel.VerificationView"
             android:label="VerificationView"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".viewmodel.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".viewmodel.Terms_And_Conditions_Activity"
             android:label="Terms_And_Conditions_View"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewmodel.ListActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".viewmodel.ListActivity"
-            android:screenOrientation="portrait" />
-
         <activity
             android:name=".viewmodel.MapfilterActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewmodel.MapFilterActivityV2"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
     </application>
 

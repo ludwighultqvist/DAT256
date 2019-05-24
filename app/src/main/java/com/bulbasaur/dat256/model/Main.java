@@ -1,6 +1,8 @@
 package com.bulbasaur.dat256.model;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
@@ -11,9 +13,15 @@ public class Main {
 
     private List<User> friendsWithinMapView;
 
+    private Map<MeetUp.Categories, Boolean> categoryFilters = new HashMap<>();
+
     public Main() {
         meetUpsWithinMapView = new ArrayList<>();
         friendsWithinMapView = new ArrayList<>();
+
+        for (MeetUp.Categories c : MeetUp.Categories.values()) {
+            categoryFilters.put(c, true);
+        }
     }
 
     public void logIn(User loggedInUser) {
@@ -83,5 +91,9 @@ public class Main {
 
     public void logOutCurrentUser() {
         currentUser = null;
+    }
+
+    public Map<MeetUp.Categories, Boolean> getCategoryFilters() {
+        return categoryFilters;
     }
 }

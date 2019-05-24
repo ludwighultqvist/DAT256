@@ -72,6 +72,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
     public static final int UPDATE_LOGIN_LOGOUT_BUTTON_CODE = 107;
+    public static final int UPDATE_EVENT_FILTERS = 108;
 
     private boolean markerInMiddle = false;
 
@@ -146,7 +147,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     break;
                 case R.id.filter:
-                    startActivity(new Intent(this, MapfilterActivity.class));
+                    Intent filterIntent = new Intent(this, MapFilterActivityV2.class);
+                    startActivityForResult(filterIntent, UPDATE_EVENT_FILTERS);
                     break;
             }
 
@@ -312,6 +314,35 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 MenuItem loginLogout = ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
                 loginLogout.setTitle(R.string.log_out);
+            }
+        } else if (requestCode == UPDATE_EVENT_FILTERS) {
+            if (resultCode == RESULT_OK) {
+                refreshMapFilters();
+            }
+        }
+    }
+
+    private void refreshMapFilters() {
+        for (MeetUp m : main.getMeetUpsWithinMapView()) {
+            if (main.getCategoryFilters().get(m.getCategory())) {
+                if (!meetUpMarkerMap.containsValue(m)) {
+                    Marker marker = map.addMarker(createMarkerOptions(m));
+
+                    meetUpMarkerMap.put(marker, m);
+                }
+            } else {
+                if (meetUpMarkerMap.containsValue(m)) {
+                    Iterator<Marker> markerIterator = meetUpMarkerMap.keySet().iterator();
+                    while (markerIterator.hasNext()) {
+                        Marker nextM = markerIterator.next();
+
+                        if (m.equals(meetUpMarkerMap.get(nextM))) {
+                            nextM.remove();
+                            markerIterator.remove();
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
