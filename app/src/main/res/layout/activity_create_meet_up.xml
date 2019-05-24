@@ -270,7 +270,8 @@
                 android:layout_centerInParent="true"
                 android:text="@string/create_meetup_done"
                 android:layout_centerVertical="true"
-                android:backgroundTint="@color/mainColor"
+                android:theme="@style/AccentButton"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:elevation="10dp"
                 android:textColor="@android:color/background_light"
                 android:layout_alignParentBottom="true"/>
