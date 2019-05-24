@@ -8,75 +8,87 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".viewmodel.CreateMeetUpActivity"
         android:id="@+id/createMeetUpLinearLayout"
         android:padding="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
             <TextView
+                android:id="@+id/createMeetUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/create_meetup_title"
                 android:layout_centerInParent="true"
                 android:textColor="@color/mainColor"
                 android:textSize="25sp"
-                />
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/nameTextView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="0dp"
-            android:text="@string/meetup_title_textview"
-            android:textSize="15sp"/>
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="0dp"
+                android:text="@string/meetup_title_textview"
+                android:textSize="15sp"/>
 
-        <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
-            android:id="@+id/nameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/party_at_hassan_s_place"
-            android:inputType="textPersonName"
-            android:background="@android:color/background_light"
-            android:textColor="@drawable/textcolor_edittext"/>
+            <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/party_at_hassan_s_place"
+                android:inputType="textPersonName"
+                android:background="@android:color/background_light"
+                android:textColor="@drawable/textcolor_edittext"
+                android:layout_below="@+id/nameTextView"/>
 
 
-        <TextView
-            android:id="@+id/descriptionTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="30dp"
-            android:text="@string/meetup_description_textview"
-            android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/meetup_description_textview"
+                android:textSize="15sp"
+                android:layout_below="@+id/nameEditText"/>
 
-        <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
-            android:id="@+id/descriptionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="10dp"
-            android:background="@android:color/background_light"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="@string/very_fun_party_bring_your_friends"
-            android:inputType="textMultiLine"
-            android:textColor="@drawable/textcolor_edittext" />
+            <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
+                android:id="@+id/descriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/background_light"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/very_fun_party_bring_your_friends"
+                android:inputType="textMultiLine"
+                android:textColor="@drawable/textcolor_edittext"
+                android:layout_below="@+id/descriptionTextView"/>
 
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -141,14 +153,16 @@
                 android:hint="@string/max_attendees_hint"
                 android:inputType="number"
                 android:background="@android:color/background_light"
-                android:textColor="@drawable/textcolor_edittext"/>
+                android:textColor="@drawable/textcolor_edittext"
+                />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/startDateTextView"
@@ -199,7 +213,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:layout_marginBottom="5dp">
 
             <TextView
                 android:id="@+id/endDateTextView"
@@ -271,7 +286,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"/>
         </RelativeLayout>
 
         <RelativeLayout
