@@ -10,17 +10,14 @@
             android:id="@+id/nav_qr"
             android:title="@string/scan_qr_code" />
         <item
+            android:id="@+id/filter"
+            android:title="@string/filter_map" />
+        <item
             android:id="@+id/nav_settings"
             android:title="@string/settings" />
         <item
             android:id="@+id/nav_connect_bitmoji"
             android:title="@string/connect_bitmoji" />
-        <item
-            android:id="@+id/nav_MeetUpList"
-            android:title="@string/meetuplist" />
-        <item
-            android:id="@+id/discover"
-            android:title="Discover" />
     </group>
     <group android:id="@+id/nav_footer" android:checkableBehavior="single">
         <item android:id="@+id/nav_login_logout"

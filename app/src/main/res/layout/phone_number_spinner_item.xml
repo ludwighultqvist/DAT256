@@ -9,15 +9,16 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/se"/>
+        android:src="@drawable/se"
+        android:layout_margin="6dp"/>
 
     <TextView
         android:id="@+id/country_code"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:gravity="center_vertical"
-        android:layout_marginLeft="4dp"
+        android:layout_margin="6dp"
         android:textColor="#000000"/>
 
 </LinearLayout>

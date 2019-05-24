@@ -14,6 +14,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -65,6 +67,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
     private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
     public static final int UPDATE_LOGIN_LOGOUT_BUTTON_CODE = 107;
+    public static final int UPDATE_EVENT_FILTERS = 108;
 
     private boolean markerInMiddle = false;
 
@@ -105,15 +108,20 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         navView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.nav_profile:
-                    Intent profileIntent = new Intent(this, UserActivity.class);
-                    profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
-                    startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
+                    if (Helpers.isLoggedIn()) {
+                        Intent profileIntent = new Intent(this, UserActivity.class);
+                        profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
+                        startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
+                    }
+                    else {
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
+                    }
                     break;
                 case R.id.nav_qr:
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ScanQRActivity.class));
                     }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_settings:
@@ -122,7 +130,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ConnectSnapchatActivity.class));
                     }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_login_logout:
@@ -133,15 +141,9 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivityForResult(registerIntent, UPDATE_LOGIN_LOGOUT_BUTTON_CODE);
                     }
                     break;
-                case R.id.nav_MeetUpList:
-                    if (Helpers.isLoggedIn()) {
-                        startActivity(new Intent(this, ListActivity.class));
-                    }else {
-                        Toast.makeText(this, "you must be logged in to do this",Toast.LENGTH_LONG).show();
-                    }
-                    break;
-                case R.id.discover:
-                    startActivity(new Intent(this, DiscoverTestActivity.class));
+                case R.id.filter:
+                    Intent filterIntent = new Intent(this, MapFilterActivityV2.class);
+                    startActivityForResult(filterIntent, UPDATE_EVENT_FILTERS);
                     break;
             }
 
@@ -178,6 +180,12 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
             }
+        });
+
+        ImageView discover = findViewById(R.id.discover);
+
+        discover.setOnClickListener(v -> {
+            startActivity(new Intent(this, DiscoverTestActivity.class));
         });
     }
 
@@ -303,6 +311,35 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 MenuItem loginLogout = ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login_logout);
                 loginLogout.setTitle(R.string.log_out);
+            }
+        } else if (requestCode == UPDATE_EVENT_FILTERS) {
+            if (resultCode == RESULT_OK) {
+                refreshMapFilters();
+            }
+        }
+    }
+
+    private void refreshMapFilters() {
+        for (MeetUp m : main.getMeetUpsWithinMapView()) {
+            if (main.getCategoryFilters().get(m.getCategory())) {
+                if (!meetUpMarkerMap.containsValue(m)) {
+                    Marker marker = map.addMarker(createMarkerOptions(m));
+
+                    meetUpMarkerMap.put(marker, m);
+                }
+            } else {
+                if (meetUpMarkerMap.containsValue(m)) {
+                    Iterator<Marker> markerIterator = meetUpMarkerMap.keySet().iterator();
+                    while (markerIterator.hasNext()) {
+                        Marker nextM = markerIterator.next();
+
+                        if (m.equals(meetUpMarkerMap.get(nextM))) {
+                            nextM.remove();
+                            markerIterator.remove();
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -538,11 +575,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(DBDocument document) {
                     super.onSuccess(document);
-
                     MeetUp newMeetUp = Helpers.convertDocToMeetUp(document);
-
                     main.updateMapMeetUp(newMeetUp);
-
                     showUpdatedMeetUp(newMeetUp);
                 }
             });
@@ -599,7 +633,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .snippet(new Gson().toJson(new MarkerData(true, m.getName(), m.getCategory().primaryColor, m.getDescription(), m.getCategory().secondaryColor)))
                 .icon(BitmapDescriptorFactory.fromBitmap(m.getIconBitmap(this)))
                 .anchor(0.5f, 0.5f)
-                .alpha(0.6f);
+                .alpha(1f);
     }
 
     private MarkerOptions createMarkerOptions(User u) {
