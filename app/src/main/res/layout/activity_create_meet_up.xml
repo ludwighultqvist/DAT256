@@ -21,38 +21,61 @@
                 android:layout_height="wrap_content"
                 android:text="@string/create_meetup_title"
                 android:layout_centerInParent="true"
+                android:textColor="@color/mainColor"
                 android:textSize="25sp"
                 />
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="0dp"
+            android:text="@string/meetup_title_textview"
+            android:textSize="15sp"/>
 
         <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
             android:id="@+id/nameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
             android:hint="@string/party_at_hassan_s_place"
             android:inputType="textPersonName"
-            android:background="@drawable/bg_edittext"
+            android:background="@android:color/background_light"
             android:textColor="@drawable/textcolor_edittext"/>
+
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="30dp"
+            android:text="@string/meetup_description_textview"
+            android:textSize="15sp"/>
 
         <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
             android:id="@+id/descriptionEditText"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
+            android:background="@android:color/background_light"
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/very_fun_party_bring_your_friends"
             android:inputType="textMultiLine"
-            android:background="@drawable/bg_edittext"
-            android:textColor="@drawable/textcolor_edittext"/>
+            android:textColor="@drawable/textcolor_edittext" />
 
 
         <RelativeLayout
@@ -66,21 +89,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/coordinates"
                 android:textSize="15sp" />
 
-            <Button
+            <ImageView
                 android:id="@+id/chooseLocationButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/choose_location" />
+                android:src="@drawable/ic_pin_drop_black_24dp"
+                android:tint="@color/mainColor" />
 
         </RelativeLayout>
 
@@ -95,24 +121,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/max_attendees"
                 android:textSize="15sp" />
 
             <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
                 android:id="@+id/maxAttendeesEditText"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="20dp"
                 android:ems="10"
                 android:layout_alignParentEnd="true"
                 android:hint="@string/max_attendees_hint"
                 android:inputType="number"
-                android:background="@drawable/bg_edittext"
+                android:background="@android:color/background_light"
                 android:textColor="@drawable/textcolor_edittext"/>
 
         </RelativeLayout>
@@ -128,35 +156,42 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="0dp"
                 android:text="@string/start_date"
                 android:textSize="15sp" />
 
             <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
                 android:id="@+id/startDateEditText"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="46dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/startDateTextView"
+                android:background="@android:color/background_light"
+                android:hint="@string/date"
                 android:clickable="true"
                 android:ems="10"
                 android:focusable="false"
                 android:inputType="none"
                 android:longClickable="false"
-                android:background="@drawable/bg_edittext"
-                android:textColor="@drawable/textcolor_edittext"/>
+                android:textColor="@drawable/textcolor_edittext" />
 
             <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
                 android:id="@+id/startTimeEditText"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
                 android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/time"
                 android:clickable="true"
                 android:ems="10"
                 android:focusable="false"
                 android:inputType="none"
-                android:background="@drawable/bg_edittext"
+                android:background="@android:color/background_light"
                 android:textColor="@drawable/textcolor_edittext"/>
 
         </RelativeLayout>
@@ -171,24 +206,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="0dp"
                 android:text="@string/end_date"
                 android:textSize="15sp" />
 
             <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
                 android:id="@+id/endDateEditText"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/date"
                 android:clickable="true"
                 android:ems="10"
                 android:focusable="false"
                 android:inputType="none"
                 android:longClickable="false"
-                android:background="@drawable/bg_edittext"
+                android:background="@android:color/background_light"
                 android:textColor="@drawable/textcolor_edittext" />
 
             <com.bulbasaur.dat256.viewmodel.uielements.EditTextWithError
@@ -197,11 +235,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_centerInParent="true"
+                android:hint="@string/time"
                 android:clickable="true"
                 android:ems="10"
                 android:focusable="false"
                 android:inputType="none"
-                android:background="@drawable/bg_edittext"
+                android:background="@android:color/background_light"
                 android:textColor="@drawable/textcolor_edittext"/>
         </RelativeLayout>
 
@@ -216,8 +257,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/category" />
 
@@ -225,10 +267,12 @@
                 android:id="@+id/categorySpinner"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#ffff"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -242,8 +286,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/open_to" />
 
@@ -252,9 +297,11 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#ffff"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -267,8 +314,10 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/create_meetup_done"
+                android:textColor="#ffff"
+                android:backgroundTint="@color/mainColor"
                 android:layout_centerVertical="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true" />
 
         </RelativeLayout>
 

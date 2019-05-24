@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +18,6 @@ import com.bulbasaur.dat256.R;
 import com.bulbasaur.dat256.model.Coordinates;
 import com.bulbasaur.dat256.model.Main;
 import com.bulbasaur.dat256.model.MeetUp;
-import com.bulbasaur.dat256.model.User;
 import com.bulbasaur.dat256.services.firebase.DBCollection;
 import com.bulbasaur.dat256.services.firebase.DBDocument;
 import com.bulbasaur.dat256.services.firebase.Database;
@@ -47,7 +47,7 @@ public class CreateMeetUpActivity extends AppCompatActivity {
         meetUp = new MeetUp();
 
         // location
-        Button chooseLocationButton = findViewById(R.id.chooseLocationButton);
+        ImageView chooseLocationButton = findViewById(R.id.chooseLocationButton);
         chooseLocationButton.setOnClickListener(v -> startActivityForResult(new Intent(this, LocationPickerActivity.class), PICKED_COORDINATES_CODE));
 
         chosenLocationTextView = findViewById(R.id.chosenLocationTextView);
