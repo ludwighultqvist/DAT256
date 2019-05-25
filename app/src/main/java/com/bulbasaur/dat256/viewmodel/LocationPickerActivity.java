@@ -81,7 +81,7 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
                 System.out.println(lastLocationCoords.latitude + " " + lastLocationCoords.longitude);
                 Marker marker = map.addMarker(new MarkerOptions().position(lastLocationCoords).title("Your location"));
                 marker.showInfoWindow();
-                map.moveCamera(CameraUpdateFactory.newLatLng(lastLocationCoords));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationCoords, MenuActivity.DEFAULT_MEET_UP_ZOOM_LEVEL));
             }
         });
     }
