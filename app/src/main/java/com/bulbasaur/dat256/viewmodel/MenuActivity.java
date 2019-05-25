@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -56,19 +55,15 @@ import static com.bulbasaur.dat256.viewmodel.utilities.Helpers.getBitmapFromVect
 
 public class MenuActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private DrawerLayout drawer;
-    private SearchView searchView;
-
-    private GoogleMap map;
-
-    private static final int CREATE_NEW_EVENT_CODE = 32;
-
     public static final int SHOW_EVENT_ON_MAP_CODE = 1;
-    private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
-    private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
     public static final int UPDATE_LOGIN_LOGOUT_BUTTON_CODE = 107;
     public static final int UPDATE_EVENT_FILTERS = 108;
-
+    private static final int CREATE_NEW_EVENT_CODE = 32;
+    private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
+    private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
+    private DrawerLayout drawer;
+    private SearchView searchView;
+    private GoogleMap map;
     private boolean markerInMiddle = false;
 
     private Main main;
@@ -112,16 +107,15 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent profileIntent = new Intent(this, UserActivity.class);
                         profileIntent.putExtra("User", Main.getInstance().getCurrentUser());
                         startActivityForResult(profileIntent, SHOW_FRIEND_ON_MAP_CODE);
-                    }
-                    else {
-                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_qr:
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ScanQRActivity.class));
-                    }else {
-                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_settings:
@@ -129,8 +123,8 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case R.id.nav_connect_bitmoji:
                     if (Helpers.isLoggedIn()) {
                         startActivity(new Intent(this, ConnectSnapchatActivity.class));
-                    }else {
-                        Toast.makeText(this, "You must be logged in to do this",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.nav_login_logout:
@@ -152,7 +146,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         });
 
-        if(Database.getInstance().hasUser()) {
+        if (Database.getInstance().hasUser()) {
             Database.getInstance().user(new RequestListener<DBDocument>(true) {
                 @Override
                 public void onSuccess(DBDocument object) {
@@ -216,14 +210,14 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));//TODO ideally lerp to this location
 
-            if(meetUpMarkerMap.containsKey(currentlyOpenMarker)){
+            if (meetUpMarkerMap.containsKey(currentlyOpenMarker)) {
                 this.map.setOnInfoWindowClickListener(this::onMeetUpMarkerClick);
                 if (Helpers.isLoggedIn()) {
                     this.map.setOnInfoWindowLongClickListener(this::joinMarkedMeetUp);
-                }else{
+                } else {
                     this.map.setOnInfoWindowLongClickListener(m -> Toast.makeText(this, "You must be logged in to do this", Toast.LENGTH_LONG).show());
                 }
-            } else if(friendMarkerMap.containsKey(currentlyOpenMarker)){
+            } else if (friendMarkerMap.containsKey(currentlyOpenMarker)) {
                 this.map.setOnInfoWindowClickListener(this::onFriendMarkerCLick);
             }
 
@@ -263,7 +257,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Coordinates lastLocationCoords = new Coordinates(location.getLatitude(), location.getLongitude());
                 System.out.println(lastLocationCoords.lat + " " + lastLocationCoords.lon);
                 this.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon)));
-                this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon),DEFAULT_MEET_UP_ZOOM_LEVEL));
+                this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon), DEFAULT_MEET_UP_ZOOM_LEVEL));
                 meMarker = map.addMarker(new MarkerOptions().position(new LatLng(lastLocationCoords.lat, lastLocationCoords.lon)).title("Your location"));
 
                 meMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_meetapplogo));
@@ -291,7 +285,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         startActivityForResult(meetUpIntent, SHOW_EVENT_ON_MAP_CODE);
     }
 
-    private void onFriendMarkerCLick(Marker m){
+    private void onFriendMarkerCLick(Marker m) {
         Intent friendIntent = new Intent(this, UserActivity.class);
         friendIntent.putExtra("User", friendMarkerMap.get(m));
         startActivityForResult(friendIntent, SHOW_FRIEND_ON_MAP_CODE);
@@ -412,7 +406,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void searchLatLonUsers(DBCollection usersCollection, QueryFilter latFilter, QueryFilter lonFilter){
+    private void searchLatLonUsers(DBCollection usersCollection, QueryFilter latFilter, QueryFilter lonFilter) {
         usersCollection.search(latFilter, new RequestListener<List<? extends DBDocument>>() {
             @Override
             public void onSuccess(List<? extends DBDocument> latFilteredDocs) {
@@ -433,22 +427,22 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void showFriendsOnMap(List<DBDocument> friendDocsWithinView){
-        Database.getInstance().user(new RequestListener<DBDocument>(){
+    private void showFriendsOnMap(List<DBDocument> friendDocsWithinView) {
+        Database.getInstance().user(new RequestListener<DBDocument>() {
             @Override
             public void onSuccess(DBDocument object) {
                 super.onSuccess(object);
 
-                List<String> friends = (List<String>)object.get("friends");
+                List<String> friends = (List<String>) object.get("friends");
 
                 DBCollection usersCollection = Database.getInstance().users();
-                for (String friendID : friends){
+                for (String friendID : friends) {
                     //hämta varje user i listan från databasen, gör sedan om dessa till User
-                    usersCollection.get(friendID, new RequestListener<DBDocument>(true){
+                    usersCollection.get(friendID, new RequestListener<DBDocument>(true) {
                         @Override
                         public void onSuccess(DBDocument object) {
                             super.onSuccess(object);
-                            if(friendDocsWithinView.contains(object)){
+                            if (friendDocsWithinView.contains(object)) {
                                 User friend = Helpers.convertDocToUser(object);
                                 main.updateMapFriends(friend);
                                 showUpdatedFriend(friend);
@@ -613,7 +607,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void removeOldFriendMarkers(){
+    private void removeOldFriendMarkers() {
         Iterator<Marker> markerIterator = friendMarkerMap.keySet().iterator();
         while (markerIterator.hasNext()) {
             Marker m = markerIterator.next();
