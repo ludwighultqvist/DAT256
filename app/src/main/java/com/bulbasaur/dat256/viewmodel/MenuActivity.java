@@ -60,7 +60,7 @@ public class MenuActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int UPDATE_EVENT_FILTERS = 108;
     private static final int CREATE_NEW_EVENT_CODE = 32;
     private static final int SHOW_FRIEND_ON_MAP_CODE = 45;
-    private static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
+    static final int DEFAULT_MEET_UP_ZOOM_LEVEL = 15;
     private DrawerLayout drawer;
     private SearchView searchView;
     private GoogleMap map;
