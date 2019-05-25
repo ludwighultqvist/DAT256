@@ -215,6 +215,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/description_only"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/DescriptionView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleView" />

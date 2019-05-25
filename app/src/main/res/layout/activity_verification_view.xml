@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/FirstNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="10dp"
@@ -27,7 +27,7 @@
     <EditText
         android:id="@+id/SecondNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="10dp"
@@ -45,7 +45,7 @@
     <EditText
         android:id="@+id/ThirdNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="10dp"
@@ -63,7 +63,7 @@
     <EditText
         android:id="@+id/FourthNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="10dp"
@@ -81,7 +81,7 @@
     <EditText
         android:id="@+id/FifthNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="10dp"
@@ -99,7 +99,7 @@
     <EditText
         android:id="@+id/SixthNumber"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="226dp"
         android:layout_marginEnd="30dp"
