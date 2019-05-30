@@ -10,7 +10,7 @@ All the source code can be found under com/bulbasaur/dat256 where the code is st
 All xml-files regarding the various views are located in res. 
 
 ### Documents
-All important documents such as the final reflection, team reflections and indiviual reflections can be found under the documents folder in the root. In the same folder are documents such as the social contract, definition of done, database structure, gui mockups and business model canvas. 
+All important documents such as the final reflection, team reflections and indiviual reflections can be found under the documents folder in the root. In the same folder are documents such as the final gitinspector, social contract, definition of done, database structure, gui mockups and business model canvas. 
 
 ### The general structure of the app
 The main file of database-communication is the file "Database" in services. The main model file is "Main", which is the run-time model of the app. The main activity file used to run the app is the file "MenuActivity in viewmodel. 
