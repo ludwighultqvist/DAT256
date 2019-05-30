@@ -3,9 +3,9 @@
 ## Finding everything in project
 
 ### Sourcecode and xml-files
-All important files regarding sourcecode and xml-files is located under app/src/, where different code are resides in the following subfolders. 
+All important files regarding sourcecode and xml-files is located under app/src/, where different code are resides in the following subfolders. \n\n
 
-All the source code can be found under com/bulbasaur/dat256 where the code is structure into three main folders: model, viewmodel and services. All activities are located in viewmodel, and the code regarding the database-communication resides in services. 
+All the source code can be found under com/bulbasaur/dat256 where the code is structure into three main folders: model, viewmodel and services. All activities are located in viewmodel, and the code regarding the database-communication resides in services. \n\n
 
 All xml-files regarding the various views are located in res. 
 
@@ -26,19 +26,19 @@ https://drive.google.com/drive/u/0/folders/1a8nYGr-IJ3wJh2ORFTUUllZsnjH8EUHg
 
 #### Firebase
 https://console.firebase.google.com/u/2/project/meetups-5921e/overview
-If you are not already in the project when clicking the link, click in the top right corner and then on the project "MeetApp". 
-login: meetups.dat256@gmail.com
+If you are not already in the project when clicking the link, click in the top right corner and then on the project "MeetApp". \n
+login: meetups.dat256@gmail.com \n
 password: 123Bulbasaur
 
 ## Running the application
 The app should be able to start without having to login or register any user, but the app is then restricted. To use the full app you have to create a user with the register flow or login an existing one. However, to do this according to the restrictions of firebase you have to use a whitelisted phonenumber and a pre set verification code. We have pre-set whitelisted numbers you can use, which are given below. You can whitelist your own ones, but its is a little more complicated. How this is done is given below. 
 
 ### Register with a new user
-phone: +16505550000
+phone: +16505550000 \n
 verification code: 123456
 
 ### Login with an existing user
-phone: +46721743513
+phone: +46721743513 \n
 verification code: 123456
 
 ### Add whielisted number
